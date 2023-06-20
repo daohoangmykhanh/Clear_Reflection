@@ -1,3 +1,7 @@
-client/node_modules
-client/.angular
-client/.vscode
+admin/node_modules
+admin/.angular
+admin/.vscode
+
+customer/node_modules
+customer/.angular
+customer/.vscode
