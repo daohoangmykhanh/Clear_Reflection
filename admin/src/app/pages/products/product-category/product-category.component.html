@@ -1,0 +1,49 @@
+<div class="row">
+    <div class="col-lg-8">
+        <nb-card>
+            <nb-card-header>
+                Category List
+            </nb-card-header>
+            <nb-card-body>
+                <ng2-smart-table id="product-table" 
+                    [settings]="settings" [source]="source"
+                    (create)="onCreateProducts()" 
+                    (edit)="onEditProducts($event)"
+                    (delete)="onDeleteConfirm($event)" 
+                    (userRowSelect)="getProductDetails($event)"
+                    (mouseover)="changeCursor()">
+                </ng2-smart-table>
+            </nb-card-body>
+            <nb-card-footer>
+
+            </nb-card-footer>
+        </nb-card>
+    </div>
+    <div class="col-lg-4">
+        <nb-card>
+            <nb-card-header>
+                Add A New Category
+            </nb-card-header>
+            <nb-card-body>
+                <input type="text" nbInput fullWidth placeholder="Product Name">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Upload</span>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" mutliple class="custom-file-input" accept="image/png, image/jpeg">
+                        <label class="custom-file-label">Choose images</label>
+                    </div>
+                    
+                    <img [src]="images[0].url" class="d-block w-100 mt-3" alt="Slide Image">
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="d-flex justify-content-between">
+                    <button nbButton status="success">Create</button>
+                    <button nbButton status="primary">Clear</button>
+                </div>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</div>

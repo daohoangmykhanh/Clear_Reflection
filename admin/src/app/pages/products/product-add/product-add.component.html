@@ -1,0 +1,156 @@
+<nb-card fullWidth>
+    <nb-card-header>
+        <div class="row">
+            <div class="col d-flex align-items-center justify-content-between">
+                <h6>
+                    Add A Product
+                </h6>
+                <button nbButton status="success" size="large">PUBLISH</button>
+            </div>
+        </div>
+    </nb-card-header>
+</nb-card>
+<div class="row">
+    <div class="col-lg-6">
+        <nb-card>
+            <nb-card-header>Basic Information</nb-card-header>
+            <nb-card-body>
+                <input type="text" nbInput fullWidth placeholder="Product Name">
+
+                <nb-select fullWidth selected="1" placeholder="Category" [(selected)]="selectedCategory">
+                    <nb-select-label>
+                        Category: {{ selectedCategory }}
+                    </nb-select-label>
+                    <nb-option value="1">1</nb-option>
+                    <nb-option value="2">2</nb-option>
+                </nb-select>
+                <nb-select fullWidth selected="1" placeholder="Shape" [(selected)]="selectedShape">
+                    <nb-select-label>
+                        Shape: {{ selectedShape }}
+                    </nb-select-label>
+                    <nb-option value="1">1</nb-option>
+                    <nb-option value="2">2</nb-option>
+                </nb-select>
+                <nb-select fullWidth selected="1" placeholder="Style" [(selected)]="selectedStyle">
+                    <nb-select-label>
+                        Style: {{ selectedStyle }}
+                    </nb-select-label>
+                    <nb-option value="1">1</nb-option>
+                    <nb-option value="2">2</nb-option>
+                </nb-select>
+                <ckeditor class="ckeditor" [editor]="Editor" [config]="editorConfig"></ckeditor>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Upload</span>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" mutliple class="custom-file-input" accept="image/png, image/jpeg">
+                        <label class="custom-file-label">Choose images</label>
+                    </div>
+                </div>
+
+                <div id="carouselExample" class="carousel slide" data-ride="carousel" #carousel>
+                    <ol class="carousel-indicators">
+                        <li *ngFor="let image of images; let i = index" [class.active]="i === activeSlideIndex"
+                            [attr.data-target]="'#carouselExample'" [attr.data-slide-to]="i"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item" *ngFor="let image of images; let i = index"
+                            [class.active]="i === activeSlideIndex">
+                            <img [src]="image.url" class="d-block w-100" alt="Slide Image">
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" (click)="prevSlide(carousel)" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" (click)="nextSlide(carousel)" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </nb-card-body>
+        </nb-card>
+    </div>
+
+    <div class="col-lg-6">
+
+        <nb-card>
+            <nb-card-header>Product Variants</nb-card-header>
+            <nb-card-body>
+                <nb-accordion multi>
+                    <nb-accordion-item *ngFor="let variant of variants; let i = index">
+                        <nb-accordion-item-header>
+                            Variant #{{i + 1}}
+                        </nb-accordion-item-header>
+                        <nb-accordion-item-body>
+                            <div class="inputs-group my-3">
+                                <input type="number" nbInput fullWidth placeholder="Height (cm)">
+                                <input type="number" nbInput fullWidth placeholder="Width (cm)">
+                            </div>
+                            <div class="inputs-group my-3">
+                                <input type="text" nbInput fullWidth placeholder="Price ($)">
+                                <input type="number" nbInput fullWidth placeholder="Quantity">
+                            </div>
+                            <div class="row my-3">
+                                <div class="col-lg-3">
+                                    <div class="demo-items">
+                                        <nb-radio-group [(value)]="chosenColorType">
+                                            <nb-radio value="Basic Color">
+                                                Basic Color
+                                            </nb-radio>
+                                            <nb-radio value="Custom Color">
+                                                Custom Color
+                                            </nb-radio>
+                                        </nb-radio-group>
+                                    </div>
+                                </div>
+                                <div class="col-lg-9 d-flex align-items-center">
+                                    <ng-container *ngIf="chosenColorType === 'Basic Color'">
+                                        <nb-select fullWidth selected="1" placeholder="Color"
+                                            [(selected)]="selectedShape">
+                                            <nb-select-label>
+                                                Color: {{ selectedShape }}
+                                            </nb-select-label>
+                                            <nb-option value="1">1</nb-option>
+                                            <nb-option value="2">2</nb-option>
+                                        </nb-select>
+                                    </ng-container>
+                                    <ng-container *ngIf="chosenColorType === 'Custom Color'">
+                                        <input type="text" nbInput fullWidth placeholder="Color name">
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input"
+                                                accept="image/png, image/jpeg">
+                                            <label class="custom-file-label">Choose images</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8">
+                                    <img [src]="images[0].url" class="d-block w-100" alt="Slide Image">
+                                </div>
+                            </div>
+                            <button nbButton [size]="'small'" [status]="'danger'">
+                                Remove Variant #1
+                            </button>
+                        </nb-accordion-item-body>
+                    </nb-accordion-item>
+                </nb-accordion>
+
+
+            </nb-card-body>
+            <nb-card-footer>
+                <button nbButton [status]="'success'" (click)="addVariant()">
+                    Add A New Product Variant
+                </button>
+            </nb-card-footer>
+        </nb-card>
+
+
+    </div>
+</div>

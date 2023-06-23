@@ -1,0 +1,14 @@
+<nb-card>
+    <nb-card-header>
+        Order List
+    </nb-card-header>
+
+    <nb-card-body>
+        <ng2-smart-table id="order-table"
+            [settings]="settings" [source]="source"
+            (create)="onCreateProducts()" (edit)="onEditProducts($event)"
+            (delete)="onDeleteConfirm($event)" (userRowSelect)="getProductDetails($event)"
+            (mouseover)="changeCursor()">
+        </ng2-smart-table>
+    </nb-card-body>
+</nb-card>

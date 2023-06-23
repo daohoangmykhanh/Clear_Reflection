@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="col-lg-8">
+        <nb-card>
+            <nb-card-header>
+                Coupon List
+            </nb-card-header>
+            <nb-card-body>
+                <ng2-smart-table id="product-table" [settings]="settings" [source]="source"
+                    (create)="onCreateProducts()" (edit)="onEditProducts($event)" (delete)="onDeleteConfirm($event)"
+                    (userRowSelect)="getProductDetails($event)" (mouseover)="changeCursor()">
+                </ng2-smart-table>
+            </nb-card-body>
+            <nb-card-footer>
+
+            </nb-card-footer>
+        </nb-card>
+    </div>
+    <div class="col-lg-4">
+        <nb-card>
+            <nb-card-header>
+                Add A New Coupon
+            </nb-card-header>
+            <nb-card-body>
+                <input type="text" nbInput fullWidth placeholder="Coupon Name">
+                <textarea rows="5" nbInput fullWidth placeholder="Description"></textarea>
+                <div class="row no-gutters">
+                    <div class="col-lg-5 pr-2">
+                        <nb-select fullWidth selected="1" placeholder="Discount Type" [(selected)]="selectedDiscountType">
+                            <nb-select-label>
+                                Type: {{ selectedDiscountType }}
+                            </nb-select-label>
+                            <nb-option value="1">Fixed</nb-option>
+                            <nb-option value="2">Percent</nb-option>
+                        </nb-select>
+                    </div>
+                    <div class="col-lg-7">
+                        <input type="number" nbInput fullWidth placeholder="Value">
+                    </div>
+                </div>
+                <input nbInput fullWidth placeholder="Choose Start and Expire Date" [nbDatepicker]="rangepicker">
+                <nb-rangepicker #rangepicker></nb-rangepicker>
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="d-flex justify-content-between">
+                    <button nbButton status="success">Create</button>
+                    <button nbButton status="primary">Clear</button>
+                </div>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</div>

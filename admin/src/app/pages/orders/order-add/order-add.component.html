@@ -1,0 +1,131 @@
+<style>
+
+</style>
+
+<nb-card fullWidth>
+    <nb-card-header>
+        <div class="row">
+            <div class="col d-flex align-items-center justify-content-between">
+                <h6>
+                    Add An Order
+                </h6>
+                <button nbButton status="success" size="large">PUBLISH</button>
+            </div>
+        </div>
+    </nb-card-header>
+</nb-card>
+<div class="row">
+    <div class="col-lg-6">
+        <nb-card>
+            <nb-card-header>Basic Information</nb-card-header>
+            <nb-card-body>
+                <input 
+                    type="text" placeholder="Customer Username"
+                    [formControl]="inputFormControl"
+                    nbInput fullWidth 
+                    [nbAutocomplete]="auto" />
+                <nb-autocomplete #auto [handleDisplayFn]="viewHandle">
+                    <nb-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+                        <div class="row">
+                            <div class="col-3">
+                                <img src="assets/images/alan.png" class="d-block w-100">
+                            </div>
+                            <div class="col-9 d-flex align-items-center">
+                                {{ option }}
+                            </div>
+                        </div>
+                    </nb-option>
+                </nb-autocomplete>
+                <input  type="text" placeholder="Billing Address" nbInput fullWidth/>
+                <input  type="text" placeholder="Shipping Address" nbInput fullWidth/>
+                <nb-select fullWidth selected="1" placeholder="Order Status" [(selected)]="selectedOrderStatus">
+                    <nb-select-label>
+                        Order Status: {{ selectedOrderStatus }}
+                    </nb-select-label>
+                    <nb-option value="1">1</nb-option>
+                    <nb-option value="2">2</nb-option>
+                </nb-select>
+                <div class="row">
+                    <div class="col-lg-3 d-flex align-items-center">
+                        <nb-checkbox status="success" [(checked)]="applyCoupon">Apply Coupon</nb-checkbox>
+                    </div>
+                    <ng-container *ngIf="applyCoupon">
+                        <div class="col-lg-9">
+                            <input  type="text" placeholder="Coupon" nbInput fullWidth/>
+                        </div>
+                    </ng-container>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-lg-6 font-weight-bold">Total Quantity: {{45}}</div>
+                    <div class="col-lg-6 font-weight-bold">Total Price: {{ 45 | currency:'USD'}}</div>
+                </div>
+            </nb-card-body>
+        </nb-card>
+    </div>
+
+    <div class="col-lg-6">
+
+        <nb-card>
+            <nb-card-header>Order's Products</nb-card-header>
+            <nb-card-body>
+                <nb-accordion multi>
+                    <nb-accordion-item *ngFor="let variant of variants; let i = index">
+                        <nb-accordion-item-header>
+                            Product #{{i + 1}}
+                        </nb-accordion-item-header>
+                        <nb-accordion-item-body>
+                            <input 
+                                type="text" placeholder="Product"
+                                [formControl]="inputFormControl"
+                                nbInput fullWidth 
+                                [nbAutocomplete]="auto" 
+                                class="inputs-group"/>
+                            <nb-autocomplete #auto [handleDisplayFn]="viewHandle">
+                                <nb-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <img src="assets/images/alan.png" class="d-block w-100">
+                                        </div>
+                                        <div class="col-9 d-flex align-items-center">
+                                            {{ option }}
+                                        </div>
+                                    </div>
+                                </nb-option>
+                            </nb-autocomplete>
+                            <nb-select fullWidth selected="1" placeholder="Size" [(selected)]="selectedOrderStatus" class="inputs-group">
+                                <nb-select-label>
+                                    Size: {{ selectedOrderStatus }}cm*{{selectedOrderStatus}}cm
+                                </nb-select-label>
+                                <nb-option value="1">1</nb-option>
+                                <nb-option value="2">2</nb-option>
+                            </nb-select>
+                            <nb-select fullWidth selected="1" placeholder="Color" [(selected)]="selectedOrderStatus" class="inputs-group">
+                                <nb-select-label>
+                                    Color: {{ selectedOrderStatus }}
+                                </nb-select-label>
+                                <nb-option value="1">1</nb-option>
+                                <nb-option value="2">2</nb-option>
+                            </nb-select>
+                            <input  type="number" placeholder="Quantity" nbInput fullWidth class="inputs-group"/>
+
+                            <button nbButton [size]="'small'" [status]="'danger'" class="inputs-group">
+                                Remove Product #1
+                            </button>
+                        </nb-accordion-item-body>
+                    </nb-accordion-item>
+                </nb-accordion>
+
+
+            </nb-card-body>
+            <nb-card-footer>
+                <button nbButton [status]="'success'" (click)="addVariant()">
+                    Add A New Product Variant
+                </button>
+            </nb-card-footer>
+        </nb-card>
+
+
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="col-12">
+        <nb-card>
+            <nb-tabset fullWidth>
+                <nb-tab tabTitle="LIST">
+                    <nb-card>
+                        <ng2-smart-table id="product-table" 
+                            [settings]="settings" 
+                            [source]="source"
+                            (create)="onCreateProducts()" (edit)="onEditProducts($event)"
+                            (delete)="onDeleteConfirm($event)" (userRowSelect)="getProductDetails($event)"
+                            (mouseover)="changeCursor()">
+                        </ng2-smart-table>
+                    </nb-card>
+                </nb-tab>
+                <nb-tab tabTitle="GRID">
+                </nb-tab>
+            </nb-tabset>
+        </nb-card>
+    </div>
+</div>

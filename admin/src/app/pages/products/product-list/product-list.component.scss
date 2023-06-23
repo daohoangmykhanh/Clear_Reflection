@@ -1,0 +1,9 @@
+@import "../../../@theme/styles/themes";
+
+@include nb-install-component() {
+  nb-card[size="giant"] {
+    max-height: calc(100% + 50px);
+    overflow-y:scroll;
+  }
+
+}
