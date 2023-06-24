@@ -1,5 +1,5 @@
 <?php
-
+use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $role = Role::all();
+    return view('welcome', ['role' => $role]);
 });
