@@ -1,9 +1,5 @@
-@import "../../../@theme/styles/themes";
-
-@include nb-install-component() {
-  nb-card[size="giant"] {
-    max-height: calc(100% + 50px);
-    overflow-y:scroll;
-  }
-
+::ng-deep ng2-smart-table .ng2-smart-actions a.ng2-smart-action {
+  font-size: 2rem !important;
+  color: #1E6BB8 !important;
+  display: block !important
 }

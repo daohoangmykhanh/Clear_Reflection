@@ -1,62 +1,111 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { SmartTableService } from '../../../@core/services/smart-table.service';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { CustomActionComponent } from './custom/custom-action.component';
+import { CustomFilterActionsComponent } from './custom/custom-filter-actions.component';
+import { CustomFilterSoldComponent } from './custom/custom-filter-sold.component';
 
 @Component({
   selector: 'ngx-product-list',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
 })
-export class ProductListComponent{
-  private destroy$ = new Subject<void>();
-
+export class ProductListComponent implements AfterViewInit {
+  numberOfItem: number = localStorage.getItem('itemPerPage') != null ? +localStorage.getItem('itemPerPage') : 10; // default
+  source: LocalDataSource = new LocalDataSource();
   // Setting for List layout
   settings = {
     actions: {
-      position: 'right'
+      position: 'right',
+      edit: false,
+      delete: false,
+      add: false,
+      columnTitle: ''
     },
-    mode: 'external', // when add/edit -> navigate to another url
     columns: {
       id: {
         title: 'ID',
         type: 'number',
       },
-      firstName: {
-        title: 'First Name',
+      name: {
+        title: 'Name',
         type: 'string',
       },
-      lastName: {
-        title: 'Last Name',
-        type: 'string',
+      category: {
+        title: 'Category',
+        filter: {
+          type: 'list',
+          config: {
+            selectText: 'Category...',
+            list: [
+              { value: 'Glenna Reichert', title: 'Glenna Reichert' },
+              { value: 'Kurtis Weissnat', title: 'Kurtis Weissnat' },
+              { value: 'Chelsey Dietrich', title: 'Chelsey Dietrich' },
+            ],
+          },
+        },
       },
-      username: {
-        title: 'Username',
-        type: 'string',
+      shape: {
+        title: 'Shape',
+        filter: {
+          type: 'list',
+          config: {
+            selectText: 'Shape...',
+            list: [
+              { value: 'Glenna Reichert', title: 'Glenna Reichert' },
+              { value: 'Kurtis Weissnat', title: 'Kurtis Weissnat' },
+              { value: 'Chelsey Dietrich', title: 'Chelsey Dietrich' },
+            ],
+          },
+        },
       },
-      email: {
-        title: 'E-mail',
-        type: 'string',
+      style: {
+        title: 'Style',
+        filter: {
+          type: 'list',
+          config: {
+            selectText: 'Style...',
+            list: [
+              { value: 'Glenna Reichert', title: 'Glenna Reichert' },
+              { value: 'Kurtis Weissnat', title: 'Kurtis Weissnat' },
+              { value: 'Chelsey Dietrich', title: 'Chelsey Dietrich' },
+            ],
+          },
+        },
       },
-      age: {
-        title: 'Age',
-        type: 'number',
+      sold: {
+        title: 'Sold',
+        filter: {
+          type: 'custom',
+          component: CustomFilterSoldComponent,
+        },
       },
+      rating: {
+        title: 'Rating',
+        type: 'number'
+      },
+      totalLikes: {
+        title: 'Total Likes',
+        type: 'number'
+      },
+      actions: {
+        title: 'Actions',
+        type: 'custom',
+        sort: false,
+        filter: {
+          type: 'custom',
+          component: CustomFilterActionsComponent,
+        },
+        renderComponent: CustomActionComponent
+      }
     },
-    add: {
-      addButtonContent: '<i class="nb-plus"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
+    pager: {
+      display: true,
+      perPage: this.numberOfItem
     },
   };
 
-  source: LocalDataSource = new LocalDataSource();
 
   constructor(
     private service: SmartTableService,
@@ -66,7 +115,10 @@ export class ProductListComponent{
     this.source.load(data);
   }
   
-  
+  ngAfterViewInit() {
+    const pager = document.querySelector('ng2-smart-table-pager');
+    pager.classList.add('d-block')
+  }
 
   onDeleteConfirm(event): void {
     if (window.confirm('Are you sure you want to delete?')) {
@@ -76,18 +128,18 @@ export class ProductListComponent{
     }
   }
 
-  onCreateProducts(): void {
-    this.router.navigate(['/admin/products', 'add'], )
+  onCreate(): void {
+    this.router.navigate(['/admin/products', 'add'],)
   }
 
-  onEditProducts(event: any): void {
+  onEdit(event: any): void {
     const productId: string = event.data.id
-    this.router.navigate(['/admin/products', 'edit', productId], )
+    this.router.navigate(['/admin/products', 'edit', productId],)
   }
 
-  getProductDetails(event: any): void {
+  getDetails(event: any): void {
     const productId: string = event.data.id
-    this.router.navigate(['/admin/products', 'detail', productId], )
+    this.router.navigate(['/admin/products', 'detail', productId],)
   }
 
   changeCursor(): void {
@@ -95,5 +147,10 @@ export class ProductListComponent{
     if (element) {
       element.style.cursor = 'pointer';
     }
+  }
+
+  numberOfItemsChange() {
+    localStorage.setItem('itemPerPage', this.numberOfItem.toString())
+    this.source.setPaging(1, this.numberOfItem)
   }
 }

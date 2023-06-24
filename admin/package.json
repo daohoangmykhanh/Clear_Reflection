@@ -44,7 +44,7 @@
     "ionicons": "2.0.1",
     "leaflet": "1.2.0",
     "nebular-icons": "1.1.0",
-    "ng2-smart-table": "^1.6.0",
+    "ng2-smart-table": "1.7.2",
     "ngx-echarts": "^4.2.2",
     "node-sass": "8.0.0",
     "normalize.css": "6.0.0",
