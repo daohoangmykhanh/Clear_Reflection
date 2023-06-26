@@ -14,6 +14,7 @@ class Category extends Model
     public $timestamps = true;
     public static function store($category_name, $image_id)
     {
+        
         return DB::table('category')->insert([
             'category_name' => $category_name,
             'image_id' => $image_id,

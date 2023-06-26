@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\AccountController;
+use App\Http\Controllers\BERoleController;
+use App\Http\Controllers\BEAccountController;
 
 
 /*
@@ -21,8 +21,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 // Role Controller
-Route::get('/admin/role', [RoleController::class, 'index']);
-Route::post('/admin/role/create', [RoleController::class, 'create']);
-Route::get('/admin/role/delete/{id}', [RoleController::class, 'delete']);
+Route::get('/admin/role', [BERoleController::class, 'index']);
+Route::post('/admin/role/create', [BERoleController::class, 'create']);
+Route::get('/admin/role/delete/{id}', [BERoleController::class, 'delete']);
 // Account Controller
-Route::get('/admin/account', [AccountController::class, 'index']);
+Route::get('/admin/account', [BEAccountController::class, 'index']);
+Route::post('/admin/account/create', [BEAccountController::class, 'create']);
+Route::post('/admin/account/update', [BEAccountController::class, 'update']);
+Route::get('/admin/account/delete/{id}', [BEAccountController::class, 'delete']);
