@@ -19,6 +19,7 @@ class Account extends Model
         $full_name = $validatedData['full_name'];
         $email = $validatedData['email'];
         $phone_number = $validatedData['phone_number'];
+        $role_id = $validatedData['role_id'];
         $image_id = $validatedData['image_id'];
      
         return DB::table('account')->insert([
@@ -27,7 +28,7 @@ class Account extends Model
             'full_name' => $full_name,
             'email' => $email,
             'phone_number' => $phone_number, 
-            'role_id' => 1, 
+            'role_id' => $role_id, 
             'image_id' => $image_id, 
             'created_at' => now()
         ]);

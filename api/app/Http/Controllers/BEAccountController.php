@@ -41,6 +41,7 @@ class BEAccountController extends Controller
             'full_name' => 'required',
             'email' => 'required|email',
             'phone_number' => 'required',
+            'role_id' => 'required',
             'image_id' => 'nullable',
         ]);
         $result = Account::store($validatedData);
@@ -48,6 +49,14 @@ class BEAccountController extends Controller
             return response()->json('Created unsuccessfully !');
         
         return response()->json('Created successfully !', 201);
+    }
+
+    public function edit($id){
+        $account = Account::Find($id);
+        if($account == null )
+            return response()->json('Id doesn`t exist !');
+        
+        return response()->json($account);
     }
 
     public function update(Request $request){
