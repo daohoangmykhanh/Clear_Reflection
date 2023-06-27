@@ -1,1 +1,110 @@
-<p>product-detail works!</p>
+<nb-card>
+    <nb-card-header>
+        <div class="d-flex justify-content-between align-items-center">
+            <h6>
+                Product Detail
+            </h6>
+            <button nbButton status="warning" (click)="onEdit()">
+                <nb-icon icon="edit-outline"></nb-icon>
+            </button>
+        </div>
+    </nb-card-header>
+</nb-card>
+<div class="row">
+    <div class="col-lg-7 col-md-12">
+        <nb-card>
+            <nb-card-header>
+                Basic Information
+            </nb-card-header>
+            <nb-card-body>
+                <div class="row">
+                    <div class="col-lg-6 d-flex align-items-center">
+                        <ngx-images-carousel [urls]="product.imageUrls" [imgHeight]="250"></ngx-images-carousel>
+                    </div>
+                    <div class="col-lg-6">
+                        <h6>{{product.productName}}</h6>
+                        <p>Category: {{product.category.categoryName}}</p>
+                        <p>Shape: {{product.shape.shapeName}}</p>
+                        <p>Style: {{product.style.styleName}}</p>
+                        <div class="div"></div>
+                        
+                        <p>Total Quantity: {{product.totalQuantity}}</p>
+                        <p>Quantity Sold: {{product.quantitySold}}</p>
+                        <p>Total Likes: {{product.totalLikes}}</p>
+                        <p>
+                            Rating Star: {{product.rating}} | 
+                            Total Rating: {{product.totalRating}}
+                        </p>
+                        <p>
+                            Coupon Applied: 
+                        </p>
+                    </div>
+                    <div class="col-12">
+                        <h6>Description</h6>
+                        <p>
+                            {{product.description}}
+                        </p>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer></nb-card-footer>
+        </nb-card>
+    </div>
+    <div class="col-lg-5 col-md-12">
+        <nb-card>
+            <nb-card-header class="d-flex justify-content-between align-items-center">
+                <p class="font-weight-bold">Variants</p>
+                <div>
+                    <button nbButton size="small" status="info" class="mr-2">Collapse All</button>
+                    <button nbButton size="small" status="warning">Open All</button>
+                </div>
+            </nb-card-header>
+            <nb-card-body>
+                <nb-accordion multi>
+                    <nb-accordion-item *ngFor="let variant of product.productVariants; let i = index">
+                        <nb-accordion-item-header class="d-flex justify-content-between align-items-center">
+                            <p class="font-weight-bold">Variant #{{i + 1}}</p>
+                            <p>
+                                h:{{variant.height}}cm -
+                                w:{{variant.width}}cm -
+                                {{variant.price | currency: 'USD'}}*{{variant.quantity}}
+                            </p>    
+                            <div class=""></div>
+                        </nb-accordion-item-header>
+                        <nb-accordion-item-body>
+                            <div class="row">
+                                <ng-container *ngIf="variant.imageUrl !== null">
+                                    <div class="col-lg-4 col-md-12 d-flex justify-content-between align-items-center">
+                                        <img [src]="variant.imageUrl" alt="Variant Images" class="d-block w-100">
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="variant.imageUrl === null">
+                                    <div class="col-lg-4 col-md-12 border border-primary rounded d-flex align-items-center" #noImage>
+                                        <p class="mx-auto text-center">No Image</p>
+                                </div>
+                                </ng-container>
+                                <div class="col-lg-1"></div>
+                                <div class="col-lg-7 col-md-12">
+                                    <p><span class="font-weight-bold">Height:</span> {{variant.height}}cm</p>
+                                    <p><span class="font-weight-bold">Width:</span> {{variant.width}}cm</p>
+                                    <p><span class="font-weight-bold">Price:</span> {{variant.price | currency: 'USD'}}</p>
+                                    <p><span class="font-weight-bold">Quantity:</span> {{variant.quantity}}</p>
+                                    <p><span class="font-weight-bold">Color:</span> {{variant.color.colorName}}</p>
+                                </div>
+                            </div>
+                        </nb-accordion-item-body>
+                    </nb-accordion-item>
+                </nb-accordion>
+            </nb-card-body>
+        </nb-card>
+    </div>
+    <div class="col-12">
+        <nb-card>
+            <nb-card-header>
+                Comments
+            </nb-card-header>
+            <nb-card-body></nb-card-body>
+        </nb-card>
+    </div>
+
+</div>

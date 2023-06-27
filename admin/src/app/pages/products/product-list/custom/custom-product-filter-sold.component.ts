@@ -15,7 +15,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
         </select>
     `,
 })
-export class CustomFilterSoldComponent extends DefaultFilter implements OnInit, OnChanges {
+export class CustomProductFilterSoldComponent extends DefaultFilter implements OnInit, OnChanges {
     minControl = new FormControl();
     maxControl = new FormControl();
 

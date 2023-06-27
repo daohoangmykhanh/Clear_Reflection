@@ -23,6 +23,7 @@ import { OrdersProfitChartService } from './services/orders-profit-chart/orders-
 import { TrafficBarService } from './services/traffic/traffic-bar.service';
 import { ProgressInfoService } from './services/progress-bar-chart/progress-info.service';
 import { ServiceDataModule } from './services/service-data.module';
+import { HttpClient } from '@angular/common/http';
 
 
 
