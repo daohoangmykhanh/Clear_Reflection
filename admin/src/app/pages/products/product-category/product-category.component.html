@@ -1,16 +1,27 @@
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-lg-7 col-md-12">
         <nb-card>
-            <nb-card-header>
-                Category List
+            <nb-card-header class="d-flex justify-content-between align-items-center" >
+                <h6>
+                    Category List
+                </h6>
+                <nb-select 
+                        [placeholder]="'Items Per Page'"
+                        [(selected)]="numberOfItem"
+                        (selectedChange)="numberOfItemsChange()"
+                        >
+                    <nb-select-label>
+                        Number Of Item: {{ numberOfItem }}
+                    </nb-select-label>
+                    <nb-option value="10">10</nb-option>
+                    <nb-option value="20">20</nb-option>
+                    <nb-option value="50">50</nb-option>
+                </nb-select>
             </nb-card-header>
             <nb-card-body>
                 <ng2-smart-table id="product-table" 
                     [settings]="settings" [source]="source"
-                    (create)="onCreateProducts()" 
-                    (edit)="onEditProducts($event)"
                     (delete)="onDeleteConfirm($event)" 
-                    (userRowSelect)="getProductDetails($event)"
                     (mouseover)="changeCursor()">
                 </ng2-smart-table>
             </nb-card-body>
@@ -19,31 +30,108 @@
             </nb-card-footer>
         </nb-card>
     </div>
-    <div class="col-lg-4">
-        <nb-card>
+    <div class="col-lg-5 col-md-12">
+
+        <ng-container *ngIf="state === 'add'" >
+        <nb-card [formGroup]="addCategoryFormGroup">
             <nb-card-header>
                 Add A New Category
             </nb-card-header>
             <nb-card-body>
-                <input type="text" nbInput fullWidth placeholder="Product Name">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Upload</span>
+                <input type="text" nbInput fullWidth placeholder="Category Name" formControlName="name" class="mb-1">
+                <div class="alert alert-danger mt-0 mb-3" 
+                    *ngIf="addCategoryFormGroup.get('name').invalid && (addCategoryFormGroup.get('name').dirty || addCategoryFormGroup.get('name').touched)">
+                    <div *ngIf="addCategoryFormGroup.get('name').errors['notblank']">
+                        Category Name is required
                     </div>
-                    <div class="custom-file">
-                        <input type="file" mutliple class="custom-file-input" accept="image/png, image/jpeg">
-                        <label class="custom-file-label">Choose images</label>
+
+                    <div *ngIf="addCategoryFormGroup.get('name').errors['maxlength']">
+                        Category Name must not exceed 100 characters
                     </div>
-                    
-                    <img [src]="images[0].url" class="d-block w-100 mt-3" alt="Slide Image">
+                </div>
+                <div class="row">
+                    <div class="col-12 no-gutters px-0">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Upload</span>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" mutliple class="custom-file-input" accept="image/png, image/jpeg" 
+                                    (change)="selectFile($event)">
+                                <label class="custom-file-label">Choose images</label>
+                            </div>
+                        </div>
+                        <div class="alert alert-danger mt-1 mb-3" 
+                            *ngIf="addCategoryFormGroup.get('imageUrl').invalid && (addCategoryFormGroup.get('imageUrl').dirty || addCategoryFormGroup.get('imageUrl').touched)">
+                            <div *ngIf="addCategoryFormGroup.get('imageUrl').errors['required']">
+                                Category Image is required
+                            </div>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="addCategoryFormGroup.get('imageUrl').value !== null">
+                    <div class="col-12">
+                        <img [src]="addCategoryFormGroup.get('imageUrl').value" class="d-block w-50 mx-auto mt-3" alt="Slide Image">
+                    </div>
+                    </ng-container>
                 </div>
             </nb-card-body>
             <nb-card-footer>
                 <div class="d-flex justify-content-between">
-                    <button nbButton status="success">Create</button>
-                    <button nbButton status="primary">Clear</button>
+                    <button nbButton status="success" (click)="createCategory()">Create</button>
                 </div>
             </nb-card-footer>
         </nb-card>
+        </ng-container>
+        
+        <ng-container *ngIf="state === 'edit'" >
+            <nb-card [formGroup]="editCategoryFormGroup">
+                <nb-card-header>
+                    Edit Category Id: {{editCategoryFormGroup.get('id').value}}
+                </nb-card-header>
+                <nb-card-body>
+                    <input type="text" nbInput fullWidth placeholder="Category Name" formControlName="name" class="mb-1" >
+                    <div class="alert alert-danger mt-0 mb-3" 
+                        *ngIf="editCategoryFormGroup.get('name').invalid && (editCategoryFormGroup.get('name').dirty || editCategoryFormGroup.get('name').touched)">
+                        <div *ngIf="editCategoryFormGroup.get('name').errors['notblank']">
+                            Category Name is required
+                        </div>
+    
+                        <div *ngIf="editCategoryFormGroup.get('name').errors['maxlength']">
+                            Category Name must not exceed 100 characters
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 no-gutters px-0">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Upload</span>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" mutliple class="custom-file-input" accept="image/png, image/jpeg" 
+                                        (change)="selectFile($event)">
+                                    <label class="custom-file-label">Choose images</label>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger mt-1 mb-3" 
+                                *ngIf="editCategoryFormGroup.get('imageUrl').invalid && (editCategoryFormGroup.get('imageUrl').dirty || editCategoryFormGroup.get('imageUrl').touched)">
+                                <div *ngIf="editCategoryFormGroup.get('imageUrl').errors['required']">
+                                    Category Image is required
+                                </div>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="editCategoryFormGroup.get('imageUrl').value !== null">
+                        <div class="col-12">
+                            <img [src]="editCategoryFormGroup.get('imageUrl').value" class="d-block w-50 mx-auto mt-3" alt="Slide Image">
+                        </div>
+                        </ng-container>
+                    </div>
+                </nb-card-body>
+                <nb-card-footer>
+                    <div class="d-flex justify-content-between">
+                        <button nbButton status="success" (click)="editCategory()">SAVE</button>
+                    </div>
+                </nb-card-footer>
+            </nb-card>
+        </ng-container>
     </div>
 </div>

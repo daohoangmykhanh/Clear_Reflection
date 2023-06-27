@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators';
 
-import { TrafficList } from '../../../../@core/models/traffic-list';
+import { TrafficList } from '../../../../@core/models/chart/traffic-list';
 
 @Component({
   selector: 'ngx-traffic-front-card',

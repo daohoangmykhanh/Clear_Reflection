@@ -1,14 +1,21 @@
 import { NgModule } from '@angular/core';
-import { NbAccordionModule, NbActionsModule, NbButtonModule, NbCardModule, NbCheckboxModule, NbDatepickerModule, NbIconModule, NbInputModule, NbListModule, NbRadioModule, NbSelectModule, NbUserModule } from '@nebular/theme';
+import { NbAccordionModule, NbActionsModule, NbAlertModule, NbButtonModule, NbCardModule, NbCheckboxModule, NbDatepickerModule, NbIconModule, NbInputModule, NbListModule, NbRadioModule, NbSelectModule, NbUserModule } from '@nebular/theme';
 import { NbTabsetModule } from '@nebular/theme';
 import { ThemeModule } from '../../@theme/theme.module';
 import { ProductsRoutingModule, routedComponents } from './products-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CustomActionComponent } from './product-list/custom/custom-action.component';
-import { CustomFilterActionsComponent } from './product-list/custom/custom-filter-actions.component';
-import { CustomFilterSoldComponent } from './product-list/custom/custom-filter-sold.component';
+import { CustomProductActionComponent } from './product-list/custom/custom-product-action.component';
+import { CustomProductFilterActionsComponent } from './product-list/custom/custom-product-filter-actions.component';
+import { CustomProductFilterSoldComponent } from './product-list/custom/custom-product-filter-sold.component';
+import { ImagesCarouselComponent } from './images-carousel.component';
+import { CustomCategoryActionComponent } from './product-category/custom/custom-category-action.component';
+import { CustomCategoryFilterActionsComponent } from './product-category/custom/custom-category-filter-actions.component';
+import { CustomCouponActionComponent } from './product-coupon/custom/custom-coupon-action.component';
+import { CustomCouponFilterActionsComponent } from './product-coupon/custom/custom-coupon-filter-actions.component';
+import { CustomCouponDiscountActionComponent } from './product-coupon/custom/custom-coupon-discount-action.component';
+import { CustomCategoryImageComponent } from './product-category/custom/custom-category-image.component';
 
 @NgModule({
   imports: [
@@ -32,13 +39,21 @@ import { CustomFilterSoldComponent } from './product-list/custom/custom-filter-s
     CKEditorModule,
     FormsModule,
     ReactiveFormsModule,
-    NbIconModule
+    NbIconModule,
+    NbAlertModule
   ],
   declarations: [
     ...routedComponents,
-    CustomActionComponent,
-    CustomFilterActionsComponent,
-    CustomFilterSoldComponent
+    CustomProductActionComponent,
+    CustomProductFilterActionsComponent,
+    CustomProductFilterSoldComponent,
+    ImagesCarouselComponent,
+    CustomCategoryActionComponent,
+    CustomCategoryFilterActionsComponent,
+    CustomCategoryImageComponent,
+    CustomCouponActionComponent,
+    CustomCouponFilterActionsComponent,
+    CustomCouponDiscountActionComponent,
   ],
 })
 export class ProductsModule { }

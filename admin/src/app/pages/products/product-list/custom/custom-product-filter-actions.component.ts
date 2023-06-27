@@ -10,7 +10,7 @@ import { DefaultFilter } from 'ng2-smart-table';
         </button>
     `,
 })
-export class CustomFilterActionsComponent extends DefaultFilter implements OnInit, OnChanges {
+export class CustomProductFilterActionsComponent extends DefaultFilter implements OnInit, OnChanges {
 
     inputControl = new FormControl();
 
@@ -19,13 +19,11 @@ export class CustomFilterActionsComponent extends DefaultFilter implements OnIni
     }
 
     ngOnInit() {
-        console.log("");
-        
+        let x        
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log("");
-        
+        let x        
     }
 
     onAdd(){

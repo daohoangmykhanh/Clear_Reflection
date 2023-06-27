@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators';
-import { UserActivity } from '../../../@core/models/user-activity';
+import { UserActivity } from '../../../@core/models/chart/user-activity';
 
 import { UserActivityService } from '../../../@core/services/user-activity/user-activity.service';
 
