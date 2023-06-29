@@ -16,8 +16,7 @@
                 </nb-select>
             </nb-card-header>
             <nb-card-body>
-                <ng2-smart-table id="product-table" [settings]="settings" [source]="source"
-                    (delete)="onDeleteConfirm($event)" (mouseover)="changeCursor()">
+                <ng2-smart-table id="product-table" [settings]="settings" [source]="source" (mouseover)="changeCursor()">
                 </ng2-smart-table>
             </nb-card-body>
             <nb-card-footer>

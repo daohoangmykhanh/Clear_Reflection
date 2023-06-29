@@ -14,7 +14,6 @@ import { CustomCategoryActionComponent } from './product-category/custom/custom-
 import { CustomCategoryFilterActionsComponent } from './product-category/custom/custom-category-filter-actions.component';
 import { CustomCouponActionComponent } from './product-coupon/custom/custom-coupon-action.component';
 import { CustomCouponFilterActionsComponent } from './product-coupon/custom/custom-coupon-filter-actions.component';
-import { CustomCouponDiscountActionComponent } from './product-coupon/custom/custom-coupon-discount-action.component';
 import { CustomCategoryImageComponent } from './product-category/custom/custom-category-image.component';
 
 @NgModule({
@@ -53,7 +52,6 @@ import { CustomCategoryImageComponent } from './product-category/custom/custom-c
     CustomCategoryImageComponent,
     CustomCouponActionComponent,
     CustomCouponFilterActionsComponent,
-    CustomCouponDiscountActionComponent,
   ],
 })
 export class ProductsModule { }

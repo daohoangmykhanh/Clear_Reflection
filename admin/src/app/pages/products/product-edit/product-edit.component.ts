@@ -73,7 +73,7 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.productService.findById(this.edittingProductId).subscribe((data) => {
+    this.productService.findById(+this.edittingProductId).subscribe((data) => {
       this.edittingProduct = data
       this.fillFormValues();
     })

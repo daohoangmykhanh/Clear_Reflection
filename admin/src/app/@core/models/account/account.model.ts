@@ -1,22 +1,22 @@
 import { Image } from "../image.model";
-import { Cart } from "./cart.model";
+import { Cart } from "../cart/cart.model";
 import { Role } from "./role.model"
 import { Wishlist } from "./wishlist.model";
+import { Address } from "../address/address.model";
+import { Order } from "../order/order.model";
 
 export class Account {
     accountId: number
-    username: string;
-    password: string;   
+    password?: string;   
     fullName: string;
     email: string;
     phoneNumber: string;
-    role: Role;
-    image: Image;
-    address: string;
+    role?: Role;
+    imageUrl: string;
     createdAt: Date
     updatedAt: Date
-
-    cart: Cart;
-    wishlist: Wishlist[];
-    order
+    address?: Address[]
+    cart?: Cart;
+    wishlist?: Wishlist[];
+    orders?: Order[]
 }

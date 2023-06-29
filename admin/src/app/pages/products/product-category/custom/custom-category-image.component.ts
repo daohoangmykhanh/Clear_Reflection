@@ -20,7 +20,7 @@ export class CustomCategoryImageComponent implements ViewCell, OnInit {
     }
 
     ngOnInit(): void {
-        // console.log(this.value);
         this.renderValue = this.value.toString()
+        
     }
 }

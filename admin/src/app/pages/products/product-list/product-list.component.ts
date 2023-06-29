@@ -106,11 +106,6 @@ export class ProductListComponent implements OnInit, AfterViewInit {
               list: this.styles.map(style => {
                 return { value: style.styleName, title: style.styleName}
               }) 
-              // [
-              //   { value: 'Glenna Reichert', title: 'Glenna Reichert' },
-              //   { value: 'Kurtis Weissnat', title: 'Kurtis Weissnat' },
-              //   { value: 'Chelsey Dietrich', title: 'Chelsey Dietrich' },
-              // ],
             },
           },
         },
@@ -165,16 +160,8 @@ export class ProductListComponent implements OnInit, AfterViewInit {
       }
 
     )
-    // this.productService.toastState$.subscribe(state => {
-    //   if(state == 'editSuccess') {
-    //     this.toastService.show('Notification', `Edit Product Successfully`, {status: 'success', duration: 3000});
-    //   } 
-    // })
   }
 
-  
-  physicalPositions = NbGlobalPhysicalPosition;
-  logicalPositions = NbGlobalLogicalPosition;
   ngOnInit(): void {
     let x;
   }
@@ -182,28 +169,6 @@ export class ProductListComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     const pager = document.querySelector('ng2-smart-table-pager');
     pager.classList.add('d-block')
-  }
-
-  onDeleteConfirm(event): void {
-    if (window.confirm('Are you sure you want to delete?')) {
-      event.confirm.resolve();
-    } else {
-      event.confirm.reject();
-    }
-  }
-
-  onCreate(): void {
-    this.router.navigate(['/admin/products', 'add'],)
-  }
-
-  onEdit(event: any): void {
-    const productId: string = event.data.id
-    this.router.navigate(['/admin/products', 'edit', productId],)
-  }
-
-  getDetails(event: any): void {
-    const productId: string = event.data.id
-    this.router.navigate(['/admin/products', 'detail', productId],)
   }
 
   changeCursor(): void {

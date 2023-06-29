@@ -24,11 +24,6 @@ const routes: Routes = [
           import("./orders/orders.module").then((m) => m.OrdersModule),
       },
       {
-        path: "invoices",
-        loadChildren: () =>
-          import("./invoices/invoices.module").then((m) => m.InvoicesModule),
-      },
-      {
         path: "",
         redirectTo: "dashboard",
         pathMatch: "full",

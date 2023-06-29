@@ -1,7 +1,6 @@
 import { UtilsService } from './../../../@core/services/utils.service';
 import { Component } from '@angular/core';
 import { NbToastrService } from '@nebular/theme';
-import { capitalizeString } from '../../../@core/services/string-utils';
 
 @Component({
   selector: 'ngx-one-column-layout',
@@ -34,8 +33,8 @@ export class OneColumnLayoutComponent {
     this.utilsService.toastState$.subscribe(state => {
       if(state != null) {
         let message: string = 
-          capitalizeString(state.behavior) + ' ' +
-          capitalizeString(state.model) + ' ' +
+          this.utilsService.capitalizeString(state.behavior) + ' ' +
+          this.utilsService.capitalizeString(state.model) + ' ' +
           (state.status === 'success' ? 'Successfully' : 'Failed')
         this.toastService.show(message, 'Notification', {status: state.status, duration: 3000});
       }

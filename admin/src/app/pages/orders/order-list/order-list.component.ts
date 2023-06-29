@@ -1,93 +1,148 @@
-import { Component } from "@angular/core";
-import { LocalDataSource } from "ng2-smart-table";
-import { SmartTableService } from "../../../@core/services/smart-table.service";
-import { Router } from "@angular/router";
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { LocalDataSource } from 'ng2-smart-table';
+import { Router } from '@angular/router';
+import { CustomOrderActionComponent } from './custom/custom-order-action.component';
+import { CustomOrderFilterActionsComponent } from './custom/custom-order-filter-actions.component';
+import { PaymentMethod } from '../../../@core/models/order/payment-method.model';
+import { OrderStatus } from '../../../@core/models/order/order-status.model';
+import { PaymentMethodService } from '../../../@core/services/order/payment-method.service';
+import { OrderStatusService } from '../../../@core/services/order/order-status.service';
+import { OrderService } from '../../../@core/services/order/order.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: "ngx-order-list",
   templateUrl: "./order-list.component.html",
   styleUrls: ["./order-list.component.scss"],
 })
-export class OrderListComponent {
-  // Setting for List layout
-  settings = {
-    actions: {
-      position: 'right',
-      delete: false
-    },
-    mode: 'external', // when add/edit -> navigate to another url
-    columns: {
-      id: {
-        title: 'ID',
-        type: 'number',
-      },
-      firstName: {
-        title: 'First Name',
-        type: 'string',
-      },
-      lastName: {
-        title: 'Last Name',
-        type: 'string',
-      },
-      username: {
-        title: 'Username',
-        type: 'string',
-      },
-      email: {
-        title: 'E-mail',
-        type: 'string',
-      },
-      age: {
-        title: 'Age',
-        type: 'number',
-      },
-    },
-    add: {
-      addButtonContent: '<i class="nb-plus"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-    },
-  };
-
+export class OrderListComponent  implements OnInit, AfterViewInit {
+  numberOfItem: number = localStorage.getItem('itemPerPage') != null ? +localStorage.getItem('itemPerPage') : 10; // default
   source: LocalDataSource = new LocalDataSource();
+  // Setting for List layout
+  paymentMethods: PaymentMethod[];
+  orderStatuses: OrderStatus[];
+
+  settings = {};
+
 
   constructor(
-    private service: SmartTableService,
     private router: Router,
+    private paymentMethodService: PaymentMethodService,
+    private orderStatusService: OrderStatusService,
+    private orderService: OrderService
   ) {
-    const data = this.service.getData();
-    this.source.load(data);
-  }
-  
-  
+    this.paymentMethodService.findAll().subscribe(data => this.paymentMethods = data)
+    this.orderStatusService.findAll().subscribe(data => this.orderStatuses = data)
 
-  onDeleteConfirm(event): void {
-    if (window.confirm('Are you sure you want to delete?')) {
-      event.confirm.resolve();
-    } else {
-      event.confirm.reject();
+    this.settings = {
+      actions: {
+        position: 'right',
+        edit: false,
+        delete: false,
+        add: false,
+        columnTitle: ''
+      },
+      columns: {
+        orderId: {
+          title: 'ID',
+          type: 'number',
+          width: '3%'
+        },
+        orderTrackingNumber: {
+          title: 'Tracking Number',
+          type: 'string',
+        },
+        totalPrice: {
+          title: 'Total Price',
+          type: 'string',
+        },
+        totalQuantity: {
+          title: 'Total Quantity',
+          type: 'string',
+        },
+        paymentMethod: {
+          title: 'Payment Method',
+          type: 'string',
+          filter: {
+            type: 'list',
+            config: {
+              selectText: 'Method...',
+              list: this.paymentMethods.map(pm => {
+                return { value: pm.paymentMethodName, title: pm.paymentMethodName}
+              }) ,
+            },
+          },
+        },
+        orderStatus: {
+          title: 'Order Status',
+          type: 'string',
+          filter: {
+            type: 'list',
+            config: {
+              selectText: 'Status...',
+              list: this.orderStatuses.map(status => {
+                return { value: status.statusName, title: status.statusName}
+              }) 
+            },
+          },
+        },
+        createdAt: {
+          title: 'Created Date',
+          type: 'string',
+        },
+        actions: {
+          title: 'Actions',
+          type: 'custom',
+          sort: false,
+          filter: {
+            type: 'custom',
+            component: CustomOrderFilterActionsComponent,
+          },
+          renderComponent: CustomOrderActionComponent
+        }
+      },
+      pager: {
+        display: true,
+        perPage: this.numberOfItem
+      },
     }
+    this.orderService.findAll().subscribe(
+      data => {
+        const mappedOrders: any[] = data.map(order => {
+          return {
+            orderId: order.orderId,
+            orderTrackingNumber: order.orderTrackingNumber,
+            totalPrice: order.totalPrice,
+            totalQuantity: order.totalQuantity,
+            paymentMethod: order.paymentMethod.paymentMethodName,
+            orderStatus: order.orderStatus.statusName,
+            createdAt: new DatePipe('en-US').transform(order.createdAt, 'dd/MM/yyyy').toString()
+          }
+        })
+        this.source.load(mappedOrders)
+      }
+    )
   }
 
-  onCreateProducts(): void {
-    this.router.navigate(['/admin/orders', 'add'], )
+  
+  ngOnInit(): void {
+    let x;
   }
-
-  onEditProducts(event: any): void {
-    const orderId: string = event.data.id
-    this.router.navigate(['/admin/orders', 'edit', orderId], )
-  }
-
-  getProductDetails(event: any): void {
-    const orderId: string = event.data.id
-    this.router.navigate(['/admin/orders', 'detail', orderId], )
+  
+  ngAfterViewInit() {
+    const pager = document.querySelector('ng2-smart-table-pager');
+    pager.classList.add('d-block')
   }
 
   changeCursor(): void {
-    const element = document.getElementById('order-table'); // Replace 'myElement' with the ID of your element
+    const element = document.getElementById('product-table'); // Replace 'myElement' with the ID of your element
     if (element) {
       element.style.cursor = 'pointer';
     }
+  }
+
+  numberOfItemsChange() {
+    localStorage.setItem('itemPerPage', this.numberOfItem.toString())
+    this.source.setPaging(1, this.numberOfItem)
   }
 }

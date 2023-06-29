@@ -4,8 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs-compat';
 import { ProductCategory } from '../../models/product/product-category.model';
 import { of, BehaviorSubject } from 'rxjs';
-import { Coupon } from '../../models/coupon.model';
-import { CouponType } from '../../models/coupon-type.model';
+import { CouponType } from '../../models/coupon/coupon-type.model';
+import { Coupon } from '../../models/coupon/coupon.model';
 
 @Injectable({
   providedIn: 'root'
@@ -43,8 +43,8 @@ export class ProductCouponService {
         discount: 50,
         couponType: this.findCouponTypeById(1),
         description: 'Description 1',
-        createdAt: '12/16/2023',
-        expiredAt: '12/16/2023'
+        createdAt: new Date(),
+        expiredAt: new Date()
       },
       {
         couponId: 2,
@@ -52,8 +52,8 @@ export class ProductCouponService {
         discount: 20,
         couponType: this.findCouponTypeById(2),
         description: 'Description 2',
-        createdAt: '12/16/2003',
-        expiredAt: '12/16/2023'
+        createdAt: new Date(),
+        expiredAt: new Date()
       },
       {
         couponId: 3,
@@ -61,8 +61,8 @@ export class ProductCouponService {
         discount: 30,
         couponType: this.findCouponTypeById(1),
         description: 'Description 1',
-        createdAt: '12/16/2023',
-        expiredAt: '12/16/2023'
+        createdAt: new Date(),
+        expiredAt: new Date()
       },
       {
         couponId: 4,
@@ -70,8 +70,8 @@ export class ProductCouponService {
         discount: 4,
         couponType: this.findCouponTypeById(2),
         description: 'Description 4',
-        createdAt: '12/16/2023',
-        expiredAt: '12/16/2023'
+        createdAt: new Date(),
+        expiredAt: new Date()
       },
       {
         couponId: 5,
@@ -79,8 +79,8 @@ export class ProductCouponService {
         discount: 50,
         couponType: this.findCouponTypeById(1),
         description: 'Description 1',
-        createdAt: '12/16/2023',
-        expiredAt: '12/16/2023'
+        createdAt: new Date(),
+        expiredAt: new Date()
       },
     ]
     return of(coupons);

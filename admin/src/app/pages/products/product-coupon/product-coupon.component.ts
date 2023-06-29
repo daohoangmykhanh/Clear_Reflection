@@ -1,18 +1,14 @@
 import { ProductCouponService } from './../../../@core/services/product/product-coupon.service';
 import { Component, OnInit } from "@angular/core";
 import { LocalDataSource } from "ng2-smart-table";
-import { SmartTableService } from "../../../@core/services/smart-table.service";
 import { Router } from "@angular/router";
-import { NbComponentStatus } from "@nebular/theme";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ProductCategory } from "../../../@core/models/product/product-category.model";
 import { CustomCouponFilterActionsComponent } from "./custom/custom-coupon-filter-actions.component";
 import { CustomCouponActionComponent } from "./custom/custom-coupon-action.component";
-import { ProductCategoryService } from "../../../@core/services/product/product-category.service";
 import { CustomValidator } from "../../../@core/validators/custom-validator";
-import { CustomCouponDiscountActionComponent } from './custom/custom-coupon-discount-action.component';
-import { Coupon } from '../../../@core/models/coupon.model';
 import { ToastState, UtilsService } from '../../../@core/services/utils.service';
+import { Coupon } from '../../../@core/models/coupon/coupon.model';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: "ngx-products-coupon",
@@ -53,8 +49,7 @@ export class ProductCouponComponent implements OnInit{
       },
       discount: {
         title: "Discount",
-        type: 'custom',
-        renderComponent: CustomCouponDiscountActionComponent
+        type: "string",
       },
       createdAt: {
         title: 'Start Date',
@@ -105,12 +100,25 @@ export class ProductCouponComponent implements OnInit{
       startedDate: [, Validators.required],
       expiredDate: [, Validators.required]
     })
+
+    this.couponService.findAll().subscribe(
+      data => {
+        const mappedCoupons = data.map(coupon => {
+          return {
+            couponId: coupon.couponId,
+            code: coupon.code,
+            description: coupon.description,
+            discount: coupon.couponType.couponTypeName.toLowerCase() == 'fixed' ? '$' + coupon.discount : coupon.discount + '%',
+            createdAt: new DatePipe('en-US').transform(coupon.createdAt, 'dd/MM/yyyy').toString(),
+            expiredAt: new DatePipe('en-US').transform(coupon.expiredAt, 'dd/MM/yyyy').toString()
+          }          
+        })
+        this.source.load(mappedCoupons)
+      }
+    )
   }
   
   ngOnInit() {
-    this.couponService.findAll().subscribe(
-      data => {this.source.load(data)}
-    )
     // Set the initial max value based on the default discountType
     this.couponService.state$.subscribe((state) => {
       this.state = state;
@@ -118,19 +126,21 @@ export class ProductCouponComponent implements OnInit{
     // receive data when edit 
     this.couponService.rowData$.subscribe((rowData) => {
       if(rowData) {
+        console.log(rowData);
         this.editCouponFormGroup.get('id').setValue(rowData.couponId)
         this.editCouponFormGroup.get('code').setValue(rowData.code)
-        this.editCouponFormGroup.get('description').setValue(rowData.couponId)
-        if(rowData.couponType.couponTypeName == 'percent') {
+        this.editCouponFormGroup.get('description').setValue(rowData.description)
+        if(rowData.discount.toString().indexOf('%') > -1 ) {
           this.editCouponFormGroup.get('discountType').setValue('Percent')
           this.selectedDiscountTypeEditForm = 'Percent'
+          this.editCouponFormGroup.get('discountValue').setValue(+rowData.discount.toString().slice(0, -1))
         } else {
           this.editCouponFormGroup.get('discountType').setValue('Fixed')
           this.selectedDiscountTypeEditForm = 'Fixed'
+          this.editCouponFormGroup.get('discountValue').setValue(+rowData.discount.toString().slice(1))
         }
-        this.editCouponFormGroup.get('discountValue').setValue(rowData.discount)
-        this.editCouponFormGroup.get('startedDate').setValue(rowData.createdAt)
-        this.editCouponFormGroup.get('expiredDate').setValue(rowData.expiredAt)
+        this.editCouponFormGroup.get('startedDate').setValue(this.utilsService.parseStringToDate(rowData.createdAt.toString()))
+        this.editCouponFormGroup.get('expiredDate').setValue(this.utilsService.parseStringToDate(rowData.expiredAt.toString()))
       }
     });
   }
@@ -173,18 +183,12 @@ export class ProductCouponComponent implements OnInit{
     coupon.createdAt = this.editCouponFormGroup.get('startedDate').value
     coupon.expiredAt = this.editCouponFormGroup.get('expiredDate').value
 
+    console.log(coupon);
+    
     if(this.couponService.insert(coupon)) {
       this.utilsService.updateToastState(new ToastState('edit', 'coupon', 'success'))
       this.couponService.updateHandleAndRowData('add');
       this.router.navigate(['/admin/products/coupon'])
-    }
-  }
-
-  onDeleteConfirm(event): void {
-    if (window.confirm("Are you sure you want to delete?")) {
-      event.confirm.resolve();
-    } else {
-      event.confirm.reject();
     }
   }
 

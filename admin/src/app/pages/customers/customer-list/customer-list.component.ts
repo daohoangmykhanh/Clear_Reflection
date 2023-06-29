@@ -1,92 +1,135 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
-import { SmartTableService } from '../../../@core/services/smart-table.service';
 import { Router } from '@angular/router';
+import { ProductService } from '../../../@core/services/product/product.service';
+import { PaymentMethod } from '../../../@core/models/order/payment-method.model';
+import { OrderStatus } from '../../../@core/models/order/order-status.model';
+import { PaymentMethodService } from '../../../@core/services/order/payment-method.service';
+import { OrderStatusService } from '../../../@core/services/order/order-status.service';
+import { OrderService } from '../../../@core/services/order/order.service';
+import { DatePipe } from '@angular/common';
+import { CustomCustomerActionComponent } from './custom/custom-customer-action.component';
+import { CustomCustomerImageComponent } from './custom/custom-customer-image.component';
+import { AccountService } from '../../../@core/services/account/account.service';
 
 @Component({
-  selector: 'ngx-customer-list',
-  templateUrl: './customer-list.component.html',
-  styleUrls: ['./customer-list.component.scss']
+  selector: "ngx-customer-list",
+  templateUrl: "./customer-list.component.html",
+  styleUrls: ["./customer-list.component.scss"],
 })
-export class CustomerListComponent {
-  settings = {
-    actions: {
-      position: 'right',
-      delete: false
-    },
-    mode: 'external', // when add/edit -> navigate to another url
-    columns: {
-      id: {
-        title: 'ID',
-        type: 'number',
-      },
-      firstName: {
-        title: 'First Name',
-        type: 'string',
-      },
-      lastName: {
-        title: 'Last Name',
-        type: 'string',
-      },
-      username: {
-        title: 'Username',
-        type: 'string',
-      },
-      email: {
-        title: 'E-mail',
-        type: 'string',
-      },
-      age: {
-        title: 'Age',
-        type: 'number',
-      },
-    },
-    add: {
-      addButtonContent: '<i class="nb-plus"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-    },
-  };
-
+export class CustomerListComponent  implements OnInit, AfterViewInit {
+  numberOfItem: number = localStorage.getItem('itemPerPage') != null ? +localStorage.getItem('itemPerPage') : 10; // default
   source: LocalDataSource = new LocalDataSource();
+  // Setting for List layout
+  paymentMethods: PaymentMethod[];
+  orderStatuses: OrderStatus[];
+
+  settings = {};
+
 
   constructor(
-    private service: SmartTableService,
+    private accountService: AccountService,
     private router: Router,
   ) {
-    const data = this.service.getData();
-    this.source.load(data);
-  }
-  
-  
-
-  onDeleteConfirm(event): void {
-    if (window.confirm('Are you sure you want to delete?')) {
-      event.confirm.resolve();
-    } else {
-      event.confirm.reject();
+    this.settings = {
+      actions: {
+        position: 'right',
+        edit: false,
+        delete: false,
+        add: false,
+        columnTitle: ''
+      },
+      columns: {
+        imageUrl: {
+          title: "Avatar",
+          type: "custom",
+          renderComponent: CustomCustomerImageComponent,
+          sort: false,
+          filter: false
+        },
+        accountId: {
+          title: 'ID',
+          type: 'number',
+          width: '3%'
+        },
+        email: {
+          title: 'Email',
+          type: 'string',
+        },
+        fullName: {
+          title: 'Full Name',
+          type: 'string'
+        },
+        phoneNumber: {
+          title: 'Phone Number',
+          type: 'string',
+        },
+        totalOrder: {
+          title: 'Total Orders',
+          type: 'number',
+          width: '10%'
+        },
+        address: {
+          title: 'Address',
+          type: 'string',
+          width: '20%'
+        },
+        createdAt: {
+          title: 'Registration Date',
+          type: 'string'
+        },
+        actions: {
+          title: 'Actions',
+          type: 'custom',
+          sort: false,
+          filter: false,
+          renderComponent: CustomCustomerActionComponent
+        }
+      },
+      pager: {
+        display: true,
+        perPage: this.numberOfItem
+      },
     }
+    this.accountService.findAll().subscribe(
+      data => {
+        const mappedAccounts: any[] = data.map(account => {
+          console.log(account);
+          
+          return {
+            accountId: account.accountId,
+            imageUrl: account.imageUrl,
+            fullName: account.fullName,
+            email: account.email,
+            phoneNumber: account.phoneNumber,
+            createdAt: new DatePipe('en-US').transform(account.createdAt, 'dd/MM/yyyy').toString(),
+            totalOrder: account.orders != undefined ? account.orders.length : 0
+          }
+        })
+        this.source.load(mappedAccounts)
+      }
+    )
   }
 
-  onCreateProducts(): void {
-    this.router.navigate(['/admin/orders', 'add'], )
+  
+  ngOnInit(): void {
+    let x;
   }
-
-  onEditProducts(event: any): void {
-    const orderId: string = event.data.id
-    this.router.navigate(['/admin/orders', 'edit', orderId], )
-  }
-
-  getProductDetails(event: any): void {
-    const orderId: string = event.data.id
-    this.router.navigate(['/admin/orders', 'detail', orderId], )
+  
+  ngAfterViewInit() {
+    const pager = document.querySelector('ng2-smart-table-pager');
+    pager.classList.add('d-block')
   }
 
   changeCursor(): void {
-    const element = document.getElementById('order-table'); // Replace 'myElement' with the ID of your element
+    const element = document.getElementById('product-table'); // Replace 'myElement' with the ID of your element
     if (element) {
       element.style.cursor = 'pointer';
     }
+  }
+
+  numberOfItemsChange() {
+    localStorage.setItem('itemPerPage', this.numberOfItem.toString())
+    this.source.setPaging(1, this.numberOfItem)
   }
 }

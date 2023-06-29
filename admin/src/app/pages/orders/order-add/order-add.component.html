@@ -1,7 +1,3 @@
-<style>
-
-</style>
-
 <nb-card fullWidth>
     <nb-card-header>
         <div class="row">
@@ -9,49 +5,169 @@
                 <h6>
                     Add An Order
                 </h6>
-                <button nbButton status="success" size="large">PUBLISH</button>
+                <button nbButton status="success" size="large" (click)="onSubmit()">PUBLISH</button>
             </div>
         </div>
     </nb-card-header>
 </nb-card>
 <div class="row">
     <div class="col-lg-6">
-        <nb-card>
+        <nb-card [formGroup]="addOrderFormGroup">
             <nb-card-header>Basic Information</nb-card-header>
             <nb-card-body>
-                <input 
-                    type="text" placeholder="Customer Username"
-                    [formControl]="inputFormControl"
-                    nbInput fullWidth 
-                    [nbAutocomplete]="auto" />
-                <nb-autocomplete #auto [handleDisplayFn]="viewHandle">
-                    <nb-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+                <input type="text" placeholder="Customer Email" nbInput fullWidth [nbAutocomplete]="account"
+                    formControlName="email" class="mb-3"/>
+                <div class="alert alert-danger mt-1" 
+                    *ngIf="addOrderFormGroup.get('email').invalid && (addOrderFormGroup.get('email').dirty || addOrderFormGroup.get('email').touched)">
+                    <div *ngIf="addOrderFormGroup.get('email').errors['notblank']">
+                        Customer Email is required
+                    </div>
+                    <div *ngIf="addOrderFormGroup.get('email').errors['emailNotExisting']">
+                        Customer Email does not exist
+                    </div>
+                </div>    
+                <nb-autocomplete #account>
+                    <nb-option *ngFor="let account of accountCompleter$ | async" 
+                        [(value)]="chosenAccount" (click)="selectCustomer(account)">
                         <div class="row">
                             <div class="col-3">
-                                <img src="assets/images/alan.png" class="d-block w-100">
+                                <img [src]="account.imageUrl" class="d-block w-100">
                             </div>
-                            <div class="col-9 d-flex align-items-center">
-                                {{ option }}
+                            <div class="col-9 my-auto">
+                                <p class="font-weight-bold">{{ account.email }}</p>
+                                <p>{{ account.fullName }}</p>
+                                <p>{{ account.phoneNumber }}</p>
                             </div>
                         </div>
                     </nb-option>
                 </nb-autocomplete>
-                <input  type="text" placeholder="Billing Address" nbInput fullWidth/>
-                <input  type="text" placeholder="Shipping Address" nbInput fullWidth/>
-                <nb-select fullWidth selected="1" placeholder="Order Status" [(selected)]="selectedOrderStatus">
+
+
+                <nb-radio-group status="success" formControlName="addressOption">
+                    <nb-radio *ngFor="let option of addressOptions" 
+                        [value]="option.value" [disabled]="option.disabled">
+                        {{ option.label }}
+                    </nb-radio>
+                </nb-radio-group>
+                <div class="alert alert-danger mt-1" 
+                    *ngIf="addOrderFormGroup.get('addressOption').invalid && (addOrderFormGroup.get('addressOption').dirty || addOrderFormGroup.get('addressOption').touched)">
+                    <div *ngIf="addOrderFormGroup.get('addressOption').errors['required']">
+                        Shipping Address is required
+                    </div>
+                </div> 
+
+                <ng-container *ngIf="addOrderFormGroup.get('addressOption').value === 'new' && 
+                        !addOrderFormGroup.get('email').errors?.emailNotExisting">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <nb-select fullWidth placeholder="Province" formControlName="province">
+                                <nb-select-label>
+                                    Province: {{ addOrderFormGroup.get('province').value }}
+                                </nb-select-label>
+                                <nb-option *ngFor="let method of paymentMethods"
+                                    [value]="method.paymentMethodName">{{method.paymentMethodName}}</nb-option>
+                            </nb-select>
+                            <div class="alert alert-danger mt-1" 
+                                *ngIf="addOrderFormGroup.get('province').invalid && (addOrderFormGroup.get('province').dirty || addOrderFormGroup.get('province').touched)">
+                                <div *ngIf="addOrderFormGroup.get('province').errors['required']">
+                                    Province is required
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="col-lg-6">
+                            <nb-select fullWidth placeholder="District" formControlName="district">
+                                <nb-select-label>
+                                    District: {{ addOrderFormGroup.get('district').value }}
+                                </nb-select-label>
+                                <nb-option *ngFor="let method of paymentMethods"
+                                    [value]="method.paymentMethodName">{{method.paymentMethodName}}</nb-option>
+                            </nb-select>
+                            <div class="alert alert-danger mt-1" 
+                                *ngIf="addOrderFormGroup.get('district').invalid && (addOrderFormGroup.get('district').dirty || addOrderFormGroup.get('district').touched)">
+                                <div *ngIf="addOrderFormGroup.get('district').errors['required']">
+                                    District is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mt-3">
+                            <nb-select fullWidth placeholder="Ward" formControlName="ward">
+                                <nb-select-label>
+                                    Ward: {{ addOrderFormGroup.get('ward').value }}
+                                </nb-select-label>
+                                <nb-option *ngFor="let method of paymentMethods"
+                                    [value]="method.paymentMethodName">{{method.paymentMethodName}}</nb-option>
+                            </nb-select>
+                            <div class="alert alert-danger mt-1" 
+                                *ngIf="addOrderFormGroup.get('ward').invalid && (addOrderFormGroup.get('ward').dirty || addOrderFormGroup.get('ward').touched)">
+                                <div *ngIf="addOrderFormGroup.get('ward').errors['required']">
+                                    Ward is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mt-3">
+                            <input type="text" placeholder="Address" nbInput fullWidth formControlName="address" />
+                            <div class="alert alert-danger mt-1" 
+                                *ngIf="addOrderFormGroup.get('address').invalid && (addOrderFormGroup.get('address').dirty || addOrderFormGroup.get('address').touched)">
+                                <div *ngIf="addOrderFormGroup.get('address').errors['notblank']">
+                                    Address is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                </ng-container>
+                <ng-container *ngIf="addOrderFormGroup.get('addressOption').value === 'existing'">
+                    <nb-select fullWidth placeholder="Payment Method" formControlName="paymentMethod">
+                        <nb-select-label>
+                            Payment Method: {{ addOrderFormGroup.get('paymentMethod').value }}
+                        </nb-select-label>
+                        <nb-option *ngFor="let method of paymentMethods"
+                            [value]="method.paymentMethodName">{{method.paymentMethodName}}</nb-option>
+                    </nb-select>
+                    <div class="alert alert-danger mt-1" 
+                        *ngIf="addOrderFormGroup.get('ward').invalid && (addOrderFormGroup.get('ward').dirty || addOrderFormGroup.get('ward').touched)">
+                        <div *ngIf="addOrderFormGroup.get('ward').errors['required']">
+                            Ward is required
+                        </div>
+                    </div>
+                </ng-container>
+                
+
+                <nb-select fullWidth placeholder="Payment Method" formControlName="paymentMethod">
                     <nb-select-label>
-                        Order Status: {{ selectedOrderStatus }}
+                        Payment Method: {{ addOrderFormGroup.get('paymentMethod').value }}
                     </nb-select-label>
-                    <nb-option value="1">1</nb-option>
-                    <nb-option value="2">2</nb-option>
+                    <nb-option *ngFor="let method of paymentMethods"
+                        [value]="method.paymentMethodName">{{method.paymentMethodName}}</nb-option>
                 </nb-select>
+                <div class="alert alert-danger mt-1" 
+                    *ngIf="addOrderFormGroup.get('paymentMethod').invalid && (addOrderFormGroup.get('paymentMethod').dirty || addOrderFormGroup.get('paymentMethod').touched)">
+                    <div *ngIf="addOrderFormGroup.get('paymentMethod').errors['required']">
+                        Payment Method is required
+                    </div>
+                </div>
+
+                
+                <nb-select fullWidth placeholder="Order Status" formControlName="orderStatus">
+                    <nb-select-label>
+                        Order Status: {{ addOrderFormGroup.get('orderStatus').value }}
+                    </nb-select-label>
+                    <nb-option *ngFor="let status of orderStatuses"
+                        [value]="status.statusName">{{status.statusName}}</nb-option>
+                </nb-select>
+                <div class="alert alert-danger mt-1" 
+                    *ngIf="addOrderFormGroup.get('orderStatus').invalid && (addOrderFormGroup.get('orderStatus').dirty || addOrderFormGroup.get('orderStatus').touched)">
+                    <div *ngIf="addOrderFormGroup.get('orderStatus').errors['required']">
+                        Order Status is required
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-lg-3 d-flex align-items-center">
                         <nb-checkbox status="success" [(checked)]="applyCoupon">Apply Coupon</nb-checkbox>
                     </div>
                     <ng-container *ngIf="applyCoupon">
                         <div class="col-lg-9">
-                            <input  type="text" placeholder="Coupon" nbInput fullWidth/>
+                            <input type="text" placeholder="Coupon" nbInput fullWidth formControlName="coupon"/>
                         </div>
                     </ng-container>
                 </div>
@@ -66,66 +182,108 @@
     </div>
 
     <div class="col-lg-6">
-
         <nb-card>
             <nb-card-header>Order's Products</nb-card-header>
             <nb-card-body>
                 <nb-accordion multi>
-                    <nb-accordion-item *ngFor="let variant of variants; let i = index">
-                        <nb-accordion-item-header>
-                            Product #{{i + 1}}
+                    <nb-accordion-item *ngFor="let productForm of products.controls; let i = index">
+                        <nb-accordion-item-header class="d-flex justify-content-between align-items-center">
+                            <p class="font-weight-bold">Product #{{i + 1}}</p>
+                            <p>
+                                {{ productForm.get('id').value === null ? '' : 'id:' + productForm.get('id').value}}
+                                {{ productForm.get('size').value === null ? '' : '- s:' + productForm.get('size').value}}
+                                {{ productForm.get('price').value === null ? '' : ' - ' + (productForm.get('price').value | currency: 'USD')}}
+                                {{ productForm.get('quantity').value === null ? '' : '*' + productForm.get('quantity').value }}
+                                {{ productForm.get('color').value === null ? '' : 'c' + productForm.get('color').value }}
+                            </p>
+                            <ng-container *ngIf="i !== 0">
+                                <button nbButton [size]="'small'" [status]="'danger'" 
+                                    class="mr-5" (click)="removeProduct(i)">
+                                    <nb-icon icon="trash-outline"></nb-icon>
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="i === 0">
+                                <button nbButton [size]="'small'" [status]="'danger'" 
+                                    class="mr-5" (click)="removeProduct(i)" style="visibility: hidden">
+                                <nb-icon icon="trash-outline"></nb-icon>
+                                </button>
+                            </ng-container>
                         </nb-accordion-item-header>
-                        <nb-accordion-item-body>
-                            <input 
-                                type="text" placeholder="Product"
-                                [formControl]="inputFormControl"
-                                nbInput fullWidth 
-                                [nbAutocomplete]="auto" 
+                        <nb-accordion-item-body [formGroup]="productForm">
+                            <input  type="text" placeholder="Product ID"
+                                formControlName="id"
+                                nbInput fullWidth [nbAutocomplete]="product"
                                 class="inputs-group"/>
-                            <nb-autocomplete #auto [handleDisplayFn]="viewHandle">
-                                <nb-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+                            <div class="alert alert-danger mt-1" 
+                                *ngIf="productForm.get('id').invalid && (productForm.get('id').dirty || productForm.get('id').touched)">
+                                <div *ngIf="productForm.get('id').errors['notblank']">
+                                    Product Id is required
+                                </div>
+                                <div *ngIf="productForm.get('id').errors['productNotExisting']">
+                                    Product does not exist
+                                </div>
+                            </div> 
+                            <nb-autocomplete #product>
+                                <nb-option *ngFor="let product of productCompleter$ | async"
+                                    (click)="selectProduct(product, i)">
                                     <div class="row">
                                         <div class="col-3">
-                                            <img src="assets/images/alan.png" class="d-block w-100">
+                                            <img [src]="product.imageUrls[0]" class="d-block w-100">
                                         </div>
-                                        <div class="col-9 d-flex align-items-center">
-                                            {{ option }}
+                                        <div class="col-9 my-auto">
+                                            <p class="font-weight-bold">{{ product.productName }}</p>
                                         </div>
                                     </div>
                                 </nb-option>
                             </nb-autocomplete>
-                            <nb-select fullWidth selected="1" placeholder="Size" [(selected)]="selectedOrderStatus" class="inputs-group">
-                                <nb-select-label>
-                                    Size: {{ selectedOrderStatus }}cm*{{selectedOrderStatus}}cm
-                                </nb-select-label>
-                                <nb-option value="1">1</nb-option>
-                                <nb-option value="2">2</nb-option>
-                            </nb-select>
-                            <nb-select fullWidth selected="1" placeholder="Color" [(selected)]="selectedOrderStatus" class="inputs-group">
-                                <nb-select-label>
-                                    Color: {{ selectedOrderStatus }}
-                                </nb-select-label>
-                                <nb-option value="1">1</nb-option>
-                                <nb-option value="2">2</nb-option>
-                            </nb-select>
-                            <input  type="number" placeholder="Quantity" nbInput fullWidth class="inputs-group"/>
 
-                            <button nbButton [size]="'small'" [status]="'danger'" class="inputs-group">
-                                Remove Product #1
-                            </button>
+                            <nb-select fullWidth placeholder="Size" class="inputs-group" formControlName="size">
+                                <nb-select-label>
+                                    Size: {{ productForm.get('size').value }}
+                                </nb-select-label>
+                                <nb-option value="1">1</nb-option>
+                                <nb-option value="2">2</nb-option>
+                            </nb-select>
+                            <div class="alert alert-danger mt-1" 
+                                *ngIf="productForm.get('size').invalid && (productForm.get('size').dirty || productForm.get('size').touched)">
+                                <div *ngIf="productForm.get('size').errors['required']">
+                                    Product Size is required
+                                </div>
+                            </div> 
+
+                            <nb-select fullWidth placeholder="Color" class="inputs-group" formControlName="color">
+                                <nb-select-label>
+                                    Color: {{ productForm.get('color').value }}
+                                </nb-select-label>
+                                <nb-option value="1">1</nb-option>
+                                <nb-option value="2">2</nb-option>
+                            </nb-select>
+                            <div class="alert alert-danger mt-1" 
+                                *ngIf="productForm.get('color').invalid && (productForm.get('color').dirty || productForm.get('color').touched)">
+                                <div *ngIf="productForm.get('color').errors['required']">
+                                    Product Color is required
+                                </div>
+                            </div> 
+
+                            <input  type="number" placeholder="Price" nbInput fullWidth
+                                class="inputs-group" formControlName="price"/>
+                            <input  type="number" placeholder="Quantity" nbInput fullWidth 
+                                class="inputs-group" formControlName="quantity"/>
+                            <div class="alert alert-danger mt-1" 
+                                *ngIf="productForm.get('quantity').invalid && (productForm.get('quantity').dirty || productForm.get('quantity').touched)">
+                                <div *ngIf="productForm.get('quantity').errors['required']">
+                                    Quantity is required
+                                </div>
+                            </div> 
                         </nb-accordion-item-body>
                     </nb-accordion-item>
                 </nb-accordion>
-
-
             </nb-card-body>
             <nb-card-footer>
-                <button nbButton [status]="'success'" (click)="addVariant()">
-                    Add A New Product Variant
+                <button nbButton [status]="'success'" (click)="addProduct()">
+                    <nb-icon icon="plus-outline"></nb-icon>
                 </button>
             </nb-card-footer>
         </nb-card>
-
-
     </div>
 </div>

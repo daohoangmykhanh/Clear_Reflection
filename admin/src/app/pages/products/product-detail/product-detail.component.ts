@@ -32,5 +32,12 @@ export class ProductDetailComponent {
     this.router.navigate(['/admin/products', 'edit', this.productId])
   }
 
+  openAll() {
+    this.accordions.forEach(acc => acc.open())
+  }
+
+  collapseAll() {
+    this.accordions.forEach(acc => acc.close())
+  }
 
 }

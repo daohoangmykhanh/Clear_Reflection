@@ -23,20 +23,17 @@
                     </div>
                     <div class="col-lg-6">
                         <h6>{{product.productName}}</h6>
-                        <p>Category: {{product.category.categoryName}}</p>
-                        <p>Shape: {{product.shape.shapeName}}</p>
-                        <p>Style: {{product.style.styleName}}</p>
-                        <div class="div"></div>
+                        <p><span class="font-weight-bold">Product Id: </span>{{product.productId}}</p>
+                        <p><span class="font-weight-bold">Category: </span>{{product.category.categoryName}}</p>
+                        <p><span class="font-weight-bold">Shape: </span>{{product.shape.shapeName}}</p>
+                        <p><span class="font-weight-bold">Style: </span>{{product.style.styleName}}</p>
                         
-                        <p>Total Quantity: {{product.totalQuantity}}</p>
-                        <p>Quantity Sold: {{product.quantitySold}}</p>
-                        <p>Total Likes: {{product.totalLikes}}</p>
+                        <p><span class="font-weight-bold">Total Quantity: </span>{{product.totalQuantity}}</p>
+                        <p><span class="font-weight-bold">Quantity Sold: </span>{{product.quantitySold}}</p>
+                        <p><span class="font-weight-bold">Total Likes: </span>{{product.totalLikes}}</p>
                         <p>
-                            Rating Star: {{product.rating}} | 
-                            Total Rating: {{product.totalRating}}
-                        </p>
-                        <p>
-                            Coupon Applied: 
+                            <span class="font-weight-bold">Rating Star: </span> {{product.rating}} | 
+                            <span class="font-weight-bold">Total Rating: </span> {{product.totalRating}}
                         </p>
                     </div>
                     <div class="col-12">
@@ -55,8 +52,8 @@
             <nb-card-header class="d-flex justify-content-between align-items-center">
                 <p class="font-weight-bold">Variants</p>
                 <div>
-                    <button nbButton size="small" status="info" class="mr-2">Collapse All</button>
-                    <button nbButton size="small" status="warning">Open All</button>
+                    <button nbButton size="small" status="info" class="mr-2" (click)="collapseAll()">Collapse All</button>
+                    <button nbButton size="small" status="warning" (click)="openAll()">Open All</button>
                 </div>
             </nb-card-header>
             <nb-card-body>

@@ -1,6 +1,16 @@
+import { AccountService } from './../services/account/account.service';
 import { AbstractControl, FormControl, ValidationErrors } from "@angular/forms";
-
+import { map } from 'rxjs/operators'
+import { Observable } from 'rxjs';
+import { ProductService } from '../services/product/product.service';
 export class CustomValidator {
+
+    static accountService: AccountService;
+    constructor(
+        accountService2: AccountService
+    ) {
+        CustomValidator.accountService = accountService2
+    }
     static notBlank(control: FormControl): ValidationErrors {
         if (typeof control.value === 'string') {
             if (control.value != null && control.value.trim().length === 0) {
@@ -20,8 +30,28 @@ export class CustomValidator {
         const discountValue = control.value;
 
         if (discountTypeControl?.value === 'Percent' && discountValue > 100) {
-        return { max: true };
+            return { max: true };
         }
         return null;
     }
+
+
+}
+
+export function isEmailNotExisting(accountService: AccountService) {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+        // Use the AccountService to check if the email exists
+        return accountService.findByEmail(control.value).pipe(
+            map(account => account == null ? { emailNotExisting: true } : null)
+        );
+    };
+}
+
+export function isProductidNotExisting(productService: ProductService) {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+        // Use the AccountService to check if the email exists
+        return productService.findById(+control.value).pipe(
+            map(product => product == null ? { productNotExisting: true } : null)
+        );
+    };
 }

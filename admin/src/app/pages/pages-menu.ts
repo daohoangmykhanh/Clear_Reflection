@@ -14,6 +14,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
   {
     title: 'Products',
     icon: 'grid-outline',
+    expanded: true,
     children: [
       {
         title: 'Product List',
@@ -36,6 +37,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
   {
     title: 'Orders',
     icon: 'clipboard-outline',
+    expanded: true,
     children: [
       {
         title: 'Order List',
@@ -46,11 +48,6 @@ export const MENU_ITEMS: NbMenuItem[] = [
         link: '/admin/orders/add',
       },
     ]
-  },
-  {
-    title: 'Invoices',
-    icon: 'checkmark-square-outline',
-    link: '/admin/invoices/list',
   },
   {
     title: 'Customers',

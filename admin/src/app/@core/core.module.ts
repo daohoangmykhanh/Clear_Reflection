@@ -14,7 +14,6 @@ import {
 } from './utils';
 
 import { UserService } from './services/users.service';
-import { SmartTableService } from './services/smart-table.service';
 import { UserActivityService } from './services/user-activity/user-activity.service';
 import { OrdersChartService } from './services/orders-profit-chart/orders-chart.service';
 import { ProfitChartService } from './services/orders-profit-chart/profit-chart.service';
@@ -23,13 +22,12 @@ import { OrdersProfitChartService } from './services/orders-profit-chart/orders-
 import { TrafficBarService } from './services/traffic/traffic-bar.service';
 import { ProgressInfoService } from './services/progress-bar-chart/progress-info.service';
 import { ServiceDataModule } from './services/service-data.module';
-import { HttpClient } from '@angular/common/http';
+import { AccountService } from './services/account/account.service';
 
 
 
 const SERVICES: Provider[] = [
   UserService,
-  SmartTableService,
   UserActivityService,
   OrdersChartService,
   ProfitChartService,
@@ -37,6 +35,7 @@ const SERVICES: Provider[] = [
   OrdersProfitChartService,
   TrafficBarService,
   ProgressInfoService,
+  AccountService
 ];
 
 export class NbSimpleRoleProvider extends NbRoleProvider {

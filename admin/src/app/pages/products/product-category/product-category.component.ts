@@ -116,14 +116,6 @@ export class ProductCategoryComponent implements OnInit {
     }
   }
 
-  onDeleteConfirm(event): void {
-    if (window.confirm("Are you sure you want to delete?")) {
-      event.confirm.resolve();
-    } else {
-      event.confirm.reject();
-    }
-  }
-
   changeCursor(): void {
     const element = document.getElementById("product-table"); // Replace 'myElement' with the ID of your element
     if (element) {

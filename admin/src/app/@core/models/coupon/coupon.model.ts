@@ -6,6 +6,6 @@ export class Coupon {
     discount: number;
     couponType: CouponType
     description: string;
-    createdAt: String;
-    expiredAt: String;
+    createdAt: Date;
+    expiredAt: Date;
 }
