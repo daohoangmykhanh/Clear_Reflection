@@ -36,12 +36,7 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
   styles: ProductStyle[];
   categories: ProductCategory[];
 
-  // form chosen values
   editProductFormGroup: FormGroup
-  descriptionContent: string;
-  selectedCategoryName: string;
-  selectedShapeName: string;
-  selectedStyleName: string;
   imageUrls: string[] = []
 
   constructor(
@@ -55,6 +50,10 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
     private utilsService: UtilsService,
     private router: Router
   ) {
+    this.categoryService.findAll().subscribe(data => this.categories = data)
+    this.shapeService.findAll().subscribe(data => this.shapes = data)
+    this.colorService.findAll().subscribe(data => this.colors = data)
+    this.styleService.findAll().subscribe(data => this.styles = data)
     this.settingFormGroup()
     this.activatedRoute.params.subscribe(
         params => { this.edittingProductId = params['id'] }
@@ -65,17 +64,15 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
   get variants() { return this.editProductFormGroup.controls["variants"] as FormArray }
 
   ngOnInit() {
-    this.categoryService.findAll().subscribe(data => this.categories = data)
-    this.shapeService.findAll().subscribe(data => this.shapes = data)
-    this.colorService.findAll().subscribe(data => this.colors = data)
-    this.styleService.findAll().subscribe(data => this.styles = data)
-    
+    let x
   }
-
+  
   ngAfterViewInit(): void {
     this.productService.findById(+this.edittingProductId).subscribe((data) => {
       this.edittingProduct = data
-      this.fillFormValues();
+      setTimeout(() => { // detect change
+        this.fillFormValues();
+      }, 0)
     })
   }
 
@@ -84,23 +81,20 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
     this.product.get('id').setValue(this.edittingProduct.productId);
     this.product.get('name').setValue(this.edittingProduct.productName)
     this.product.get('category').setValue(this.edittingProduct.category.categoryName)
-      this.selectedCategoryName = this.edittingProduct.category.categoryName
     this.product.get('shape').setValue(this.edittingProduct.shape.shapeName)
-      this.selectedShapeName = this.edittingProduct.shape.shapeName
     this.product.get('style').setValue(this.edittingProduct.style.styleName)
-      this.selectedStyleName = this.edittingProduct.style.styleName
     this.product.get('description').setValue(this.edittingProduct.description)
     this.product.get('images').setValue(this.edittingProduct.imageUrls)
-      this.carousel.show(this.edittingProduct.imageUrls)
+
+    this.carousel.show(this.edittingProduct.imageUrls)
 
     if(this.edittingProduct.productVariants.length == 0 || 
-        this.edittingProduct.productVariants == null) 
-    {
+        this.edittingProduct.productVariants == null) {
       this.addVariant();
       this.accordions.first.toggle()
       return;
-    }
-      // setting product's variants
+    } 
+    // setting product's variants
     for(let i = 0; i < this.edittingProduct.productVariants.length; i ++) {
       const variant = this.edittingProduct.productVariants[i];
       this.addVariant()
@@ -197,23 +191,17 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
       return; 
     }
     
-    // map product
-    const productVariants: ProductVariant[] = this.variants.controls.map(group => {
-      return {
-        productVariantId: group.get('id').value as number,
-        height: group.get('height').value  as number,
-        width: group.get('width').value  as number,
-        price: group.get('price').value  as number,
-        quantity: group.get('quantity').value  as number,
-        color: group.get('colorType').value == 'Basic Color' ? 
-                this.getColorValueFromType(group.get('colorType').value, group.get('basicColorValue').value) : 
-                this.getColorValueFromType(group.get('colorType').value, group.get('customColorValue').value),
-        imageUrl: group.get('imageUrl').value
-      };
-    });
+    const editedProduct: Product = this.mapFormValue()
+    console.log(editedProduct)
 
+    if(this.productService.edit(editedProduct)) {
+      this.utilsService.updateToastState(new ToastState('edit', 'product', 'success'))
+      this.router.navigate(['/admin/product/list'])
+    }
+  }
+
+  mapFormValue(): Product {
     let editedProduct: Product = new Product();
-    
     editedProduct.productId = this.product.get('id').value;
     editedProduct.productName = this.product.get('name').value;
     editedProduct.description = this.product.get('description').value;
@@ -224,12 +212,23 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
     editedProduct.imageUrls = this.product.get('images').value
     editedProduct.createdAt = new Date();
     editedProduct.updatedAt = new Date();
+
+    const productVariants: ProductVariant[] = this.variants.controls.map(group => {
+      return {
+        productVariantId: group.get('id').value as number,
+        height: group.get('height').value  as number,
+        width: group.get('width').value  as number,
+        price: group.get('price').value  as number,
+        quantity: group.get('quantity').value  as number,
+        color: group.get('colorType').value == 'Basic Color' ? 
+        this.getColorValueFromType(group.get('colorType').value, group.get('basicColorValue').value) : 
+        this.getColorValueFromType(group.get('colorType').value, group.get('customColorValue').value),
+        imageUrl: group.get('imageUrl').value
+      };
+    });
     editedProduct.productVariants = productVariants;
 
-    if(this.productService.edit(editedProduct)) {
-      this.utilsService.updateToastState(new ToastState('edit', 'product', 'success'))
-      this.router.navigate(['/admin/product/list'])
-    }
+    return editedProduct
   }
 
   getColorValueFromType(colorType, value): ProductColor {

@@ -70,29 +70,24 @@ export class ProductCategoryComponent implements OnInit {
     private utilsService: UtilsService,
     private router: Router
   ) {
-    this.categoryService.findAll().subscribe(
-      data => {
+    this.categoryService.findAll().subscribe(data => {
         this.source.load(data);
-      }
-    )
+    })
     this.addCategoryFormGroup = this.formBuilder.group({
       name: ['', [CustomValidator.notBlank, Validators.maxLength(100)]],
       imageUrl: [, [Validators.required]]
     })
-    
     this.editCategoryFormGroup = this.formBuilder.group({
       id: [],
       name: ['', [CustomValidator.notBlank, Validators.maxLength(100)]],
       imageUrl: [, [Validators.required]]
     })
-
-  }
-  
-  ngOnInit() {
     this.categoryService.state$.subscribe((state) => {
       this.state = state;
     });
+  }
   
+  ngOnInit() {
     this.categoryService.rowData$.subscribe((rowData) => {
       if (rowData) {
         this.editCategoryFormGroup.get('id').setValue(rowData.categoryId);

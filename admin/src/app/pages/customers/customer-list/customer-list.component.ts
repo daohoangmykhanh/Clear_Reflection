@@ -64,15 +64,15 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
           title: 'Phone Number',
           type: 'string',
         },
-        totalOrder: {
-          title: 'Total Orders',
-          type: 'number',
-          width: '10%'
-        },
         address: {
           title: 'Address',
           type: 'string',
           width: '20%'
+        },
+        totalOrder: {
+          title: 'Total Orders',
+          type: 'number',
+          width: '10%'
         },
         createdAt: {
           title: 'Registration Date',

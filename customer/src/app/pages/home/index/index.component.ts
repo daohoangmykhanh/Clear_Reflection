@@ -15,7 +15,6 @@ import { introSlider, brandSlider } from '../data';
 export class IndexComponent implements OnInit {
 
 	products = [];
-	posts = [];
 	loaded = false;
 	introSlider = introSlider;
 	brandSlider = brandSlider;
@@ -25,7 +24,6 @@ export class IndexComponent implements OnInit {
 
 		this.apiService.fetchHomeData().subscribe(result => {
 			this.products = result.products;
-			this.posts = result.blogs;
 			this.loaded = true;
 		})
 	}

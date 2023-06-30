@@ -37,9 +37,6 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
   // form chosen values
   addProductFormGroup: FormGroup
   descriptionContent: string;
-  selectedCategoryName: string;
-  selectedShapeName: string;
-  selectedStyleName: string;
   imageUrls: string[] = []
 
   constructor(
@@ -108,13 +105,8 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
     this.carousel.show(this.imageUrls);
   }
 
-  get product() {
-    return this.addProductFormGroup.controls["product"] as FormGroup
-  }
-
-  get variants() {
-    return this.addProductFormGroup.controls["variants"] as FormArray
-  }
+  get product() { return this.addProductFormGroup.controls["product"] as FormGroup }
+  get variants() { return this.addProductFormGroup.controls["variants"] as FormArray}
 
   addVariant(): void {
     const variantForm = this.formBuilder.group({
@@ -134,9 +126,6 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
     this.variants.removeAt(variantIndex)
   }
 
-  variantsForms(index: number): FormGroup[] {
-    return this.addProductFormGroup.get('variants')['controls'][index]
-  }
   onSubmit() {
     for (let group of this.variants.controls) {
       if (group.get('colorType').value === 'Basic Color') {
@@ -148,31 +137,22 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
       }
     }
 
-    console.log(this.addProductFormGroup.invalid);
     if(this.addProductFormGroup.invalid) {
       this.addProductFormGroup.markAllAsTouched();
       this.utilsService.updateToastState(new ToastState('add', 'product', 'danger'))
-
       return; 
     }
     
-    // map product
-    const productVariants: ProductVariant[] = this.variants.controls.map(group => {
-      return {
-        productVariantId: null,
-        height: +group.get('height').value as number,
-        width: +group.get('width').value as number,
-        price: +group.get('price').value as number,
-        quantity: +group.get('quantity').value as number,
-        color: group.get('colorType').value == 'Basic Color' ? 
-                this.getColorValueFromType(group.get('colorType').value, group.get('basicColorValue').value) : 
-                this.getColorValueFromType(group.get('colorType').value, group.get('customColorValue').value),
-        imageUrl: group.get('imageUrl').value
-      };
-    });
+    const insertProduct: Product = this.mapFormValue()
+    console.log(insertProduct);
+    if(this.productService.insert(insertProduct)) {
+      this.utilsService.updateToastState(new ToastState('add', 'product', 'success'))
+      this.router.navigate(['/admin/product/list'])
+    }
+  }
 
+  mapFormValue(): Product {
     let insertProduct: Product = new Product();
-    
     insertProduct.productName = this.product.get('name').value;
     insertProduct.description = this.product.get('description').value;
     insertProduct.isHide = false;
@@ -182,13 +162,21 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
     insertProduct.imageUrls = this.product.get('images').value
     insertProduct.createdAt = new Date();
     insertProduct.updatedAt = new Date();
+    const productVariants: ProductVariant[] = this.variants.controls.map(group => {
+      return {
+        productVariantId: null,
+        height: +group.get('height').value as number,
+        width: +group.get('width').value as number,
+        price: +group.get('price').value as number,
+        quantity: +group.get('quantity').value as number,
+        color: group.get('colorType').value == 'Basic Color' ? 
+        this.getColorValueFromType(group.get('colorType').value, group.get('basicColorValue').value) : 
+        this.getColorValueFromType(group.get('colorType').value, group.get('customColorValue').value),
+        imageUrl: group.get('imageUrl').value
+      };
+    });
     insertProduct.productVariants = productVariants;
-    console.log(insertProduct);
-
-    if(this.productService.insert(insertProduct)) {
-      this.utilsService.updateToastState(new ToastState('add', 'product', 'success'))
-      this.router.navigate(['/admin/product/list'])
-    }
+    return 
   }
 
   getColorValueFromType(colorType, value): ProductColor {

@@ -54,10 +54,11 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     private formBuilder: FormBuilder,
     private productService: ProductService
   ) {
-    this.orderStatusService.findAll().subscribe(data => this.orderStatuses = data)
-    this.paymentMethodService.findAll().subscribe(data => this.paymentMethods = data)
+      this.orderStatusService.findAll().subscribe(data => this.orderStatuses = data)
+      this.paymentMethodService.findAll().subscribe(data => this.paymentMethods = data)
   }
-
+  
+  get products() { return this.addOrderFormGroup.controls["products"] as FormArray }
   settingFormGroup() {
     this.addOrderFormGroup = this.formBuilder.group({
       email: ['', CustomValidator.notBlank, isEmailNotExisting(this.accountService)],
@@ -110,7 +111,6 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     );
   }
 
-  get products() { return this.addOrderFormGroup.controls["products"] as FormArray }
 
   addProduct(): void {
     const productForm = this.formBuilder.group({
@@ -143,7 +143,6 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
   
   ngAfterViewInit(): void {
     this.accordions.first.toggle()
-    
   }
   
   selectCustomer(account: Account) {
