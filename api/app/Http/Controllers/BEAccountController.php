@@ -22,7 +22,6 @@ class BEAccountController extends Controller
                 'email' => $account->email,
                 'phone_number' => $account->phone_number,
                 'image_id' => $account->image_id,
-                'address' => $account->address,
                 'role' => [
                     'role_id' => $role->role_id,
                     'name' => $role->name,
