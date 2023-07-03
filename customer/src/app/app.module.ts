@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -26,6 +26,8 @@ import { cartReducer } from './@core/reducers/cart.reducer';
 
 import { AppComponent } from './app.component';
 import { LayoutComponent } from './@theme/layout/layout.component';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 @NgModule({
   declarations: [
@@ -48,6 +50,13 @@ import { LayoutComponent } from './@theme/layout/layout.component';
       progressBar: false,
       enableHtml: true,
     }),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: translateHttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
     StoreModule.forRoot(appReducers, { metaReducers }),
     StoreModule.forFeature('cart', cartReducer),
     StoreModule.forFeature('wishlist', wishlistReducer),
@@ -57,8 +66,13 @@ import { LayoutComponent } from './@theme/layout/layout.component';
     StoreDevtoolsModule.instrument(),
   ],
 
-  providers: [],
+  providers: [
+  ],
   bootstrap: [AppComponent]
 })
 
 export class AppModule { }
+
+export function translateHttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
+}

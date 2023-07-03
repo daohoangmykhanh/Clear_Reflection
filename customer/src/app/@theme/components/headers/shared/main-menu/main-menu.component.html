@@ -1,13 +1,19 @@
 <nav class="main-nav">
-    <ul class="menu sf-arrows">
-        <li class="megamenu-container" [class.active]="current=='/'">
-            <a routerLink="/">Home</a>
-        </li>
-        <li [class.active]="current.includes('/category')">
-            <a routerLink="/product/category">Category</a>
-        </li>
-        <li [class.active]="current.includes('/product')">
-            <a routerLink="/product/shop/list">Product</a>
-        </li>
-    </ul>
+  <ul class="menu sf-arrows">
+    <li class="megamenu-container" [class.active]="current=='/'">
+      <a routerLink="/">{{'HEADER.HOME' | translate}}</a>
+    </li>
+    <li [class.active]="current.includes('/product/category')">
+      <a routerLink="/product/category">{{'HEADER.CATEGORY' | translate}}</a>
+    </li>
+    <li [class.active]="current.includes('/product')">
+      <a routerLink="/product/shop/list">{{'HEADER.PRODUCT' | translate}}</a>
+    </li>
+    <li [class.active]="current.includes('/pages/about')">
+      <a routerLink="/pages/about">{{"HEADER.ABOUT_US" | translate}}</a>
+    </li>
+    <li [class.active]="current.includes('/pages/contact')">
+      <a routerLink="/pages/contact">{{'HEADER.CONTACT' | translate}}</a>
+    </li>
+  </ul>
 </nav>

@@ -3,12 +3,9 @@
         <div class="container">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a routerLink="/">Home</a>
+                    <a routerLink="/">{{"BREADCRUMB.HOME" | translate}}</a>
                 </li>
-                <li class="breadcrumb-item">
-                    <a href="javascript:;">Pages</a>
-                </li>
-                <li class="breadcrumb-item active">Contact Us</li>
+                <li class="breadcrumb-item active">{{"BREADCRUMB.CONTACT" | translate}}</li>
             </ol>
         </div>
     </nav>
@@ -16,7 +13,7 @@
     <div class="container">
         <div class="page-header page-header-big text-center"
             style="background-image: url('assets/images/contact-header-bg.jpg')">
-            <h1 class="page-title text-white">Contact us<span class="text-white">keep in touch with us</span></h1>
+            <h1 class="page-title text-white">{{"HEADER.CONTACT"}}<span class="text-white">{{"CONTACT.KEEP_IN_TOUCH" | translate}}</span></h1>
         </div>
     </div>
 
@@ -24,26 +21,25 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-2 mb-lg-0">
-                    <h2 class="title mb-1">Contact Information</h2>
-                    <p class="mb-3">Vestibulum volutpat, lacus a ultrices sagittis, mi neque euismod dui, eu pulvinar
-                        nunc sapien ornare nisl. Phasellus pede arcu, dapibus eu, fermentum et, dapibus sed, urna.</p>
+                    <h2 class="title mb-1">{{"CONTACT.CONTACT_INFORMATION" | translate}}</h2>
+                    <p class="mb-3">{{"CONTACT.SHORT_DESCRIPTION" | translate}}</p>
                     <div class="row">
                         <div class="col-sm-7">
                             <div class="contact-info">
-                                <h3>The Office</h3>
+                                <h3>{{"CONTACT.THE_OFFICE" | translate}}</h3>
 
                                 <ul class="contact-list">
                                     <li>
                                         <i class="icon-map-marker"></i>
-                                        70 Washington Square South New York, NY 10012, United States
+                                        {{"CONTACT.ADDRESS" | translate}}
                                     </li>
                                     <li>
                                         <i class="icon-phone"></i>
-                                        <a href="tel:#">+92 423 567</a>
+                                        <a>0788888888</a>
                                     </li>
                                     <li>
                                         <i class="icon-envelope"></i>
-                                        <a href="mailto:#">info@Molla.com</a>
+                                        <a href="mailto:#">nguyenphu1149@gmail.com</a>
                                     </li>
                                 </ul>
                             </div>
@@ -51,16 +47,12 @@
 
                         <div class="col-sm-5">
                             <div class="contact-info">
-                                <h3>The Office</h3>
+                                <h3>{{"CONTACT.THE_OFFICE" | translate}}</h3>
 
                                 <ul class="contact-list">
                                     <li>
                                         <i class="icon-clock-o"></i>
-                                        <span class="text-dark">Monday-Saturday</span> <br>11am-7pm ET
-                                    </li>
-                                    <li>
-                                        <i class="icon-calendar"></i>
-                                        <span class="text-dark">Sunday</span> <br>11am-6pm ET
+                                        <span class="text-dark">{{"CONTACT.MONDAY_SATURDAY" | translate}}</span> <br>{{"CONTACT.OPEN_CLOSE_HOUR" | translate}}
                                     </li>
                                 </ul>
                             </div>
@@ -68,14 +60,14 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <h2 class="title mb-1">Got Any Questions?</h2>
-                    <p class="mb-2">Use the form below to get in touch with the sales team</p>
+                    <h2 class="title mb-1">{{"CONTACT.GOT_QUESTION" | translate}}</h2>
+                    <p class="mb-2">{{"CONTACT.USE_FORM" | translate}}</p>
 
                     <form action="#" class="contact-form mb-3">
                         <div class="row">
                             <div class="col-sm-6">
-                                <label for="cname" class="sr-only">Name</label>
-                                <input type="text" class="form-control" id="cname" placeholder="Name *" required>
+                                <label for="cname" class="sr-only">{{"CONTACT.FORM_NAME" | translate}}</label>
+                                <input type="text" class="form-control" id="cname" placeholder="{{'CONTACT.FORM_NAME_PLACEHOLDER' | translate}}" required>
                             </div>
 
                             <div class="col-sm-6">
@@ -86,96 +78,26 @@
 
                         <div class="row">
                             <div class="col-sm-6">
-                                <label for="cphone" class="sr-only">Phone</label>
-                                <input type="tel" class="form-control" id="cphone" placeholder="Phone">
+                                <label for="cphone" class="sr-only">{{"CONTACT.FORM_PHONE" | translate}}</label>
+                                <input type="tel" class="form-control" id="cphone" placeholder="{{'CONTACT.FORM_PHONE_PLACEHOLDER' | translate}}">
                             </div>
 
                             <div class="col-sm-6">
-                                <label for="csubject" class="sr-only">Subject</label>
-                                <input type="text" class="form-control" id="csubject" placeholder="Subject">
+                                <label for="csubject" class="sr-only">{{"CONTACT.FORM_SUBJECT" | translate}}</label>
+                                <input type="text" class="form-control" id="csubject" placeholder="{{'CONTACT.FORM_SUBJECT_PLACEHOLDER' | translate}}">
                             </div>
                         </div>
 
-                        <label for="cmessage" class="sr-only">Message</label>
+                        <label for="cmessage" class="sr-only">{{'CONTACT.FORM_MESSAGE' | translate}}</label>
                         <textarea class="form-control" cols="30" rows="4" id="cmessage" required
-                            placeholder="Message *"></textarea>
+                            placeholder="{{'CONTACT.FORM_MESSAGE_PLACEHOLDER' | translate}}"></textarea>
 
                         <button type="submit" class="btn btn-outline-primary-2 btn-minwidth-sm">
-                            <span>SUBMIT</span>
+                            <span>{{'CONTACT.FORM_SUBMIT' | translate}}</span>
                             <i class="icon-long-arrow-right"></i>
                         </button>
                     </form>
                 </div>
-            </div>
-
-            <hr class="mt-4 mb-5">
-
-            <div class="stores mb-4 mb-lg-5">
-                <h2 class="title text-center mb-3">Our Stores</h2>
-
-                <div class="row text-center">
-                    <div class="col-lg-6">
-                        <div class="store">
-                            <div class="row">
-                                <div class="col-sm-5 col-xl-6">
-                                    <figure class="store-media mb-2 mb-lg-0">
-                                        <img src="assets/images/stores/img-1.jpg" class="ml-auto mr-auto ml-sm-0"
-                                            width="277" height="277" alt="image" />
-                                    </figure>
-                                </div>
-                                <div class="col-sm-7 col-xl-6">
-                                    <div class="store-content">
-                                        <h3 class="store-title">Wall Street Plaza</h3>
-                                        <address>88 Pine St, New York, NY 10005, USA</address>
-                                        <div><a href="tel:#">+1 987-876-6543</a></div>
-
-                                        <h4 class="store-subtitle">Store Hours:</h4>
-                                        <div>Monday - Saturday 11am to 7pm</div>
-                                        <div>Sunday 11am to 6pm</div>
-
-                                        <a href="javascript:;" class="btn btn-link"><span>View
-                                                Map</span><i class="icon-long-arrow-right"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6">
-                        <div class="store">
-                            <div class="row">
-                                <div class="col-sm-5 col-xl-6">
-                                    <figure class="store-media mb-2 mb-lg-0">
-                                        <img src="assets/images/stores/img-2.jpg" class="ml-auto mr-auto ml-sm-0"
-                                            width="277" height="277" alt="image" />
-                                    </figure>
-                                </div>
-
-                                <div class="col-sm-7 col-xl-6">
-                                    <div class="store-content">
-                                        <h3 class="store-title">One New York Plaza</h3>
-                                        <address>88 Pine St, New York, NY 10005, USA</address>
-                                        <div><a href="tel:#">+1 987-876-6543</a></div>
-
-                                        <h4 class="store-subtitle">Store Hours:</h4>
-                                        <div>Monday - Friday 9am to 8pm</div>
-                                        <div>Saturday - 9am to 2pm</div>
-                                        <div>Sunday - Closed</div>
-
-                                        <a href="javascript:;" class="btn btn-link"><span>View
-                                                Map</span><i class="icon-long-arrow-right"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="map">
-            <div *ngIf="apiLoaded | async">
-                <google-map></google-map>
             </div>
         </div>
     </div>

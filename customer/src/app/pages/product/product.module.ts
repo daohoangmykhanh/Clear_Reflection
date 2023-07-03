@@ -20,6 +20,7 @@ import { ProductShopComponent } from './product-shop/product-shop.component';
 import { NouisliderModule } from 'ng2-nouislider';
 import { ShopSidebarComponent } from './shared/shop-sidebar/shop-sidebar.component';
 import { ShopListComponent } from './shared/shop-list/shop-list.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
 	declarations: [
@@ -46,7 +47,8 @@ import { ShopListComponent } from './shared/shop-list/shop-list.component';
 		OwlModule,
 		LightboxModule,
     OwlModule,
-    NouisliderModule
+    NouisliderModule,
+    TranslateModule
 	],
 
 	exports: [],

@@ -4,19 +4,18 @@
 
     <form action="#" method="get" class="mobile-search" (submit)="submitSearchForm($event)">
       <label for="mobile-search" class="sr-only">Search</label>
-      <input type="search" class="form-control" name="mobile-search" id="mobile-search" placeholder="Search in..."
-        required>
+      <input type="search" class="form-control" name="mobile-search"
+        id="mobile-search" placeholder="{{ 'HEADER.HEADER_SEARCH.SEARCH_PRODUCT' | translate }}" required>
       <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
     </form>
 
     <nav class="mobile-nav">
       <ul class="mobile-menu">
-        <li><a routerLink="/">Home</a></li>
-        <li><a routerLink="/product/shop/lít">Product</a>
-        </li>
+        <li><a routerLink="/">{{ 'HEADER.HOME' | translate }}</a></li>
+        <li><a routerLink="/product/shop/list">{{ 'HEADER.PRODUCT' | translate }}</a></li>
         <li>
           <a routerLink="/product/category" class="sf-with-ul">
-            Category
+            {{ 'HEADER.CATEGORY' | translate }}
             <span class="mmenu-btn" (click)="submenuToggle($event)"></span>
           </a>
           <!-- <ul>
@@ -37,14 +36,10 @@
                 Info</a></li>
           </ul> -->
         </li>
+        <li><a routerLink="/pages/about">{{ 'HEADER.ABOUT_US' | translate }}</a></li>
+        <li><a routerLink="/pages/contact">{{ 'HEADER.CONTACT' | translate }}</a></li>
+
       </ul>
     </nav>
-
-    <div class="social-icons">
-      <a href="javascript:;" class="social-icon" title="Facebook"><i class="icon-facebook-f"></i></a>
-      <a href="javascript:;" class="social-icon" title="Twitter"><i class="icon-twitter"></i></a>
-      <a href="javascript:;" class="social-icon" title="Instagram"><i class="icon-instagram"></i></a>
-      <a href="javascript:;" class="social-icon" title="Youtube"><i class="icon-youtube"></i></a>
-    </div>
   </div>
 </div>

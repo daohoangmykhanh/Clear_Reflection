@@ -11,7 +11,7 @@ const routes: Routes = [
     component: ProductCategoryComponent
   },
   {
-      path: 'product-detail/:slug',
+      path: 'detail/:slug',
       component: ProductDetailComponent
   },
   {

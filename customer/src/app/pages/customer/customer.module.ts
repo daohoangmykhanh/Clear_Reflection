@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { OwlModule } from 'angular-owl-carousel';
-import { GoogleMapsModule } from '@angular/google-maps';
 
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 
@@ -14,6 +13,7 @@ import { CartComponent } from './cart/cart.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ProductModule } from '../product/product.module';
 
 @NgModule( {
 	declarations: [
@@ -29,7 +29,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 		NgbModule,
 		RouterModule,
 		OwlModule,
-		GoogleMapsModule,
 		HttpClientModule,
 		HttpClientJsonpModule,
     CustomerRoutingModule,

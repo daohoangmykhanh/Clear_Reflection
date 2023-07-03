@@ -10,7 +10,10 @@ export class LoginModalComponent implements OnInit {
 
 	constructor() { }
 
-	ngOnInit(): void {
+  user: any;
+  loggedIn: any;
+
+  ngOnInit(): void {
 	}
 
 	closeModal() {
@@ -18,4 +21,5 @@ export class LoginModalComponent implements OnInit {
 		if (modal)
 			modal.click();
 	}
+
 }
