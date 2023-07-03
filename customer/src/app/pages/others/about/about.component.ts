@@ -1,7 +1,8 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import { iconBoxes, counters, brands, members } from './about-data';
+import { iconBoxes, counters } from './about-data';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 	selector: 'pages-about-page',
@@ -13,12 +14,17 @@ import { iconBoxes, counters, brands, members } from './about-data';
 export class AboutPageComponent implements OnInit {
 
 	iconBoxes = iconBoxes;
-	brands = brands;
-	members = members;
 	counters = counters;
-
-	constructor(public sanitizer: DomSanitizer) {
-	}
+  currentLang: string;
+	constructor(
+    public sanitizer: DomSanitizer,
+    private translateService: TranslateService
+  ) {
+    this.translateService.onLangChange.subscribe(event => {
+      this.currentLang = event.lang
+      console.log(this.currentLang);
+    });
+  }
 
 	ngOnInit(): void {
 	}

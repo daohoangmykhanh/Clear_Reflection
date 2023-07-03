@@ -1,0 +1,132 @@
+{
+  "HEADER": {
+    "LINKS": "Liên Kết",
+    "CALL": "SĐT:",
+    "MY_WISHLIST": "Yêu Thích",
+    "SIGNIN_SIGNUP": "Đăng Nhập/Đăng Ký",
+    "HOME": "Trang Chủ",
+    "CATEGORY": "Danh Mục",
+    "PRODUCT": "Sản Phẩm",
+    "ABOUT_US": "Về Chúng Tôi",
+    "CONTACT": "Liên Hệ",
+    "CART_MENU": {
+      "NO_PRODUCT": "Không có sản phẩm trong giỏ hàng.",
+      "TOTAL": "Tổng",
+      "VIEW_CART": "Xem chi tiết vỏ hàng",
+      "CHECKOUT": "Thanh Toán"
+    },
+    "HEADER_SEARCH": {
+      "SEARCH": "Tìm Kiếm",
+      "SEARCH_PRODUCT": "Tìm Sản Phẩm..."
+    }
+  },
+  "FOOTER": {
+    "SHORT_DESCRIPTION": "Khám phá sự hấp dẫn của cửa hàng gương tuyệt đẹp của chúng tôi. Tìm gương hoàn hảo để nâng tầm không gian của bạn với sự thanh lịch và phong cách. Khám phá bộ sưu tập được chọn lọc của chúng tôi để thêm một chút vẻ đẹp vượt thời gian.",
+    "USEFUL_LINKS": "Liên Kết",
+    "CUSTOMER_SERVICE": "Dịch Vụ Khách Hàng",
+    "GUARANTEE": "Đảm Bảo Hoàn Tiền",
+    "RETURNS": "Đổi Trả",
+    "SHIPPING": "Giao Hàng",
+    "TERMS_CONDITIONS": "Các điều khoản và điều kiện",
+    "PRIVACY_POLICY": "Chính Sách Bảo Mật",
+    "MY_ACCOUNT": "Tài Khoản Của Tôi",
+    "VIEW_CART": "Xem Giỏ Hàng",
+    "MY_WISHLIST": "Mục Yêu Thích",
+    "TRACK_MY_ORDER": "Theo Dõi Đơn Hàng",
+    "HELP": "Hỗ Trợ"
+  },
+  "BREADCRUMB": {
+    "HOME": "Trang Chủ",
+    "PRODUCT": "Sản Phẩm",
+    "CATEGORY": "Danh Mục",
+    "ABOUT": "Về Chúng Tôi",
+    "Contact": "Liên Hệ",
+    "WISHLIST": "Yêu Thích",
+    "CART": "Giỏ Hàng"
+  },
+  "HOME": {
+    "BANNER": {
+      "TOPSALE": "Sản Phẩm Bán Chạy",
+      "BEST_LIGHTING": "NỔI BẬT NHẤT",
+      "SHOP_NOW": "Mua Ngay",
+      "CLEARENCE": "Giảm Giá",
+      "SALE": "Giảm Giá"
+    },
+    "CATEGORIES": {
+      "SHOP_BY_CATEGORIES": "Mua Theo Danh Mục"
+    },
+    "UTILS": {
+      "PAYMENT_DELIVERY": "Thanh Toán & Giao Hàng",
+      "FREE_SHIPPING": "Giao Hàng Miễn Phí Cho Đơn Hàng Trên 1tr2",
+      "RETURN_REFUND": "Chính Sách Đổi Trả",
+      "GUARANTEE": "Đảm bảo hoàn tiền 100% miễn phí",
+      "QUALITY_SUPPORT": "Nhân Viên Hỗ Trợ",
+      "FEEDBACK": "Phản hồi trực tuyến luôn sẵn sàng 24/7"
+    },
+    "RECENT_COLLECTION": {
+      "RECENT_ARRIVALS": "Sản Phẩm Mới",
+      "SEE_ALL_PRODUCTS": "Xem Tất Cả Sản Phẩm"
+    },
+    "TOP_COLLECTION": {
+      "TRENDY_PRODUCTS": "Xu Hướng"
+    }
+  },
+  "CATEGORY": {
+    "PRODUCT_CATEGORY": "Danh Mục Sản Phẩm"
+  },
+  "ABOUT": {
+    "WHO_WE_ARE": "Chúng Tôi Là Ai"
+  },
+  "CONTACT": {
+    "KEEP_IN_TOUCH": "giữ liên lạc với chúng tôi",
+    "CONTACT_INFORMATION": "Thông Tin Liên Lạc",
+    "SHORT_DESCRIPTION": "Liên hệ với chúng tôi dễ dàng thông qua các kênh liên lạc như điện thoại, email và mạng xã hội để được tư vấn, hỗ trợ hoặc gửi phản hồi.",
+    "THE_OFFICE": "The Office",
+    "ADDRESS": "364 Đường Cộng Hòa, Quận Tân Bình, Thành Phố Hồ Chí Minh",
+    "MONDAY_SATURDAY": "Thứ Hai - Thứ Bảy",
+    "OPEN_CLOSE_HOUR": "11:00-19:00",
+    "GOT_QUESTION": "Bạn Có Thắc Mắc?",
+    "USE_FORM": "Sử dụng biểu mẫu bên dưới để liên hệ tới đội bán hàng",
+    "FORM_NAME": "Họ Và Tên",
+    "FORM_NAME_PLACEHOLDER": "Họ Và Tên *",
+    "FORM_PHONE": "SĐT",
+    "FORM_PHONE_PLACEHOLDER": "SĐT *",
+    "FORM_SUBJECT": "Tiêu Đề",
+    "FORM_SUBJECT_PLACEHOLDER": "Tiêu Đề *",
+    "FORM_MESSAGE": "Lời Nhắn",
+    "FORM_MESSAGE_PLACEHOLDER": "Lời Nhắn *",
+    "FORM_SUBMIT": "Gửi"
+  },
+  "PRODUCT": {
+    "SHOWING": "Hiển Thị",
+    "OF": "trên",
+    "PRODUCTS": "Sản Phẩm",
+    "SORT_BY": "Sắp xếp theo: ",
+    "DEFAULT": "Mặc Định",
+    "MOST_POPULAR": "Phổ Biến Nhất",
+    "MOST_RATED": "Lượt Đánh Giá",
+    "DATE": "Ngày",
+    "SIDEBAR": {
+      "FILTERS": "Bộ Lọc",
+      "CLEAN_ALL": "Xóa bộ lọc",
+      "CATEGORY": "Thể Loại",
+      "SIZE": "Kích Thước",
+      "COLOR": "Màu Sắc",
+      "PRICE": "Giá",
+      "CUSTOMER_RATING": "Khách Hàng Đánh Giá"
+    }
+  },
+  "LOGIN": {
+    "SIGN_IN": "Đăng Nhập",
+    "PASSWORD": "Mật Khẩu *",
+    "LOGIN": "ĐĂNG NHẬP",
+    "REMEMBER_ME": "Nhớ tài khoản",
+    "FORGOT_PASSWORD": "Quên Mật khẩu?",
+    "OR_SIGN_IN_WITH": "hoặc đăng nhập với",
+    "GOOGLE_LOGIN": "Đăng Nhập Với Google",
+    "FACEBOOK_LOGIN": "Đăng Nhập Với Facebook",
+
+    "REGISTER": "Đăng Ký",
+    "SIGN_UP": "ĐĂNG KÝ"
+  }
+}
