@@ -25,4 +25,13 @@ class TrustProxies extends Middleware
         Request::HEADER_X_FORWARDED_PORT |
         Request::HEADER_X_FORWARDED_PROTO |
         Request::HEADER_X_FORWARDED_AWS_ELB;
+
+    public function handle($request, \Closure $next)
+    {
+        $response = $next($request);
+        $response->headers->remove('Cache-Control');
+        $response->headers->remove('Pragma');
+        $response->headers->remove('Expires');
+        return $response;
+    }
 }
