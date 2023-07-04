@@ -61,110 +61,115 @@ export class ProductService {
         totalLikes: 200
       }])
   }
+
   findAll(): Observable<Product[]> {
-    return of([
-      {
-        productId: 1,
-        productName: 'Product Name 1',
-        description: 'Description 1',
-        isHide: false,
-        category: {categoryId: 1, categoryName: 'Category 1', imageUrl: 'assets/images/alan.png'},
-        shape: {productShapeId: 1, shapeName: 'Shape 1'},
-        style: {productStyleId: 1, styleName: 'Style 1'},
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        imageUrls: [
-          'assets/images/camera1.jpg',
-          'assets/images/camera2.jpg',
-          'assets/images/camera3.jpg',
-          'assets/images/camera4.jpg',
-        ],
-        quantitySold: 100,
-        rating: 1,
-        totalLikes: 100
-      },
-      {
-        productId: 2,
-        productName: 'Product Name 2',
-        description: 'Description 2',
-        isHide: true,
-        category: {categoryId: 2, categoryName: 'Category 2', imageUrl: 'assets/images/alan.png'},
-        shape: {productShapeId: 2, shapeName: 'Shape 2'},
-        style: {productStyleId: 2, styleName: 'Style 2'},
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        imageUrls: [
-          'assets/images/camera1.jpg',
-          'assets/images/camera2.jpg',
-          'assets/images/camera3.jpg',
-          'assets/images/camera4.jpg',
-        ],
-        quantitySold: 200,
-        rating: 2,
-        totalLikes: 200
-      },
-      {
-        productId: 3,
-        productName: 'Product Name 3',
-        description: 'Description 3',
-        isHide: false,
-        category: {categoryId: 3, categoryName: 'Category 3', imageUrl: 'assets/images/alan.png'},
-        shape: {productShapeId: 3, shapeName: 'Shape 3'},
-        style: {productStyleId: 3, styleName: 'Style 3'},
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        imageUrls: [
-          'assets/images/camera1.jpg',
-          'assets/images/camera2.jpg',
-          'assets/images/camera3.jpg',
-          'assets/images/camera4.jpg',
-        ],
-        quantitySold: 300,
-        rating: 3,
-        totalLikes: 300
-      }
-      ,{
-        productId: 4,
-        productName: 'Product Name 4',
-        description: 'Description 4',
-        isHide: true,
-        category: {categoryId: 4, categoryName: 'Category 4', imageUrl: 'assets/images/alan.png'},
-        shape: {productShapeId: 4, shapeName: 'Shape 4'},
-        style: {productStyleId: 4, styleName: 'Style 4'},
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        imageUrls: [
-          'assets/images/camera1.jpg',
-          'assets/images/camera2.jpg',
-          'assets/images/camera3.jpg',
-          'assets/images/camera4.jpg',
-        ],
-        quantitySold: 400,
-        rating: 4,
-        totalLikes: 400
-      }
-      ,{
-        productId: 5,
-        productName: 'Product Name 5',
-        description: 'Description 5',
-        isHide: false,
-        category: {categoryId: 5, categoryName: 'Category 5', imageUrl: 'assets/images/alan.png'},
-        shape: {productShapeId: 5, shapeName: 'Shape 5'},
-        style: {productStyleId: 5, styleName: 'Style 5'},
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        imageUrls: [
-          'assets/images/camera1.jpg',
-          'assets/images/camera2.jpg',
-          'assets/images/camera3.jpg',
-          'assets/images/camera4.jpg',
-        ],
-        quantitySold: 500,
-        rating: 5,
-        totalLikes: 500
-      }
-    ])
+    const url = `${this.baseUrlService.baseURL}/admin/product`
+    return this.httpClient.get<Product[]>(url)
   }
+  // findAll(): Observable<Product[]> {
+  //   return of([
+  //     {
+  //       productId: 1,
+  //       productName: 'Product Name 1',
+  //       description: 'Description 1',
+  //       isHide: false,
+  //       category: {categoryId: 1, categoryName: 'Category 1', imageUrl: 'assets/images/alan.png'},
+  //       shape: {productShapeId: 1, shapeName: 'Shape 1'},
+  //       style: {productStyleId: 1, styleName: 'Style 1'},
+  //       createdAt: new Date(),
+  //       updatedAt: new Date(),
+  //       imageUrls: [
+  //         'assets/images/camera1.jpg',
+  //         'assets/images/camera2.jpg',
+  //         'assets/images/camera3.jpg',
+  //         'assets/images/camera4.jpg',
+  //       ],
+  //       quantitySold: 100,
+  //       rating: 1,
+  //       totalLikes: 100
+  //     },
+  //     {
+  //       productId: 2,
+  //       productName: 'Product Name 2',
+  //       description: 'Description 2',
+  //       isHide: true,
+  //       category: {categoryId: 2, categoryName: 'Category 2', imageUrl: 'assets/images/alan.png'},
+  //       shape: {productShapeId: 2, shapeName: 'Shape 2'},
+  //       style: {productStyleId: 2, styleName: 'Style 2'},
+  //       createdAt: new Date(),
+  //       updatedAt: new Date(),
+  //       imageUrls: [
+  //         'assets/images/camera1.jpg',
+  //         'assets/images/camera2.jpg',
+  //         'assets/images/camera3.jpg',
+  //         'assets/images/camera4.jpg',
+  //       ],
+  //       quantitySold: 200,
+  //       rating: 2,
+  //       totalLikes: 200
+  //     },
+  //     {
+  //       productId: 3,
+  //       productName: 'Product Name 3',
+  //       description: 'Description 3',
+  //       isHide: false,
+  //       category: {categoryId: 3, categoryName: 'Category 3', imageUrl: 'assets/images/alan.png'},
+  //       shape: {productShapeId: 3, shapeName: 'Shape 3'},
+  //       style: {productStyleId: 3, styleName: 'Style 3'},
+  //       createdAt: new Date(),
+  //       updatedAt: new Date(),
+  //       imageUrls: [
+  //         'assets/images/camera1.jpg',
+  //         'assets/images/camera2.jpg',
+  //         'assets/images/camera3.jpg',
+  //         'assets/images/camera4.jpg',
+  //       ],
+  //       quantitySold: 300,
+  //       rating: 3,
+  //       totalLikes: 300
+  //     }
+  //     ,{
+  //       productId: 4,
+  //       productName: 'Product Name 4',
+  //       description: 'Description 4',
+  //       isHide: true,
+  //       category: {categoryId: 4, categoryName: 'Category 4', imageUrl: 'assets/images/alan.png'},
+  //       shape: {productShapeId: 4, shapeName: 'Shape 4'},
+  //       style: {productStyleId: 4, styleName: 'Style 4'},
+  //       createdAt: new Date(),
+  //       updatedAt: new Date(),
+  //       imageUrls: [
+  //         'assets/images/camera1.jpg',
+  //         'assets/images/camera2.jpg',
+  //         'assets/images/camera3.jpg',
+  //         'assets/images/camera4.jpg',
+  //       ],
+  //       quantitySold: 400,
+  //       rating: 4,
+  //       totalLikes: 400
+  //     }
+  //     ,{
+  //       productId: 5,
+  //       productName: 'Product Name 5',
+  //       description: 'Description 5',
+  //       isHide: false,
+  //       category: {categoryId: 5, categoryName: 'Category 5', imageUrl: 'assets/images/alan.png'},
+  //       shape: {productShapeId: 5, shapeName: 'Shape 5'},
+  //       style: {productStyleId: 5, styleName: 'Style 5'},
+  //       createdAt: new Date(),
+  //       updatedAt: new Date(),
+  //       imageUrls: [
+  //         'assets/images/camera1.jpg',
+  //         'assets/images/camera2.jpg',
+  //         'assets/images/camera3.jpg',
+  //         'assets/images/camera4.jpg',
+  //       ],
+  //       quantitySold: 500,
+  //       rating: 5,
+  //       totalLikes: 500
+  //     }
+  //   ])
+  // }
   
   findById(id: number): Observable<Product | null>  {
     if(id >= 1 && id <= 10) {
