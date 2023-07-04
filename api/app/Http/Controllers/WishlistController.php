@@ -9,31 +9,9 @@ class WishlistController extends Controller
 {
     public function index()
     {
-        $wishlists = Wishlist::all();
-        $wishlistData = [];
+        $wishlists = Wishlist::with('account', 'product')->get();
 
-        foreach ($wishlists as $wishlist) {
-            $product = $wishlist->product;
-            $account = $wishlist->account;
-
-            $wishlistData[] = [
-                'wishlist_id' => $wishlist->wishlist_id,
-                'account' => [
-                    'account_id' => $account->account_id,
-                    'account_name' => $account->account_name,
-                    // Add other account fields as needed
-                ],
-                'product' => [
-                    'product_id' => $product->product_id,
-                    'product_name' => $product->product_name,
-                    // Add other product fields as needed
-                ],
-                'created_at' => $wishlist->created_at,
-                'updated_at' => $wishlist->updated_at,
-            ];
-        }
-
-        return response()->json($wishlistData);
+        return response()->json($wishlists);
     }
 
     public function store(Request $request)
@@ -45,32 +23,18 @@ class WishlistController extends Controller
 
         $wishlist = Wishlist::create($validatedData);
 
-        return response()->json($wishlist, 201);
+        if ($wishlist) {
+            return response()->json($wishlist, 201);
+        } else {
+            return response()->json(['message' => 'Thêm wishlist thất bại'], 500);
+        }
     }
 
     public function show($id)
     {
-        $wishlist = Wishlist::findOrFail($id);
-        $product = $wishlist->product;
-        $account = $wishlist->account;
+        $wishlist = Wishlist::with('account', 'product')->findOrFail($id);
 
-        $wishlistData = [
-            'wishlist_id' => $wishlist->wishlist_id,
-            'account' => [
-                'account_id' => $account->account_id,
-                'account_name' => $account->account_name,
-                // Add other account fields as needed
-            ],
-            'product' => [
-                'product_id' => $product->product_id,
-                'product_name' => $product->product_name,
-                // Add other product fields as needed
-            ],
-            'created_at' => $wishlist->created_at,
-            'updated_at' => $wishlist->updated_at,
-        ];
-
-        return response()->json($wishlistData);
+        return response()->json($wishlist);
     }
 
     public function update(Request $request, $id)
@@ -78,7 +42,11 @@ class WishlistController extends Controller
         $wishlist = Wishlist::findOrFail($id);
         $wishlist->update($request->all());
 
-        return response()->json($wishlist);
+        if ($wishlist) {
+            return response()->json(['message' => 'Cập nhật wishlist thành công']);
+        } else {
+            return response()->json(['message' => 'Cập nhật wishlist thất bại'], 500);
+        }
     }
 
     public function destroy($id)
@@ -86,6 +54,6 @@ class WishlistController extends Controller
         $wishlist = Wishlist::findOrFail($id);
         $wishlist->delete();
 
-        return response()->json(['message' => 'Wishlist deleted']);
+        return response()->json(['message' => 'Xóa wishlist thành công']);
     }
 }
