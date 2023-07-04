@@ -9,7 +9,7 @@ use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\WardController;
 use App\Http\Controllers\AddressAccountController;
 use App\Models\Ward;
-
+use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\BERoleController;
 use App\Http\Controllers\BEAccountController;
 use App\Http\Controllers\BECategoryController;
@@ -37,6 +37,9 @@ use App\Http\Controllers\BEProductController;
 // Route::get('/admin/account', [AccountController::class, 'index']);
 
 
+//wishlist
+
+Route::resource('wishlist', WishlistController::class);
 
 //address
 
