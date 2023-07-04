@@ -11,7 +11,7 @@ class ProductColor extends Model
     protected $table = 'product_color';
     protected $primaryKey = 'product_color_id';
     protected $fillable = ['color_name'];
-
+    public $timestamps = false;
     public static function store($color_name)
     {
         return DB::table('product_color')->insert(['color_name' => $color_name]);

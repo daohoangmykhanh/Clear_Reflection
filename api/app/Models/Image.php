@@ -11,7 +11,7 @@ class Image extends Model
     protected $table = 'image';
     protected $primaryKey = 'image_id';
     protected $fillable = ['image_url'];
-    
+    public $timestamps = false;
     public static function store($image_url)
     {
         return DB::table('image')->insert(['image_url' => $image_url]);
