@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -14,14 +15,15 @@ import { WishlistService } from 'src/app/@core/services/wishlist.service';
 export class HeaderComponent implements OnInit {
 
   @Input() containerClass = "container";
-
+  currentLang: string = 'ENG';
   wishCount = 0;
 
   constructor(
     public activeRoute: ActivatedRoute,
     public utilsService: UtilsService,
     public modalService: ModalService,
-    public wishlistService: WishlistService
+    public wishlistService: WishlistService,
+    private translate: TranslateService
   ) {
   }
 
@@ -31,5 +33,14 @@ export class HeaderComponent implements OnInit {
   showLoginModal(event: Event): void {
     event.preventDefault();
     this.modalService.showLoginModal();
+  }
+
+  changeLang(lan: string) {
+    this.translate.use(lan)
+    if(lan == 'vi') {
+      this.currentLang = 'VIE'
+    } else if(lan == 'en-US'){
+      this.currentLang = 'ENG'
+    }
   }
 }

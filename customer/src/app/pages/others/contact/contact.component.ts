@@ -12,14 +12,8 @@ import { map, catchError } from 'rxjs/operators';
 })
 
 export class ContactPageComponent implements OnInit {
-	apiLoaded: Observable<boolean>;
 
 	constructor(httpClient: HttpClient) {
-		this.apiLoaded = httpClient.jsonp('https://maps.googleapis.com/maps/api/js?key=AIzaSyBzlLYISGjL_ovJwAehh6ydhB56fCCpPQw', 'callback')
-		.pipe(
-			map(() => true),
-			catchError(() => of(false)),
-		);
 	}
 
 	ngOnInit(): void {

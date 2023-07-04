@@ -1,0 +1,132 @@
+{
+  "HEADER": {
+    "LINKS": "Links",
+    "CALL": "Call:",
+    "MY_WISHLIST": "My Wishlist",
+    "SIGNIN_SIGNUP": "Sign In/Sign Up",
+    "HOME": "Home",
+    "CATEGORY": "Category",
+    "PRODUCT": "Product",
+    "ABOUT_US": "About Us",
+    "CONTACT": "Contact",
+    "CART_MENU": {
+      "NO_PRODUCT": "No products in the cart.",
+      "TOTAL": "Total",
+      "VIEW_CART": "View Cart",
+      "CHECKOUT": "Checkout"
+    },
+    "HEADER_SEARCH": {
+      "SEARCH": "Search",
+      "SEARCH_PRODUCT": "Search Product..."
+    }
+  },
+  "FOOTER": {
+    "SHORT_DESCRIPTION": "Discover the allure of our beautiful mirror shop. Find the perfect mirror to elevate your space with elegance and style. Explore our curated selection for a touch of timeless beauty.",
+    "USEFUL_LINKS": "Useful Links",
+    "CUSTOMER_SERVICE": "Customer Service",
+    "GUARANTEE": "Money-back guarantee!",
+    "RETURNS": "Returns",
+    "SHIPPING": "Shipping",
+    "TERMS_CONDITIONS": "Terms and conditions",
+    "PRIVACY_POLICY": "Privacy Policy",
+    "MY_ACCOUNT": "My Account",
+    "VIEW_CART": "View Cart",
+    "MY_WISHLIST": "My Wishlist",
+    "TRACK_MY_ORDER": "Track My Order",
+    "HELP": "Help"
+  },
+  "BREADCRUMB": {
+    "HOME": "Home",
+    "PRODUCT": "Product",
+    "CATEGORY": "Category",
+    "ABOUT": "About Us",
+    "Contact": "Contact",
+    "WISHLIST": "Wishlist",
+    "CART": "Cart"
+  },
+  "HOME": {
+    "SHOP_NOW": "Shop Now",
+    "BANNER": {
+      "TOPSALE": "Topsale Collection",
+      "BEST_LIGHTING": "BEST LIGHTING",
+      "CLEARENCE": "Clearence",
+      "SALE": "Sale"
+    },
+    "CATEGORIES": {
+      "SHOP_BY_CATEGORIES": "Shop By Categories"
+    },
+    "UTILS": {
+      "PAYMENT_DELIVERY": "Payment & Delivery",
+      "FREE_SHIPPING": "Free shipping for orders over $50",
+      "RETURN_REFUND": "Return & Refund",
+      "GUARANTEE": "Free 100% money back guarantee",
+      "QUALITY_SUPPORT": "Quality Support",
+      "FEEDBACK": "Alway online feedback 24/7"
+    },
+    "RECENT_COLLECTION": {
+      "RECENT_ARRIVALS": "Recent Arrivals",
+      "SEE_ALL_PRODUCTS": "See All Products"
+    },
+    "TOP_COLLECTION": {
+      "TRENDY_PRODUCTS": "Trendy Products"
+    }
+  },
+  "CATEGORY": {
+    "PRODUCT_CATEGORY": "Product Category"
+  },
+  "ABOUT": {
+    "WHO_WE_ARE": "Who We Are"
+  },
+  "CONTACT": {
+    "KEEP_IN_TOUCH": "keep in touch with us",
+    "CONTACT_INFORMATION": "Contact Information",
+    "SHORT_DESCRIPTION": "Contact us effortlessly through our readily available channels including phone, email, and social media for inquiries, assistance, or feedback.",
+    "THE_OFFICE": "The Office",
+    "ADDRESS": "364 Cong Hoa Street, Tan Binh District, Ho Chi Minh City",
+    "MONDAY_SATURDAY": "Monday-Saturday",
+    "OPEN_CLOSE_HOUR": "11am-7pm",
+    "GOT_QUESTION": "Got Any Questions?",
+    "USE_FORM": "Use the form below to get in touch with the sales team",
+    "FORM_NAME": "Name",
+    "FORM_NAME_PLACEHOLDER": "Name *",
+    "FORM_PHONE": "Phone",
+    "FORM_PHONE_PLACEHOLDER": "Phone *",
+    "FORM_SUBJECT": "Subject",
+    "FORM_SUBJECT_PLACEHOLDER": "Subject *",
+    "FORM_MESSAGE": "Message",
+    "FORM_MESSAGE_PLACEHOLDER": "Message *",
+    "FORM_SUBMIT": "Submit"
+  },
+  "PRODUCT": {
+    "SHOWING": "Showing",
+    "OF": "of",
+    "PRODUCTS": "Products",
+    "SORT_BY": "Sort by: ",
+    "DEFAULT": "Default",
+    "MOST_POPULAR": "Most Popular",
+    "MOST_RATED": "Most Rated",
+    "DATE": "Date",
+    "SIDEBAR": {
+      "FILTERS": "Filters",
+      "CLEAN_ALL": "Clean All",
+      "CATEGORY": "Category",
+      "SIZE": "Size",
+      "COLOR": "Color",
+      "PRICE": "Price",
+      "CUSTOMER_RATING": "Customer Rating"
+    }
+  },
+  "LOGIN": {
+    "SIGN_IN": "Sign In",
+    "PASSWORD": "Password *",
+    "LOGIN": "LOG IN",
+    "REMEMBER_ME": "Remember Me",
+    "FORGOT_PASSWORD": "Forgot Your Password?",
+    "OR_SIGN_IN_WITH": "or sign in with",
+    "GOOGLE_LOGIN": "Login With Google",
+    "FACEBOOK_LOGIN": "Login With Facebook",
+
+    "REGISTER": "Register",
+    "SIGN_UP": "SIGN UP"
+  }
+}

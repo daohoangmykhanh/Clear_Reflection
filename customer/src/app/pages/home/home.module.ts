@@ -9,6 +9,7 @@ import { ThemeModule } from '../../@theme/theme.module';
 import { TopCollectionComponent } from './top-collection/top-collection.component';
 import { IndexComponent } from './index/index.component';
 import { RecentCollectionComponent } from './recent-collection/recent-collection.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
 	declarations: [
@@ -22,7 +23,8 @@ import { RecentCollectionComponent } from './recent-collection/recent-collection
 		RouterModule,
 		NgbModule,
 		OwlModule,
-		ThemeModule
+		ThemeModule,
+    TranslateModule
 	]
 })
 

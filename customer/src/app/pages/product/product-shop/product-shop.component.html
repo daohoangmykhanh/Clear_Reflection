@@ -4,10 +4,10 @@
       <div class="container">
           <ol class="breadcrumb">
               <li class="breadcrumb-item">
-                  <a routerLink="/">Home</a>
+                  <a routerLink="/">{{"BREADCRUMB.HOME" | translate}}</a>
               </li>
               <li class="breadcrumb-item">
-                  <a routerLink="/product/list">Shop</a>
+                  <a routerLink="/product/shop/list">{{"BREADCRUMB.PRODUCT" | translate}}<</a>
               </li>
               <li class="breadcrumb-item active">{{ pageTitle }}</li>
               <li class="breadcrumb-item" *ngIf="searchTerm != ''">
@@ -24,21 +24,21 @@
                   <div class="toolbox">
                       <div class="toolbox-left">
                           <div class="toolbox-info">
-                              Showing
-                              <span>{{ products.length }} of {{ totalCount }}</span> Products
+                              {{"PRODUCT.SHOWING" | translate}}
+                              <span>{{ products.length }} {{"PRODUCT.OF" | translate}} {{ totalCount }}</span> {{"PRODUCT.PRODUCTS" | translate}}
                           </div>
                       </div>
 
                       <div class="toolbox-right">
                           <div class="toolbox-sort">
-                              <label for="sortby">Sort by:</label>
+                              <label for="sortby">{{"PRODUCT.SORT_BY" | translate}}</label>
                               <div class="select-custom">
                                   <select name="sortby" id="sortby" class="form-control"
                                       (change)="changeOrderBy($event)" [value]="orderBy">
-                                      <option value="default">Default</option>
-                                      <option value="featured">Most Popular</option>
-                                      <option value="rating">Most Rated</option>
-                                      <option value="new">Date</option>
+                                      <option value="default">{{"PRODUCT.DEFAULT" | translate}}</option>
+                                      <option value="featured">{{"PRODUCT.MOST_POPULAR" | translate}}</option>
+                                      <option value="rating">{{"PRODUCT.MOST_RATED" | translate}}</option>
+                                      <option value="new">{{"PRODUCT.DATE" | translate}}</option>
                                   </select>
                               </div>
                           </div>

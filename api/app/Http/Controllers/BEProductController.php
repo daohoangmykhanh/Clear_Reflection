@@ -26,7 +26,7 @@ class BEProductController extends Controller
                     'imageUrl' => $image -> image -> image_url
                 ];
             }
-            $category = $product->category; 
+            $category = $product->category;
             $product_shape = $product->product_shape;
             $product_style = $product->product_style;
 
@@ -35,7 +35,7 @@ class BEProductController extends Controller
                 'productName' => $product -> product_name,
                 'description' => $product->description,
                 'isHide' => $product->is_hide,
-                'images' => $imageData,
+                'imageUrls' => $imageData,
                 'category' => [
                     'categoryId' => $category->category_id,
                     'categoryName' => $category->category_name,
@@ -70,7 +70,7 @@ class BEProductController extends Controller
                 ];
             }
             $variantData = [];
-            $category = $product->category; 
+            $category = $product->category;
             $product_shape = $product->product_shape;
             $product_style = $product->product_style;
             foreach($product->variants as $variant){
@@ -83,7 +83,7 @@ class BEProductController extends Controller
                         'colorId' => $color -> product_color_id,
                         'colorName' => $color -> color_name
                     ],
-                    'quantity' => $variant->quantity, 
+                    'quantity' => $variant->quantity,
                     'price' => $variant->price,
                     'image' => [
                         'imageId' => $image -> image_id,
@@ -155,7 +155,7 @@ class BEProductController extends Controller
             $productImage -> product_id = $product -> product_id;
             $productImage -> save();
         }
-      
+
         $variants = [];
         foreach($validatedData['product_variant'] as $variantData){
             $variant = new ProductVariant();
@@ -164,7 +164,7 @@ class BEProductController extends Controller
             $variant -> width = $variantData['width'];
             $variant -> quantity = $variantData['quantity'];
             $variant -> price = $variantData['price'];
-            
+
             if(isset($variantData['color'])){
                 if($variantData['color']['color_id'] != null){
                     $variant -> color_id = $variantData['color']['color_id'];
