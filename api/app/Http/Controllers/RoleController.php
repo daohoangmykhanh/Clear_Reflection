@@ -11,7 +11,7 @@ class RoleController extends Controller
         $role = Role::all();
         if($role == null)
             return response()->json('No results found !');
-        
+
         return response()->json(['role' => $role]);
     }
 
@@ -36,6 +36,6 @@ class RoleController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|unique:role',
         ]);
-        Role::edit()
+        
     }
 }
