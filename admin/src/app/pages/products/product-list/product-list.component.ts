@@ -142,21 +142,23 @@ export class ProductListComponent implements OnInit, AfterViewInit {
     }
     this.productService.findAll().subscribe(
       data => {
-        const mappedProducts: any[] = data.map(pro => {
-          return {
-            productId: pro.productId,
-            productName: pro.productName,
-            isHide: pro.isHide,
-            category: pro.category.categoryName,
-            shape: pro.shape.shapeName,
-            style: pro.style.styleName,
-            image: pro.imageUrls[0],
-            quantitySold: pro.quantitySold,
-            totalLikes: pro.totalLikes,
-            rating: pro.rating
-          }
-        })
-        this.source.load(mappedProducts)
+        console.log(data);
+        
+        // const mappedProducts: any[] = data.map(pro => {
+        //   return {
+        //     productId: pro.productId,
+        //     productName: pro.productName,
+        //     isHide: pro.isHide,
+        //     category: pro.category.categoryName,
+        //     shape: pro.shape.shapeName,
+        //     style: pro.style.styleName,
+        //     image: pro.imageUrls[0],
+        //     quantitySold: pro.quantitySold,
+        //     totalLikes: pro.totalLikes,
+        //     rating: pro.rating
+        //   }
+        // })
+        // this.source.load(mappedProducts)
       }
 
     )
