@@ -26,7 +26,7 @@ class BEProductController extends Controller
                     'image_url' => $image -> image -> image_url
                 ];
             }
-            $category = $product->category; 
+            $category = $product->category;
             $product_shape = $product->product_shape;
             $product_style = $product->product_style;
 
@@ -70,7 +70,7 @@ class BEProductController extends Controller
                 ];
             }
             $variantData = [];
-            $category = $product->category; 
+            $category = $product->category;
             $product_shape = $product->product_shape;
             $product_style = $product->product_style;
             foreach($product->variants as $variant){
@@ -83,7 +83,7 @@ class BEProductController extends Controller
                         'color_id' => $color -> product_color_id,
                         'color_name' => $color -> color_name
                     ],
-                    'quantity' => $variant->quantity, 
+                    'quantity' => $variant->quantity,
                     'price' => $variant->price,
                     'image' => [
                         'image_id' => $image -> image_id,
@@ -155,7 +155,7 @@ class BEProductController extends Controller
             $productImage -> product_id = $product -> product_id;
             $productImage -> save();
         }
-      
+
         $variants = [];
         foreach($validatedData['product_variant'] as $variantData){
             $variant = new ProductVariant();
@@ -164,7 +164,7 @@ class BEProductController extends Controller
             $variant -> width = $variantData['width'];
             $variant -> quantity = $variantData['quantity'];
             $variant -> price = $variantData['price'];
-            
+
             if(isset($variantData['color'])){
                 if($variantData['color']['color_id'] != null){
                     $variant -> color_id = $variantData['color']['color_id'];

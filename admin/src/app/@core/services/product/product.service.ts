@@ -64,7 +64,10 @@ export class ProductService {
 
   findAll(): Observable<Product[]> {
     const url = `${this.baseUrlService.baseURL}/admin/product`
-    return this.httpClient.get<Product[]>(url)
+    const content: any =  this.httpClient.get(url);
+    console.log("content: " + content);
+    
+    return null;
   }
   // findAll(): Observable<Product[]> {
   //   return of([
