@@ -15,6 +15,8 @@ use App\Http\Controllers\BEAccountController;
 use App\Http\Controllers\BECategoryController;
 use App\Http\Controllers\FEAccountController;
 use App\Http\Controllers\BEProductController;
+use App\Http\Controllers\ProductReviewController;
+use App\Http\Controllers\CartController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -35,16 +37,17 @@ use App\Http\Controllers\BEProductController;
 // Route::get('/admin/role/delete/{id}', [RoleController::class, 'delete']);
 // // Account Controller
 // Route::get('/admin/account', [AccountController::class, 'index']);
-
-
+// Route::prefix('api')->group(function () {
+//     Route::resource('product-reviews', ProductReviewController::class);
+// });
+//cart
+Route::resource('cart', CartController::class);
+// product_reiew
+Route::resource('product-review', ProductReviewController::class);
 //wishlist
-
 Route::resource('wishlist', WishlistController::class);
-
 //address
-
 Route::resource('address', AddressController::class);
-
 //provinces
 Route::resource('provinces', ProvinceController::class);
 Route::resource('wards', WardController::class);
