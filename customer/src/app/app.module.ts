@@ -15,8 +15,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { AppRoutingModule } from './app-routing.module';
 import { ThemeModule } from './@theme/theme.module';
-import { ElementsModule } from './pages/elements/elements.module';
-import { PagesModule } from './pages/others/pages.module';
+import { OthersModule } from './pages/others/others.module';
 import { HomeModule } from './pages/home/home.module';
 
 // reducers
@@ -41,8 +40,7 @@ import { LayoutComponent } from './@theme/layout/layout.component';
     NgbModule,
     HttpClientModule,
     OwlModule,
-    ElementsModule,
-    PagesModule,
+    OthersModule,
     HomeModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({

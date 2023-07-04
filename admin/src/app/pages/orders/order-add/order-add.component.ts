@@ -1,9 +1,24 @@
+import { ProductService } from './../../../@core/services/product/product.service';
+import { PaymentMethodService } from './../../../@core/services/order/payment-method.service';
 import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbAccordionItemComponent } from '@nebular/theme';
 import { CompleterCmp, CompleterData, CompleterService } from 'ng2-completer';
-import { Observable, of } from 'rxjs';
+import { Observable, of, } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { map, startWith } from 'rxjs/operators';
+import { OrderService } from '../../../@core/services/order/order.service';
+import { OrderStatusService } from '../../../@core/services/order/order-status.service';
+import { PaymentMethod } from '../../../@core/models/order/payment-method.model';
+import { OrderStatus } from '../../../@core/models/order/order-status.model';
+import { Account } from '../../../@core/models/account/account.model';
+import { AccountService } from '../../../@core/services/account/account.service';
+import { Ward } from '../../../@core/models/address/wards.model';
+import { Province } from '../../../@core/models/address/provinces.model';
+import { District } from '../../../@core/models/address/districts.model';
+import { Address } from '../../../@core/models/address/address.model';
+import { Product } from '../../../@core/models/product/product.model';
+import { CustomValidator, isEmailNotExisting, isProductidNotExisting } from '../../../@core/validators/custom-validator';
 
 @Component({
   selector: 'ngx-order-add',
@@ -13,73 +28,147 @@ import { map, startWith } from 'rxjs/operators';
 export class OrderAddComponent implements OnInit, AfterViewInit {
   @ViewChild(CompleterCmp, { static: false }) completer: CompleterCmp;
   @ViewChildren(NbAccordionItemComponent) accordions: QueryList<NbAccordionItemComponent>;
-  variants: any[] = [{}]
-  applyCoupon: boolean = false;
-  searchStr: string;
-  selectedOrderStatus;
-  dataService: CompleterData;
-  searchData = [
-    { color: 'red', value: '#f00' },
-    { color: 'green', value: '#0f0' },
-    { color: 'blue', value: '#00f' },
-    { color: 'cyan', value: '#0ff' },
-    { color: 'magenta', value: '#f0f' },
-    { color: 'yellow', value: '#ff0' },
-    { color: 'black', value: '#000' }
+  
+  addOrderFormGroup: FormGroup
+  // basic information
+  chosenAccount: Account
+  paymentMethods: PaymentMethod[]
+  orderStatuses: OrderStatus[]
+  provinces: Province[]
+  district: District[]
+  existingAddress: Address[]
+  wards: Ward[]
+  addressOptions = [
+    { value: 'existing', label: 'Use Existing Address', disabled: true },
+    { value: 'new', label: 'New Address', disabled: true },
   ];
-    
-  basicColor: {value: string, label: string}[];
-  chosenColorType: string;
+  applyCoupon: boolean = false;
+
+  // for order's products
 
   constructor(
-    private completerService: CompleterService,
+    private orderService: OrderService,
+    private orderStatusService: OrderStatusService,
+    private paymentMethodService: PaymentMethodService,
+    private accountService: AccountService,
+    private formBuilder: FormBuilder,
+    private productService: ProductService
   ) {
-    this.dataService = completerService.local(this.searchData, 'color', 'color');
+      this.orderStatusService.findAll().subscribe(data => this.orderStatuses = data)
+      this.paymentMethodService.findAll().subscribe(data => this.paymentMethods = data)
+  }
+  
+  get products() { return this.addOrderFormGroup.controls["products"] as FormArray }
+  settingFormGroup() {
+    this.addOrderFormGroup = this.formBuilder.group({
+      email: ['', CustomValidator.notBlank, isEmailNotExisting(this.accountService)],
+      coupon: [],
+      totalPrice: [, Validators.required],
+      totalQuantity: [, Validators.required],
+      orderStatus: ['', Validators.required],
+      paymentMethod: ['', Validators.required],
+      addressOption: ['', Validators.required],
+      province: ['', Validators.required],
+      district: ['', Validators.required],
+      ward: ['', Validators.required],
+      address: ['', CustomValidator.notBlank, Validators.maxLength(50)],
+      products: this.formBuilder.array([])
+    })
   }
 
   ngOnInit() {
-    this.basicColor = [
-      { value: 'This is value 1', label: 'Option 1' },
-      { value: 'This is value 2', label: 'Option 2' },
-    ];
+    this.settingFormGroup()
+    this.addProduct()
+    this.accountCompleter()
+    this.onAddressChange()
+  }
+  
+  productCompleter$: Observable<Product[]>
+  productCompleter(productFormIndex: number) {
+    this.productCompleter$ = this.products.at(productFormIndex).get('id').valueChanges.pipe(
+      startWith(''),
+      switchMap(enteredProductName => {
+        if(this.products.at(productFormIndex).get('id').value == '' ||
+          this.products.at(productFormIndex).get('id').value == null
+        ) {
+          return this.productService.findAll()
+        }
+        return this.productService.findByNameKeyword(enteredProductName)
+      })
+    );
+  }
+
+  accountCompleter$: Observable<Account[]>;
+  accountCompleter() {
+    this.accountCompleter$ = this.addOrderFormGroup.get('email').valueChanges.pipe(
+      startWith(''),
+      switchMap(enteredEmail => {
+        if(this.addOrderFormGroup.get('email').value == '') {
+          return this.accountService.findAll()
+        }
+        return this.accountService.findByEmailKeyword(enteredEmail)
+      })
+    );
+  }
 
 
-    this.options = ['Option 1', 'Option 2', 'Option 3'];
-    this.filteredOptions$ = of(this.options);
+  addProduct(): void {
+    const productForm = this.formBuilder.group({
+      id: [,  CustomValidator.notBlank, isProductidNotExisting(this.productService)],
+      size: [, [Validators.required]] ,
+      price: [{value: null, disabled: true}],
+      quantity: [, [Validators.required, Validators.min(1), Validators.max(100000)]],
+      color: [, [Validators.required]],
+    })
+    this.products.push(productForm)
+    this.productCompleter(this.products.controls.length - 1)
+  }
+  removeProduct(productFormIndex: number): void { this.products.removeAt(productFormIndex) }
 
-    this.inputFormControl = new FormControl();
-
-    this.filteredOptions$ = this.inputFormControl.valueChanges
-      .pipe(
-        startWith(''),
-        map(filterString => this.filter(filterString)),
-      );
+  onAddressChange() {
+    this.addOrderFormGroup.get('province').valueChanges.subscribe(data => {
+      this.addOrderFormGroup.patchValue({
+        district: '',
+        wards: '',
+        address: ''
+      });
+    });
+    this.addOrderFormGroup.get('district').valueChanges.subscribe(data => {
+      this.addOrderFormGroup.patchValue({
+        wards: '',
+        address: ''
+      });
+    });
   }
   
   ngAfterViewInit(): void {
     this.accordions.first.toggle()
-    const completerInput: HTMLInputElement = this.completer.ctrInput.nativeElement
-    completerInput.setAttribute('placeholder', 'Customer Username')
-    
-    const a = this.completer
   }
   
-  addVariant() {
-    this.variants.push({});
+  selectCustomer(account: Account) {
+    this.chosenAccount = account;
+    this.addOrderFormGroup.get('email').setValue(account.email)
+    if(account.address == null || account.address.length == 0) {
+      this.addressOptions[1].disabled = false
+      this.addOrderFormGroup.get('addressOption').setValue('new')
+    } else {
+      this.addressOptions[0].disabled = true
+      this.addressOptions[1].disabled = true
+
+      this.existingAddress = account.address
+    }
   }
 
-  options: string[];
-  filteredOptions$: Observable<string[]>;
-  inputFormControl: FormControl;
-
-  private filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.options.filter(optionValue => optionValue.toLowerCase().includes(filterValue));
+  selectProduct(product: Product, productFormIndex: number) {
+    this.products.controls[productFormIndex].get('id').setValue(product.productId)
   }
 
-  viewHandle(value: string) {
-    return value.toUpperCase();
+  onSubmit() {
+    console.log(this.addOrderFormGroup.value);
+    if(this.addOrderFormGroup.invalid) {
+      this.addOrderFormGroup.markAllAsTouched();
+      // this.utilsService.updateToastState(new ToastState('add', 'product', 'danger'))
+      return; 
+    }
   }
-
-  
 }

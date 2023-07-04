@@ -12,8 +12,15 @@ class Product extends Model
     protected $primaryKey = 'product_id';
     protected $fillable = ['product_name','description','is_hide','category_id','product_shape_id','product_style_id','created_at','updated_at'];
     public $timestamps = true;
-    public static function store($product_name,$description,$is_hide,$category_id,$product_shape_id,$product_style_id)
+    public static function store($validatedData)
     {
+        $product_name = $validatedData['product_name'];
+        $description = $validatedData['description'];
+        $is_hide = $validatedData['is_hide'];
+        $category_id = $validatedData['category_id'];
+        $product_shape_id = $validatedData['product_shape_id'];
+        $product_style_id = $validatedData['product_style_id'];
+        
         return DB::table('product')->insert([
             'product_name' => $product_name,
             'description' => $description,
@@ -30,6 +37,7 @@ class Product extends Model
     }
 
     public static function edit($id,$product_name,$description,$is_hide,$category_id,$product_shape_id,$product_style_id){
+        
         return DB::table('product')->where('product_id', $id)->update([
             'product_name' => $product_name,
             'description' => $description,
@@ -45,11 +53,16 @@ class Product extends Model
     }
 
     public function product_shape(){
-        return $this->belongsTo(ProductShape::class,'product_shape_id');
+        return $this->belongsTo(ProductShape::class,'product_shape_id')->withDefault();
     }
 
     public function product_style(){
-        return $this->belongsTo(Category::class,'product_style_id');
+        return $this->belongsTo(Category::class,'product_style_id')->withDefault();
+    }
+
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class, 'product_id');
     }
 }
 

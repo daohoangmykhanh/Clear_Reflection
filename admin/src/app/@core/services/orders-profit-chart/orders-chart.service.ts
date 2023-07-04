@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PeriodsService } from '../periods.service';
-import { OrdersChart } from '../../models/orders-chart';
+import { OrdersChart } from '../../models/chart/orders-chart';
 
 @Injectable()
 export class OrdersChartService {

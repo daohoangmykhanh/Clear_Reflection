@@ -9,8 +9,7 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
 // Header Element
 import { CartMenuComponent } from './components/headers/shared/cart-menu/cart-menu.component';
 import { CompareMenuComponent } from './components/headers/shared/compare-menu/compare-menu.component';
-import { WishlistMenuComponent } from './components/headers/shared/wishlist-menu/wishlist-menu.component';
-import { CategoryMenuComponent } from './components/headers/shared/category-menu/category-menu.component';
+// import { CategoryMenuComponent } from './components/headers/shared/category-menu/category-menu.component';
 import { MainMenuComponent } from './components/headers/shared/main-menu/main-menu.component';
 import { HeaderSearchComponent } from './components/headers/shared/header-search/header-search.component';
 import { MobileButtonComponent } from './components/headers/shared/mobile-button/mobile-button.component';
@@ -68,18 +67,13 @@ import { AttrFilterPipe } from './pipes/attr-filter.pipe';
 import { SafeContentPipe } from './pipes/safe-content.pipe';
 
 // // Post Component
-import { PostOneComponent } from './components/blog-post/post-one/post-one.component';
-import { PostTwoComponent } from './components/blog-post/post-two/post-two.component';
-import { PostThreeComponent } from './components/blog-post/post-three/post-three.component';
-import { PostFourComponent } from './components/blog-post/post-four/post-four.component';
 
 @NgModule({
 	declarations: [
 		// header
 		CartMenuComponent,
 		CompareMenuComponent,
-		WishlistMenuComponent,
-		CategoryMenuComponent,
+		// CategoryMenuComponent,
 		MainMenuComponent,
 		HeaderSearchComponent,
 		MobileButtonComponent,
@@ -131,10 +125,6 @@ import { PostFourComponent } from './components/blog-post/post-four/post-four.co
 		CountDownComponent,
 
 		// // blog-post
-		PostOneComponent,
-		PostTwoComponent,
-		PostThreeComponent,
-		PostFourComponent,
 		CountToComponent
 	],
 
@@ -194,11 +184,6 @@ import { PostFourComponent } from './components/blog-post/post-four/post-four.co
 		AttrFilterPipe,
 		SafeContentPipe,
 
-		// // blog-post
-		PostOneComponent,
-		PostTwoComponent,
-		PostThreeComponent,
-		PostFourComponent,
 	],
 
 	entryComponents: [

@@ -1,13 +1,22 @@
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-lg-8 col-md-12">
         <nb-card>
-            <nb-card-header>
-                Coupon List
+            <nb-card-header class="d-flex justify-content-between align-items-center">
+                <h6>
+                    Coupon List
+                </h6>
+                <nb-select [placeholder]="'Items Per Page'" [(selected)]="numberOfItem"
+                    (selectedChange)="numberOfItemsChange()">
+                    <nb-select-label>
+                        Number Of Item: {{ numberOfItem }}
+                    </nb-select-label>
+                    <nb-option value="10">10</nb-option>
+                    <nb-option value="20">20</nb-option>
+                    <nb-option value="50">50</nb-option>
+                </nb-select>
             </nb-card-header>
             <nb-card-body>
-                <ng2-smart-table id="product-table" [settings]="settings" [source]="source"
-                    (create)="onCreateProducts()" (edit)="onEditProducts($event)" (delete)="onDeleteConfirm($event)"
-                    (userRowSelect)="getProductDetails($event)" (mouseover)="changeCursor()">
+                <ng2-smart-table id="product-table" [settings]="settings" [source]="source" (mouseover)="changeCursor()">
                 </ng2-smart-table>
             </nb-card-body>
             <nb-card-footer>
@@ -15,37 +24,185 @@
             </nb-card-footer>
         </nb-card>
     </div>
-    <div class="col-lg-4">
-        <nb-card>
-            <nb-card-header>
-                Add A New Coupon
-            </nb-card-header>
-            <nb-card-body>
-                <input type="text" nbInput fullWidth placeholder="Coupon Name">
-                <textarea rows="5" nbInput fullWidth placeholder="Description"></textarea>
-                <div class="row no-gutters">
-                    <div class="col-lg-5 pr-2">
-                        <nb-select fullWidth selected="1" placeholder="Discount Type" [(selected)]="selectedDiscountType">
-                            <nb-select-label>
-                                Type: {{ selectedDiscountType }}
-                            </nb-select-label>
-                            <nb-option value="1">Fixed</nb-option>
-                            <nb-option value="2">Percent</nb-option>
-                        </nb-select>
+    <div class="col-lg-4 col-md-12">
+        <ng-container *ngIf="state === 'add'">
+            <nb-card [formGroup]="addCouponFormGroup">
+                <nb-card-header>
+                    Add A New Coupon
+                </nb-card-header>
+                <nb-card-body>
+                    <input type="text" nbInput fullWidth placeholder="Coupon Code" 
+                        formControlName="code">
+                    <div class="alert alert-danger mt-0 mb-3" 
+                        *ngIf="addCouponFormGroup.get('code').invalid && (addCouponFormGroup.get('code').dirty || addCouponFormGroup.get('code').touched)">
+                        <div *ngIf="addCouponFormGroup.get('code').errors['notblank']">
+                            Coupon code is required
+                        </div>
+    
+                        <div *ngIf="addCouponFormGroup.get('code').errors['maxlength']">
+                            Coupon Name must not exceed 20 characters
+                        </div>
                     </div>
-                    <div class="col-lg-7">
-                        <input type="number" nbInput fullWidth placeholder="Value">
+
+                    <textarea rows="3" nbInput fullWidth placeholder="Short Description"
+                        formControlName="description" style="resize: none"></textarea>
+                    <div class="alert alert-danger mt-0 mb-3" 
+                        *ngIf="addCouponFormGroup.get('description').invalid && (addCouponFormGroup.get('description').dirty || addCouponFormGroup.get('description').touched)">
+                        <div *ngIf="addCouponFormGroup.get('description').errors['notblank']">
+                            Coupon description is required
+                        </div>
+    
+                        <div *ngIf="addCouponFormGroup.get('description').errors['maxlength']">
+                            Coupon description must not exceed 50 characters
+                        </div>
                     </div>
-                </div>
-                <input nbInput fullWidth placeholder="Choose Start and Expire Date" [nbDatepicker]="rangepicker">
-                <nb-rangepicker #rangepicker></nb-rangepicker>
-            </nb-card-body>
-            <nb-card-footer>
-                <div class="d-flex justify-content-between">
-                    <button nbButton status="success">Create</button>
-                    <button nbButton status="primary">Clear</button>
-                </div>
-            </nb-card-footer>
-        </nb-card>
+
+                    <nb-select fullWidth selected="1" placeholder="Discount Type"
+                        [(selected)]="selectedDiscountTypeAddForm" formControlName="discountType">
+                        <nb-select-label>
+                            Type: {{ selectedDiscountTypeAddForm }}
+                        </nb-select-label>
+                        <nb-option value="Fixed">Fixed</nb-option>
+                        <nb-option value="Percent">Percent</nb-option>
+                    </nb-select>
+                    <div class="alert alert-danger mt-0 mb-3" 
+                        *ngIf="addCouponFormGroup.get('discountType').invalid && (addCouponFormGroup.get('discountType').dirty || addCouponFormGroup.get('discountType').touched)">
+                        <div *ngIf="addCouponFormGroup.get('discountType').errors['required']">
+                            Discount Type is required
+                        </div>
+                    </div>
+
+                    <input type="number" nbInput fullWidth placeholder="Discount Value" formControlName="discountValue">
+                    <div class="alert alert-danger mt-0 mb-3" 
+                        *ngIf="addCouponFormGroup.get('discountValue').invalid && (addCouponFormGroup.get('discountValue').dirty || addCouponFormGroup.get('discountValue').touched)">
+                        <div *ngIf="addCouponFormGroup.get('discountValue').errors['required']">
+                            Discount Value is required
+                        </div>
+    
+                        <div *ngIf="addCouponFormGroup.get('discountValue').errors['max']">
+                            Discount Value must not be larger than 100%
+                        </div>
+                    </div>
+
+                    <div class="row" >
+                        <div class="col-lg-6 col-md-12 pl-0">
+                            <input nbInput placeholder="Start Date" [nbDatepicker]="startDate" formControlName="startedDate">
+                            <nb-datepicker #startDate></nb-datepicker> 
+                            <div class="alert alert-danger mt-2 mb-3" 
+                                *ngIf="addCouponFormGroup.get('startedDate').invalid && (addCouponFormGroup.get('startedDate').dirty || addCouponFormGroup.get('startedDate').touched)">
+                                <div *ngIf="addCouponFormGroup.get('startedDate').errors['required']">
+                                    Start Date is required
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="col-lg-6 col-md-12 pr-0">
+                            <input nbInput placeholder="Expire Date" [nbDatepicker]="expireDate" formControlName="expiredDate">
+                            <nb-datepicker #expireDate></nb-datepicker>
+                            <div class="alert alert-danger mt-2 mb-3" 
+                                *ngIf="addCouponFormGroup.get('expiredDate').invalid && (addCouponFormGroup.get('expiredDate').dirty || addCouponFormGroup.get('expiredDate').touched)">
+                                <div *ngIf="addCouponFormGroup.get('expiredDate').errors['required']">
+                                    Expire Date is required
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </nb-card-body>
+                <nb-card-footer>
+                    <div class="d-flex justify-content-between">
+                        <button nbButton status="success" (click)="submitAddCoupon()">Create</button>
+                    </div>
+                </nb-card-footer>
+            </nb-card>
+        </ng-container>
+
+        <ng-container *ngIf="state === 'edit'">
+            <nb-card [formGroup]="editCouponFormGroup">
+                <nb-card-header>
+                    Edit Coupon Id: {{editCouponFormGroup.get('id').value}}
+                </nb-card-header>
+                <nb-card-body>
+                    <input type="text" nbInput fullWidth placeholder="Coupon Code" 
+                        formControlName="code">
+                    <div class="alert alert-danger mt-0 mb-3" 
+                        *ngIf="editCouponFormGroup.get('code').invalid && (editCouponFormGroup.get('code').dirty || editCouponFormGroup.get('code').touched)">
+                        <div *ngIf="editCouponFormGroup.get('code').errors['notblank']">
+                            Coupon code is required
+                        </div>
+    
+                        <div *ngIf="editCouponFormGroup.get('code').errors['maxlength']">
+                            Coupon Name must not exceed 20 characters
+                        </div>
+                    </div>
+
+                    <textarea rows="3" nbInput fullWidth placeholder="Short Description"
+                        formControlName="description" style="resize: none"></textarea>
+                    <div class="alert alert-danger mt-0 mb-3" 
+                        *ngIf="editCouponFormGroup.get('description').invalid && (editCouponFormGroup.get('description').dirty || editCouponFormGroup.get('description').touched)">
+                        <div *ngIf="editCouponFormGroup.get('description').errors['notblank']">
+                            Coupon description is required
+                        </div>
+    
+                        <div *ngIf="editCouponFormGroup.get('description').errors['maxlength']">
+                            Coupon description must not exceed 50 characters
+                        </div>
+                    </div>
+
+                    <nb-select fullWidth selected="1" placeholder="Discount Type"
+                        [(selected)]="selectedDiscountTypeEditForm" formControlName="discountType">
+                        <nb-select-label>
+                            Type: {{ selectedDiscountTypeEditForm }}
+                        </nb-select-label>
+                        <nb-option value="Fixed">Fixed</nb-option>
+                        <nb-option value="Percent">Percent</nb-option>
+                    </nb-select>
+                    <div class="alert alert-danger mt-0 mb-3" 
+                        *ngIf="editCouponFormGroup.get('discountType').invalid && (editCouponFormGroup.get('discountType').dirty || editCouponFormGroup.get('discountType').touched)">
+                        <div *ngIf="editCouponFormGroup.get('discountType').errors['required']">
+                            Discount Type is required
+                        </div>
+                    </div>
+
+                    <input type="number" nbInput fullWidth placeholder="Discount Value" formControlName="discountValue">
+                    <div class="alert alert-danger mt-0 mb-3" 
+                        *ngIf="editCouponFormGroup.get('discountValue').invalid && (editCouponFormGroup.get('discountValue').dirty || editCouponFormGroup.get('discountValue').touched)">
+                        <div *ngIf="editCouponFormGroup.get('discountValue').errors['required']">
+                            Discount Value is required
+                        </div>
+    
+                        <div *ngIf="editCouponFormGroup.get('discountValue').errors['max']">
+                            Discount Value must not be larger than 100%
+                        </div>
+                    </div>
+
+                    <div class="row" >
+                        <div class="col-lg-6 col-md-12 pl-0">
+                            <input nbInput placeholder="Start Date" [nbDatepicker]="startDate" formControlName="startedDate">
+                            <nb-datepicker #startDate></nb-datepicker> 
+                            <div class="alert alert-danger mt-2 mb-3" 
+                                *ngIf="editCouponFormGroup.get('startedDate').invalid && (editCouponFormGroup.get('startedDate').dirty || editCouponFormGroup.get('startedDate').touched)">
+                                <div *ngIf="editCouponFormGroup.get('startedDate').errors['required']">
+                                    Start Date is required
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="col-lg-6 col-md-12 pr-0">
+                            <input nbInput placeholder="Expire Date" [nbDatepicker]="expireDate" formControlName="expiredDate">
+                            <nb-datepicker #expireDate></nb-datepicker>
+                            <div class="alert alert-danger mt-2 mb-3" 
+                                *ngIf="editCouponFormGroup.get('expiredDate').invalid && (editCouponFormGroup.get('expiredDate').dirty || editCouponFormGroup.get('expiredDate').touched)">
+                                <div *ngIf="editCouponFormGroup.get('expiredDate').errors['required']">
+                                    Expire Date is required
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </nb-card-body>
+                <nb-card-footer>
+                    <div class="d-flex justify-content-between">
+                        <button nbButton status="success" (click)="submitEditCoupon()">SAVE</button>
+                    </div>
+                </nb-card-footer>
+            </nb-card>
+        </ng-container>
     </div>
 </div>

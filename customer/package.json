@@ -1,10 +1,9 @@
 {
   "name": "demo2",
   "version": "1.0.0",
-  "homepage": "https://d-themes.com/angular/molla/demo2",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --configuration=production --optimization=false",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -23,6 +22,7 @@
     "@angular/platform-browser-dynamic": "12.0.0",
     "@angular/router": "12.0.0",
     "@ng-bootstrap/ng-bootstrap": "^10.0.0",
+
     "@ngrx/effects": "^12.5.1",
     "@ngrx/entity": "^12.5.1",
     "@ngrx/router-store": "^12.5.1",
@@ -30,6 +30,8 @@
     "@ngrx/store-devtools": "^12.5.1",
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
+
+
     "angular-owl-carousel": "^1.0.0",
     "animate.css": "^4.1.1",
     "bootstrap": "^5.1.3",

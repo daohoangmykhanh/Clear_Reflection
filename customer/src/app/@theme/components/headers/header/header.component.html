@@ -18,7 +18,6 @@
                         <ul>
                             <li><a href="javascript:;">English</a></li>
                             <li><a href="javascript:;">French</a></li>
-                            <li><a href="javascript:;">Spanish</a></li>
                         </ul>
                     </div>
                 </div>
@@ -30,7 +29,12 @@
                         <a href="javascript:;">Links</a>
                         <ul>
                             <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
-                            <li><molla-wishlist-menu></molla-wishlist-menu></li>
+                            <li>
+                              <a routerLink="/customer/wishlist">
+                                <i class="icon-heart-o"></i>My Wishlist
+                                <span>({{ wishlistService.wishlistQty | async }})</span>
+                              </a>
+                            </li>
                             <li><a routerLink="/pages/about">About Us</a></li>
                             <li><a routerLink="/pages/contact">Contact Us</a></li>
                             <li><a href="javascript:;" (click)="showLoginModal($event)"><i class="icon-user"></i>Login</a></li>

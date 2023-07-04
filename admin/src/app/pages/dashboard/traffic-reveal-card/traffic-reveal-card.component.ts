@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
-import { TrafficList } from '../../../@core/models/traffic-list'
+import { TrafficList } from '../../../@core/models/chart/traffic-list'
 import { TrafficListService } from '../../../@core/services/traffic/traffic-list.service';
-import { TrafficBar } from '../../../@core/models/traffic-bar'
+import { TrafficBar } from '../../../@core/models/chart/traffic-bar'
 
 import { TrafficBarService} from '../../../@core/services/traffic/traffic-bar.service';
 import { takeWhile } from 'rxjs/operators';

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { of as observableOf,  Observable } from 'rxjs';
 import { PeriodsService } from '../periods.service';
-import { TrafficBar } from '../../models/traffic-bar';
+import { TrafficBar } from '../../models/chart/traffic-bar';
 
 @Injectable()
 export class TrafficBarService {

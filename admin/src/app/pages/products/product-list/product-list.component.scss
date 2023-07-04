@@ -3,3 +3,7 @@
   color: #1E6BB8 !important;
   display: block !important
 }
+
+::ng-deep input[type=checkbox].form-control {
+  height: 1rem;
+}

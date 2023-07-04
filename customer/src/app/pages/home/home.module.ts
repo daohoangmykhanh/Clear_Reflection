@@ -8,14 +8,12 @@ import { ThemeModule } from '../../@theme/theme.module';
 
 import { TopCollectionComponent } from './top-collection/top-collection.component';
 import { IndexComponent } from './index/index.component';
-import { BlogCollectionComponent } from './blog-collection/blog-collection.component';
 import { RecentCollectionComponent } from './recent-collection/recent-collection.component';
 
 @NgModule({
 	declarations: [
 		TopCollectionComponent,
 		IndexComponent,
-		BlogCollectionComponent,
 		RecentCollectionComponent
 	],
 

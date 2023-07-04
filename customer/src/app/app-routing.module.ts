@@ -2,14 +2,9 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { LayoutComponent } from './@theme/layout/layout.component';
-import { ComingSoonPageComponent } from './pages/others/coming-soon/coming-soon.component';
 import { IndexComponent } from './pages/home/index/index.component';
 
 const routes: Routes = [
-	{
-		path: 'pages/coming-soon',
-		component: ComingSoonPageComponent
-	},
 	{
 		path: '',
 		component: LayoutComponent,
@@ -20,20 +15,12 @@ const routes: Routes = [
 				component: IndexComponent
 			},
 			{
-				path: 'elements',
-				loadChildren: () => import( './pages/elements/elements.module' ).then( m => m.ElementsModule )
-			},
-			{
-				path: 'blog',
-				loadChildren: () => import( './pages/blog/blog.module' ).then( m => m.BlogModule )
-			},
-			{
 				path: 'pages',
-				loadChildren: () => import( './pages/others/pages.module' ).then( m => m.PagesModule )
+				loadChildren: () => import( './pages/others/others.module' ).then( m => m.OthersModule )
 			},
 			{
-				path: 'shop',
-				loadChildren: () => import( './pages/shop/shop.module' ).then( m => m.ShopModule )
+				path: 'customer',
+				loadChildren: () => import( './pages/customer/customer.module' ).then( m => m.CustomerModule )
 			},
 			{
 				path: 'product',

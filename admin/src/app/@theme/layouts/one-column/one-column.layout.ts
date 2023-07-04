@@ -1,4 +1,6 @@
+import { UtilsService } from './../../../@core/services/utils.service';
 import { Component } from '@angular/core';
+import { NbToastrService } from '@nebular/theme';
 
 @Component({
   selector: 'ngx-one-column-layout',
@@ -23,4 +25,19 @@ import { Component } from '@angular/core';
     </nb-layout>
   `,
 })
-export class OneColumnLayoutComponent {}
+export class OneColumnLayoutComponent {
+  constructor(
+    private toastService: NbToastrService,
+    private utilsService: UtilsService
+  ) {
+    this.utilsService.toastState$.subscribe(state => {
+      if(state != null) {
+        let message: string = 
+          this.utilsService.capitalizeString(state.behavior) + ' ' +
+          this.utilsService.capitalizeString(state.model) + ' ' +
+          (state.status === 'success' ? 'Successfully' : 'Failed')
+        this.toastService.show(message, 'Notification', {status: state.status, duration: 3000});
+      }
+    })
+  }
+}

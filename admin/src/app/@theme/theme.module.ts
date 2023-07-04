@@ -36,6 +36,7 @@ import { DEFAULT_THEME } from './styles/theme.default';
 import { COSMIC_THEME } from './styles/theme.cosmic';
 import { CORPORATE_THEME } from './styles/theme.corporate';
 import { DARK_THEME } from './styles/theme.dark';
+import { PrettyPrintJSONPipe } from './pipes/pretty-print-json.pipe';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -64,6 +65,7 @@ const PIPES = [
   RoundPipe,
   TimingPipe,
   NumberWithCommasPipe,
+  PrettyPrintJSONPipe
 ];
 
 @NgModule({
@@ -78,9 +80,9 @@ export class ThemeModule {
       providers: [
         ...NbThemeModule.forRoot(
           {
-            name: 'default',
+            name: 'dark',
           },
-          [ DEFAULT_THEME, COSMIC_THEME, CORPORATE_THEME, DARK_THEME ],
+          [ DEFAULT_THEME, DARK_THEME ],
         ).providers,
       ],
     };
