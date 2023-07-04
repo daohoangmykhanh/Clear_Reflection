@@ -31,25 +31,25 @@ class BEProductController extends Controller
             $product_style = $product->product_style;
 
             $productData[] = [
-                'product_id' => $product->product_id,
-                'product_name' => $product -> product_name,
+                'productId' => $product->product_id,
+                'productName' => $product -> product_name,
                 'description' => $product->description,
-                'is_hide' => $product->is_hide,
-                'images' => $imageData,
+                'isHide' => $product->is_hide,
+                'imageUrls' => $imageData,
                 'category' => [
-                    'category_id' => $category->category_id,
-                    'category_name' => $category->category_name,
+                    'categoryIdd' => $category->category_id,
+                    'categoryName' => $category->category_name,
                 ],
-                'product_shape' => [
-                    'product_shape_id' => $product_shape->product_shape_id,
-                    'shape_name' => $product_shape->shape_name,
+                'productShape' => [
+                    'productShapeId' => $product_shape->product_shape_id,
+                    'shapeName' => $product_shape->shape_name,
                 ],
-                'product_style' => [
-                    'product_style_id' => $product_style->product_style_id,
-                    'style_name' => $product_style->style_name,
+                'productStyle' => [
+                    'productStyleId' => $product_style->product_style_id,
+                    'styleName' => $product_style->style_name,
                 ],
-                'created_at' => $product->created_at,
-                'updated_at' => $product->updated_at,
+                'createdAt' => $product->created_at,
+                'updatedAt' => $product->updated_at,
             ];
         }
         return response()->json($productData);
