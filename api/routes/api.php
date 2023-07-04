@@ -54,6 +54,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 // Product Controller
 Route::get('/admin/product', [BEProductController::class, 'index']);
+Route::get('/admin/product/listDetail', [BEProductController::class, 'listDetail']);
 Route::post('/admin/product/create', [BEProductController::class, 'create']);
 Route::get('/admin/product/{id}', [BEProductController::class, 'edit']);
 Route::post('/admin/product/update', [BEProductController::class, 'update']);

@@ -9,9 +9,9 @@ class ProductImage extends Model
 {
     use HasFactory;
     protected $table = 'product_image';
-    protected $primaryKey = 'product_image_id';
+    protected $primaryKey = 'product_id';
     protected $fillable = ['product_id','image_id'];
-
+    public $timestamps = false;
     public static function store($product_id, $image_id)
     {
         return DB::table('product_image')->insert([
@@ -38,4 +38,5 @@ class ProductImage extends Model
     public function product(){
         return $this->belongsTo(Product::class,'product_id');
     }
+
 }

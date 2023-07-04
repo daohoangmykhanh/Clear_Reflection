@@ -147,6 +147,7 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
     console.log(insertProduct);
     if(this.productService.insert(insertProduct)) {
       this.utilsService.updateToastState(new ToastState('add', 'product', 'success'))
+      
       this.router.navigate(['/admin/product/list'])
     }
   }
@@ -176,7 +177,7 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
       };
     });
     insertProduct.productVariants = productVariants;
-    return 
+    return insertProduct;
   }
 
   getColorValueFromType(colorType, value): ProductColor {

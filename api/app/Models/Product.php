@@ -57,12 +57,16 @@ class Product extends Model
     }
 
     public function product_style(){
-        return $this->belongsTo(Category::class,'product_style_id')->withDefault();
+        return $this->belongsTo(ProductStyle::class,'product_style_id')->withDefault();
     }
 
     public function variants()
     {
         return $this->hasMany(ProductVariant::class, 'product_id');
+    }
+
+    public function images(){
+        return $this->hasMany(ProductImage::class, 'product_id');
     }
 }
 

@@ -11,7 +11,7 @@ class ProductVariant extends Model
     protected $table = 'product_variant';
     protected $primaryKey = 'product_variant_id';
     protected $fillable = [	'product_variant_id','product_id','height','width','color_id','quantity','price','image_id'];
-
+    public $timestamps = false;
     public static function store($validatedData)
     {
         $product_id = $validatedData['product_id'];
