@@ -2,57 +2,86 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 
-class CartController extends Controller
+class ProductVariantController extends Controller
 {
     public function index()
     {
-        $carts = Cart::with('account', 'cartDetails.product')->get();
+        $productVariants = ProductVariant::all();
 
-        return response()->json($carts);
+        return response()->json([
+            'product_variants' => $productVariants,
+        ]);
     }
 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'account_id' => 'required',
+            'product_id' => 'required|integer',
+            'height' => 'required|integer',
+            'width' => 'required|integer',
+            'color_id' => 'required|integer',
+            'quantity' => 'required|integer',
+            'price' => 'required|numeric',
+            'image_id' => 'nullable|integer',
         ]);
 
-        $cart = Cart::create($validatedData);
+        $productVariant = ProductVariant::create($validatedData);
 
-        if ($cart) {
-            return response()->json($cart, 201);
-        } else {
-            return response()->json(['message' => 'Thêm cart thất bại'], 500);
+        if (!$productVariant) {
+            return response()->json([
+                'message' => 'Failed to create product variant.',
+            ], 500);
         }
+
+        return response()->json([
+            'message' => 'Product variant created successfully.',
+            'product_variant' => $productVariant,
+        ], 201);
     }
 
-    public function show($id)
+    public function update(Request $request, $productVariantId)
     {
-        $cart = Cart::with('account', 'cartDetails.product')->findOrFail($id);
+        $validatedData = $request->validate([
+            'product_id' => 'required|integer',
+            'height' => 'required|integer',
+            'width' => 'required|integer',
+            'color_id' => 'required|integer',
+            'quantity' => 'required|integer',
+            'price' => 'required|numeric',
+            'image_id' => 'nullable|integer',
+        ]);
 
-        return response()->json($cart);
-    }
+        $productVariant = ProductVariant::findOrFail($productVariantId);
+        $updated = $productVariant->update($validatedData);
 
-    public function update(Request $request, $id)
-    {
-        $cart = Cart::findOrFail($id);
-        $cart->update($request->all());
-
-        if ($cart) {
-            return response()->json(['message' => 'Cập nhật cart thành công']);
-        } else {
-            return response()->json(['message' => 'Cập nhật cart thất bại'], 500);
+        if (!$updated) {
+            return response()->json([
+                'message' => 'Failed to update product variant.',
+            ], 500);
         }
+
+        return response()->json([
+            'message' => 'Product variant updated successfully.',
+            'product_variant' => $productVariant,
+        ]);
     }
 
-    public function destroy($id)
+    public function destroy($productVariantId)
     {
-        $cart = Cart::findOrFail($id);
-        $cart->delete();
+        $productVariant = ProductVariant::findOrFail($productVariantId);
+        $deleted = $productVariant->delete();
 
-        return response()->json(['message' => 'Xóa cart thành công']);
+        if (!$deleted) {
+            return response()->json([
+                'message' => 'Failed to delete product variant.',
+            ], 500);
+        }
+
+        return response()->json([
+            'message' => 'Product variant deleted successfully.',
+        ]);
     }
 }

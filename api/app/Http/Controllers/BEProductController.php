@@ -12,15 +12,16 @@ use Illuminate\Http\Request;
 
 class BEProductController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $products = Product::all();
-        if($products -> isEmpty()){
+        if ($products->isEmpty()) {
             return response()->json('No results found!');
         }
         $productData = [];
-        foreach($products as $product){
+        foreach ($products as $product) {
             $imageData = [];
-            foreach($product -> images as $image){
+            foreach ($product->images as $image) {
                 $imageData[] = [
                     'imageId' => $image -> image_id,
                     'imageUrl' => $image -> image -> image_url
@@ -55,15 +56,16 @@ class BEProductController extends Controller
         return response()->json($productData);
     }
 
-    public function listDetail(){
+    public function listDetail()
+    {
         $products = Product::all();
-        if($products -> isEmpty()){
+        if ($products->isEmpty()) {
             return response()->json('No results found!');
         }
         $productData = [];
-        foreach($products as $product){
+        foreach ($products as $product) {
             $imageData = [];
-            foreach($product -> images as $image){
+            foreach ($product->images as $image) {
                 $imageData[] = [
                     'imageId' => $image -> image_id,
                     'imageUrl' => $image -> image -> image_url
@@ -73,12 +75,12 @@ class BEProductController extends Controller
             $category = $product->category;
             $product_shape = $product->product_shape;
             $product_style = $product->product_style;
-            foreach($product->variants as $variant){
-                $color = $variant -> color;
-                $image = $variant -> image;
+            foreach ($product->variants as $variant) {
+                $color = $variant->color;
+                $image = $variant->image;
                 $variantData[] = [
-                    'height' => $variant ->height,
-                    'width' => $variant -> width,
+                    'height' => $variant->height,
+                    'width' => $variant->width,
                     'color' => [
                         'colorId' => $color -> product_color_id,
                         'colorName' => $color -> color_name
@@ -92,8 +94,8 @@ class BEProductController extends Controller
                 ];
             }
             $productData[] = [
-                'productId' => $product->product_id,
-                'productName' => $product -> product_name,
+                'product_id' => $product->product_id,
+                'product_name' => $product->product_name,
                 'description' => $product->description,
                 'isHide' => $product->is_hide,
                 'images' => $imageData,
@@ -117,7 +119,8 @@ class BEProductController extends Controller
         return response()->json($productData);
     }
 
-    public function create (Request $request){
+    public function create(Request $request)
+    {
         $validatedData = $request->validate([
             'productName' => 'required|string',
             'description' => 'nullable|string',
@@ -148,12 +151,12 @@ class BEProductController extends Controller
 
         foreach($validatedData['imageUrl'] as $imageUrl){
             $image = new Image();
-            $image -> image_url = $imageUrl;
-            $image -> save();
+            $image->image_url = $imageUrl;
+            $image->save();
             $productImage = new ProductImage();
-            $productImage -> image_id = $image -> image_id;
-            $productImage -> product_id = $product -> product_id;
-            $productImage -> save();
+            $productImage->image_id = $image->image_id;
+            $productImage->product_id = $product->product_id;
+            $productImage->save();
         }
 
         $variants = [];
@@ -251,7 +254,7 @@ class BEProductController extends Controller
             'createdAt' => $product->created_at,
             'updatedAt' => $product->updated_at,
         ];
-        
+
         return response()->json($productData);
     }
 
@@ -319,7 +322,7 @@ class BEProductController extends Controller
             $variant -> save();
             $variants[] = $variant;
         }
-    
+
         return response()->json([
             'message' => 'Product updated successfully.',
             'product' => $product,
