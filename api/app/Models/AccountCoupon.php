@@ -10,18 +10,17 @@ class AccountCoupon extends Model
     use HasFactory;
     protected $table = 'account_coupon';
     protected $primaryKey = 'coupon_id';
-    protected $fillable = ['name'];
+    protected $fillable = ['account_id','is_used'];
 
-    public static function store($account_id)
+    public function coupon()
     {
-        return DB::table('account_coupon')->insert(['account_id' => $account_id]);
-    }
-    
-    public static function destroy($id){
-        return DB::table('account_coupon')->where('coupon_id', '=', $id)->delete();
+        return $this->belongsTo(Coupon::class, 'coupon_id');
     }
 
-    public static function edit($id){
-        return DB::table('account_coupon')->where('coupon_id', $id)->update(['is_used' => false]);
+    public function account()
+    {
+        return $this->belongsTo(Account::class, 'coupon_id');
     }
+
+    
 }

@@ -11,31 +11,10 @@ class Coupon extends Model
     protected $table = 'coupon';
     protected $primaryKey = 'coupon_id';
     protected $fillable = ['coupon_name','discount','coupon_type_id','description','created_at','expired_at'];
-    public $timestamps = true;
+    public $timestamps = false;
 
-    public static function store($coupon_name,$discount,$coupon_type_id,$description,$expired_at)
+    public function couponType()
     {
-        return DB::table('coupon')->insert([
-            'coupon_name' => $coupon_name,
-            'discount' => $discount,
-            'coupon_type_id' => $coupon_type_id,
-            'description' => $description,
-            'created_at' => now(),
-            'expired_at' => $expired_at
-        ]);
-    }
-    
-    public static function destroy($id){
-        return DB::table('coupon')->where('coupon_id', '=', $id)->delete();
-    }
-
-    public static function edit($id,$coupon_name,$discount,$coupon_type_id,$description,$expired_at){
-        return DB::table('coupon')->where('coupon_id', $id)->update([
-            'coupon_name' => $coupon_name,
-            'discount' => $discount,
-            'coupon_type_id' => $coupon_type_id,
-            'description' => $description,
-            'expired_at' => $expired_at
-        ]);
+        return $this->belongsTo(CouponType::class, 'coupon_type_id');
     }
 }
