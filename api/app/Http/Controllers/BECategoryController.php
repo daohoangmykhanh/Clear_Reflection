@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Carbon\Carbon;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -13,11 +13,12 @@ class BECategoryController extends Controller
             return response()->json('No results found!');
         }
         foreach($categories as $category){
+            
             $categoryData[] = [
                 'category_id' => $category->category_id,
                 'category_name' => $category->category_name,
-                'created_at' => $category->created_at,
-                'updated_at' => $category->updated_at,
+                'created_at' => Carbon::parse($category->created_at)->format('d-M-Y H:i'),
+                'updated_at' => Carbon::parse($category->updated_at)->format('d-M-Y H:i'),
             ];
         }
         return response()->json($categoryData);

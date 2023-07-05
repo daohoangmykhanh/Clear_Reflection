@@ -328,4 +328,7 @@ class BEProductController extends Controller
         ], 201);
     }
 
+    public function delete($id){
+        $product = Product::Find($id);
+    }
 }

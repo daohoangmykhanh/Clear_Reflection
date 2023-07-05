@@ -11,7 +11,7 @@ class ProductShape extends Model
     protected $table = 'product_shape';
     protected $primaryKey = 'product_shape_id';
     protected $fillable = ['shape_name'];
-
+    public $timestamps = false;
     public static function store( $shape_name)
     {
         return DB::table('product_shape')->insert(['shape_name' => $shape_name]);
