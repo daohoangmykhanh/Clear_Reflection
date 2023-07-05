@@ -2,86 +2,65 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProductVariant;
+use App\Models\Cart;
 use Illuminate\Http\Request;
 
-class ProductVariantController extends Controller
+class CartController extends Controller
 {
     public function index()
     {
-        $productVariants = ProductVariant::all();
+        $carts = Cart::all();
 
         return response()->json([
-            'product_variants' => $productVariants,
+            'carts' => $carts,
+        ]);
+    }
+
+    public function show($cartId)
+    {
+        $cart = Cart::findOrFail($cartId);
+
+        return response()->json([
+            'cart' => $cart,
         ]);
     }
 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'product_id' => 'required|integer',
-            'height' => 'required|integer',
-            'width' => 'required|integer',
-            'color_id' => 'required|integer',
-            'quantity' => 'required|integer',
-            'price' => 'required|numeric',
-            'image_id' => 'nullable|integer',
+            'account_id' => 'required|integer',
         ]);
 
-        $productVariant = ProductVariant::create($validatedData);
-
-        if (!$productVariant) {
-            return response()->json([
-                'message' => 'Failed to create product variant.',
-            ], 500);
-        }
+        $cart = Cart::create($validatedData);
 
         return response()->json([
-            'message' => 'Product variant created successfully.',
-            'product_variant' => $productVariant,
+            'message' => 'Cart created successfully.',
+            'cart' => $cart,
         ], 201);
     }
 
-    public function update(Request $request, $productVariantId)
+    public function update(Request $request, $cartId)
     {
         $validatedData = $request->validate([
-            'product_id' => 'required|integer',
-            'height' => 'required|integer',
-            'width' => 'required|integer',
-            'color_id' => 'required|integer',
-            'quantity' => 'required|integer',
-            'price' => 'required|numeric',
-            'image_id' => 'nullable|integer',
+            'account_id' => 'required|integer',
         ]);
 
-        $productVariant = ProductVariant::findOrFail($productVariantId);
-        $updated = $productVariant->update($validatedData);
-
-        if (!$updated) {
-            return response()->json([
-                'message' => 'Failed to update product variant.',
-            ], 500);
-        }
+        $cart = Cart::findOrFail($cartId);
+        $cart->update($validatedData);
 
         return response()->json([
-            'message' => 'Product variant updated successfully.',
-            'product_variant' => $productVariant,
+            'message' => 'Cart updated successfully.',
+            'cart' => $cart,
         ]);
     }
 
-    public function destroy($productVariantId)
+    public function destroy($cartId)
     {
-        $productVariant = ProductVariant::findOrFail($productVariantId);
-        $deleted = $productVariant->delete();
-
-        if (!$deleted) {
-            return response()->json([
-                'message' => 'Failed to delete product variant.',
-            ], 500);
-        }
+        $cart = Cart::findOrFail($cartId);
+        $cart->delete();
 
         return response()->json([
-            'message' => 'Product variant deleted successfully.',
+            'message' => 'Cart deleted successfully.',
         ]);
     }
 }
