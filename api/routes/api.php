@@ -63,16 +63,16 @@ Route::resource('account-address', AddressAccountController::class);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-// Product Controller
-Route::resource('product', ProductController::class);
 
-// Route::get('/admin/product', [BEProductController::class, 'index']);
-// Route::get('/admin/product/a', [ListProductController::class, 'listDetail']);
-// Route::get('/admin/product/{product_id}', [ProductVariantController::class, 'show']);
-// Route::post('/admin/product/create', [BEProductController::class, 'create']);
-// Route::get('/admin/product/{id}', [BEProductController::class, 'edit']);
-// Route::post('/admin/product/update', [BEProductController::class, 'update']);
-// Route::get('/admin/product/delete/{id}', [BEProductController::class, 'delete']);
+Route::resource('product', ProductController::class);
+// Product Controller
+Route::get('/admin/product', [BEProductController::class, 'index']);
+Route::get('/admin/product/a', [ListProductController::class, 'listDetail']);
+Route::get('/admin/product/{product_id}', [ProductVariantController::class, 'show']);
+Route::post('/admin/product/create', [BEProductController::class, 'create']);
+Route::get('/admin/product/{id}', [BEProductController::class, 'edit']);
+Route::post('/admin/product/update', [BEProductController::class, 'update']);
+Route::get('/admin/product/delete/{id}', [BEProductController::class, 'delete']);
 // Role Controller
 Route::get('/admin/role', [BERoleController::class, 'index']);
 Route::post('/admin/role/create', [BERoleController::class, 'create']);

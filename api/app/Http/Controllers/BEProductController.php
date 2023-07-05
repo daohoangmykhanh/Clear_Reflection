@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CartDetail;
 use App\Models\Image;
+use App\Models\OrderDetail;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\ProductColor;
 use App\Models\ProductImage;
+use App\Models\ProductReview;
 use App\Models\ProductVariant;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 
 class BEProductController extends Controller
@@ -333,5 +337,55 @@ class BEProductController extends Controller
 
     public function delete($id){
         $product = Product::Find($id);
+        if($product == null){
+            return response()-> json("Product doesn't exist");
+        }
+        $images = ProductImage::where('product_id', $id) -> get();
+        if($images -> isNotEmpty()){
+            foreach($images as $image){
+                $img = Image::find($image->image_id);
+                $image->delete();
+                $img -> delete();
+            }
+         }
+        $variants = ProductVariant::where('product_id', $id) -> get();
+        if($variants -> isNotEmpty()){
+           foreach($variants as $variant){
+                $img = Image::find($variant->image_id);
+                $variant->delete();
+                $img -> delete();
+           }
+        }
+        $carts = CartDetail::where('product_id', $id) -> get();
+        if($carts -> isNotEmpty()){
+            foreach($carts as $cart){
+                $cart->delete();
+            }
+         }
+        $wishlists = Wishlist::where('product_id', $id) -> get();
+        if($variants -> isNotEmpty()){
+            foreach($wishlists as $wishlist){
+                $wishlist->delete();
+            }
+         }
+        $reviews = ProductReview::where('product_id', $id) -> get();
+        if($reviews -> isNotEmpty()){
+            foreach($reviews as $review){
+                 $review->delete();
+            }
+        }
+        $orders = OrderDetail::where('product_id', $id) -> get();
+        if($orders -> isNotEmpty()){
+            foreach($orders as $order){
+                $order-> product_id = null;
+                $order -> save();
+            }
+        }
+        $delete = $product -> delete();
+        if(!$delete){
+            return response()->json('Deleted unsuccessfully !');
+        }
+        return response()->json('Deleted successfully !');
+        
     }
 }
