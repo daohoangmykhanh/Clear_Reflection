@@ -11,7 +11,7 @@ class ProductStyle extends Model
     protected $table = 'product_style';
     protected $primaryKey = 'product_style_id';
     protected $fillable = ['style_name'];
-
+    public $timestamps = false;
     public static function store( $style_name)
     {
         return DB::table('product_style')->insert(['style_name' => $style_name]);

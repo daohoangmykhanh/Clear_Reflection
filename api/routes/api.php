@@ -2,8 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\WardController;
@@ -13,6 +11,8 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\BERoleController;
 use App\Http\Controllers\BEAccountController;
 use App\Http\Controllers\BECategoryController;
+use App\Http\Controllers\BEProductShapeController;
+use App\Http\Controllers\BEProductStyleController;
 use App\Http\Controllers\FEAccountController;
 use App\Http\Controllers\BEProductController;
 use App\Http\Controllers\ProductReviewController;
@@ -63,16 +63,16 @@ Route::resource('account-address', AddressAccountController::class);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-// Product Controller
-Route::resource('product', ProductController::class);
 
-// Route::get('/admin/product', [BEProductController::class, 'index']);
-// Route::get('/admin/product/a', [ListProductController::class, 'listDetail']);
-// Route::get('/admin/product/{product_id}', [ProductVariantController::class, 'show']);
-// Route::post('/admin/product/create', [BEProductController::class, 'create']);
-// Route::get('/admin/product/{id}', [BEProductController::class, 'edit']);
-// Route::post('/admin/product/update', [BEProductController::class, 'update']);
-// Route::get('/admin/product/delete/{id}', [BEProductController::class, 'delete']);
+Route::resource('product', ProductController::class);
+// Product Controller
+Route::get('/admin/product', [BEProductController::class, 'index']);
+Route::get('/admin/product/a', [ListProductController::class, 'listDetail']);
+Route::get('/admin/product/{product_id}', [ProductVariantController::class, 'show']);
+Route::post('/admin/product/create', [BEProductController::class, 'create']);
+Route::get('/admin/product/{id}', [BEProductController::class, 'edit']);
+Route::post('/admin/product/update', [BEProductController::class, 'update']);
+Route::get('/admin/product/delete/{id}', [BEProductController::class, 'delete']);
 // Role Controller
 Route::get('/admin/role', [BERoleController::class, 'index']);
 Route::post('/admin/role/create', [BERoleController::class, 'create']);
@@ -86,10 +86,18 @@ Route::get('/admin/account/delete/{id}', [BEAccountController::class, 'delete'])
 // Category Controller
 Route::get('/admin/category', [BECategoryController::class, 'index']);
 Route::post('/admin/category/create', [BECategoryController::class, 'create']);
-Route::get('/admin/category/{id}', [BECategoryController::class, 'edit']);
-Route::post('/admin/category/update', [BECategoryController::class, 'update']);
+Route::post('/admin/category/update/{id}', [BECategoryController::class, 'update']);
 Route::get('/admin/category/delete/{id}', [BECategoryController::class, 'delete']);
-
+// Product Shape Controller
+Route::get('/admin/shape', [BEProductShapeController::class, 'index']);
+Route::post('/admin/shape/create', [BEProductShapeController::class, 'create']);
+Route::post('/admin/shape/update/{id}', [BEProductShapeController::class, 'update']);
+Route::get('/admin/shape/delete/{id}', [BEProductShapeController::class, 'delete']);
+// Product Style Controller
+Route::get('/admin/style', [BEProductStyleController::class, 'index']);
+Route::post('/admin/style/create', [BEProductStyleController::class, 'create']);
+Route::post('/admin/style/update/{id}', [BEProductStyleController::class, 'update']);
+Route::get('/admin/style/delete/{id}', [BEProductStyleController::class, 'delete']);
 // FEAccount Controller
 Route::post('/register', [FEAccountController::class, 'register']);
 Route::post('/signin', [FEAccountController::class, 'signin']);
