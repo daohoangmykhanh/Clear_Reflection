@@ -16,8 +16,8 @@ class BECouponTypeController extends Controller
         foreach($coupons as $coupon){
             
             $couponData[] = [
-                'coupon_type_id' => $coupon->coupon_type_id,
-                'coupon_type_name' => $coupon->coupon_type_name,
+                'couponTypeId' => $coupon->coupon_type_id,
+                'couponTypeName' => $coupon->coupon_type_name,
       
             ];
         }
@@ -26,10 +26,10 @@ class BECouponTypeController extends Controller
 
     public function create(Request $request){
         $validatedData = $request->validate([
-            'coupon_type_name' => 'required|unique:coupon_type',
+            'couponTypeName' => 'required|unique:coupon_type,coupon_type_name',
         ]);
         $coupon = new CouponType();
-        $coupon -> coupon_type_name = $validatedData['coupon_type_name'];
+        $coupon -> coupon_type_name = $validatedData['couponTypeName'];
        
         $result = $coupon -> save();
         if(!$result)
@@ -40,10 +40,10 @@ class BECouponTypeController extends Controller
 
     public function update(Request $request, $id){
         $validatedData = $request->validate([
-            'coupon_type_name' => 'required|unique:coupon_type,coupon_type_name,'. $id . ',coupon_type_id',
+            'couponTypeName' => 'required|unique:coupon_type,coupon_type_name,'. $id . ',coupon_type_id',
         ]);
         $coupon = CouponType::find($id);
-        $coupon -> coupon_type_name = $validatedData['coupon_type_name'];
+        $coupon -> coupon_type_name = $validatedData['couponTypeName'];
         $result = $coupon -> save();
         if(!$result)
             return response()->json('Updated unsuccessfully !');

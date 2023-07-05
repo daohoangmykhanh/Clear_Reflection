@@ -21,9 +21,9 @@ class BECouponController extends Controller
                 'code' => $coupon->code,
                 'discount' => $coupon->discount,
                 'description' => $coupon->description,
-                'coupon_type_id' => $coupon->coupon_type_id,
-                'created_at' => $coupon->created_at,
-                'expired_at' => $coupon->expired_at,
+                'couponTypeId' => $coupon->coupon_type_id,
+                'createdAt' => $coupon->created_at,
+                'expiredAt' => $coupon->expired_at,
             ];
         }
         return response()->json($couponData);
@@ -31,19 +31,20 @@ class BECouponController extends Controller
 
     public function create(Request $request){
         $validatedData = $request->validate([
-            'code' => 'required|unique:coupon',
+            'code' => 'required|unique:coupon,code',
             'discount' => 'required',
             'description' => 'nullable',
-            'coupon_type_id' => 'required',
-            'created_at' => 'required',
-            'expired_at' => 'required',
+            'couponTypeId' => 'required',
+            'createdAt' => 'required',
+            'expiredAt' => 'required',
         ]);
         $coupon = new Coupon();
         $coupon -> code = $validatedData['code'];
         $coupon -> discount = $validatedData['discount'];
-        $coupon -> coupon_type_id = $validatedData['coupon_type_id'];
-        $coupon -> created_at = $validatedData['created_at'];
-        $coupon -> expired_at = $validatedData['expired_at'];
+        $coupon -> description = $validatedData['description'];
+        $coupon -> coupon_type_id = $validatedData['couponTypeId'];
+        $coupon -> created_at = $validatedData['createdAt'];
+        $coupon -> expired_at = $validatedData['expiredAt'];
         $result = $coupon -> save();
         if(!$result)
             return response()->json('Created unsuccessfully !');
@@ -56,16 +57,17 @@ class BECouponController extends Controller
             'code' => 'required|unique:coupon,code,'. $id . ',coupon_id',
             'discount' => 'required',
             'description' => 'nullable',
-            'coupon_type_id' => 'required',
-            'created_at' => 'required',
-            'expired_at' => 'required',
+            'couponTypeId' => 'required',
+            'createdAt' => 'required',
+            'expiredAt' => 'required',
         ]);
         $coupon = Coupon::find($id);
         $coupon -> code = $validatedData['code'];
         $coupon -> discount = $validatedData['discount'];
-        $coupon -> coupon_type_id = $validatedData['coupon_type_id'];
-        $coupon -> created_at = $validatedData['created_at'];
-        $coupon -> expired_at = $validatedData['expired_at'];
+        $coupon -> description = $validatedData['description'];
+        $coupon -> coupon_type_id = $validatedData['couponTypeId'];
+        $coupon -> created_at = $validatedData['createdAt'];
+        $coupon -> expired_at = $validatedData['expiredAt'];
         $result = $coupon -> save();
         if(!$result)
             return response()->json('Updated unsuccessfully !');
