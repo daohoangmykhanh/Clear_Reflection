@@ -147,6 +147,7 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
     console.log(insertProduct);
     if(this.productService.insert(insertProduct)) {
       this.utilsService.updateToastState(new ToastState('add', 'product', 'success'))
+      
       this.router.navigate(['/admin/product/list'])
     }
   }
@@ -157,8 +158,8 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
     insertProduct.description = this.product.get('description').value;
     insertProduct.isHide = false;
     insertProduct.category = this.categories.find(cate => cate.categoryName = this.product.get('category').value);
-    insertProduct.shape = this.shapes.find(shape => shape.shapeName = this.product.get('shape').value);
-    insertProduct.style = this.styles.find(style => style.styleName = this.product.get('style').value) ;
+    insertProduct.productShape = this.shapes.find(shape => shape.shapeName = this.product.get('shape').value);
+    insertProduct.productStyle = this.styles.find(style => style.styleName = this.product.get('style').value) ;
     insertProduct.imageUrls = this.product.get('images').value
     insertProduct.createdAt = new Date();
     insertProduct.updatedAt = new Date();
@@ -176,7 +177,7 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
       };
     });
     insertProduct.productVariants = productVariants;
-    return 
+    return insertProduct;
   }
 
   getColorValueFromType(colorType, value): ProductColor {

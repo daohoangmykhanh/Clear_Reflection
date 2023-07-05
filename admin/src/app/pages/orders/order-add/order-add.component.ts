@@ -85,17 +85,17 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
   
   productCompleter$: Observable<Product[]>
   productCompleter(productFormIndex: number) {
-    this.productCompleter$ = this.products.at(productFormIndex).get('id').valueChanges.pipe(
-      startWith(''),
-      switchMap(enteredProductName => {
-        if(this.products.at(productFormIndex).get('id').value == '' ||
-          this.products.at(productFormIndex).get('id').value == null
-        ) {
-          return this.productService.findAll()
-        }
-        return this.productService.findByNameKeyword(enteredProductName)
-      })
-    );
+    // this.productCompleter$ = this.products.at(productFormIndex).get('id').valueChanges.pipe(
+    //   startWith(''),
+    //   switchMap(enteredProductName => {
+    //     if(this.products.at(productFormIndex).get('id').value == '' ||
+    //       this.products.at(productFormIndex).get('id').value == null
+    //     ) {
+    //       return this.productService.findAll()
+    //     }
+    //     return this.productService.findByNameKeyword(enteredProductName)
+    //   })
+    // );
   }
 
   accountCompleter$: Observable<Account[]>;

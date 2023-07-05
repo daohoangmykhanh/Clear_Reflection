@@ -31,8 +31,6 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 				}
 
 				this.product = result.product;
-				this.prev = result.prevProduct;
-				this.next = result.nextProduct;
 				this.related = result.relatedProducts;
 				this.loaded = true;
 			});

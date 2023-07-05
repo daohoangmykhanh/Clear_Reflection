@@ -14,6 +14,7 @@ import { CustomersModule } from './customers/customers.module';
     PagesRoutingModule,
     ThemeModule, // @theme
     NbMenuModule,
+    
     DashboardModule,
     ProductsModule,
     OrdersModule,

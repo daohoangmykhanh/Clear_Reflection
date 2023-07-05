@@ -10,8 +10,8 @@ export class Product {
     description: string;
     isHide: boolean;
     category: ProductCategory;
-    shape: ProductShape;
-    style: ProductStyle;
+    productShape: ProductShape;
+    productStyle: ProductStyle;
     createdAt: Date;
     updatedAt: Date;
     

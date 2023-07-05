@@ -8,8 +8,6 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 // Header Element
 import { CartMenuComponent } from './components/headers/shared/cart-menu/cart-menu.component';
-import { CompareMenuComponent } from './components/headers/shared/compare-menu/compare-menu.component';
-// import { CategoryMenuComponent } from './components/headers/shared/category-menu/category-menu.component';
 import { MainMenuComponent } from './components/headers/shared/main-menu/main-menu.component';
 import { HeaderSearchComponent } from './components/headers/shared/header-search/header-search.component';
 import { MobileButtonComponent } from './components/headers/shared/mobile-button/mobile-button.component';
@@ -50,7 +48,6 @@ import { CountToComponent } from './components/count-to/count-to.component';
 import { QuickViewComponent } from './components/modals/quick-view/quick-view.component';
 import { QuickViewTwoComponent } from './components/modals/quick-view-two/quick-view-two.component';
 import { VideoModalComponent } from './components/modals/video-modal/video-modal.component';
-import { NewsletterModalComponent } from './components/modals/newsletter-modal/newsletter-modal.component';
 import { LoginModalComponent } from './components/modals/login-modal/login-modal.component';
 import { IsotopeGridComponent } from './components/isotope-grid/isotope-grid.component';
 import { ImageComponent } from './components/image/image.component';
@@ -72,7 +69,6 @@ import { SafeContentPipe } from './pipes/safe-content.pipe';
 	declarations: [
 		// header
 		CartMenuComponent,
-		CompareMenuComponent,
 		// CategoryMenuComponent,
 		MainMenuComponent,
 		HeaderSearchComponent,
@@ -101,7 +97,6 @@ import { SafeContentPipe } from './pipes/safe-content.pipe';
 		PageHeaderComponent,
 		QuickViewComponent,
 		QuickViewTwoComponent,
-		NewsletterModalComponent,
 		LoginModalComponent,
 		VideoModalComponent,
 		QuantityInputComponent,
@@ -190,9 +185,12 @@ import { SafeContentPipe } from './pipes/safe-content.pipe';
 		VideoModalComponent,
 		QuickViewComponent,
 		QuickViewTwoComponent,
-		NewsletterModalComponent,
 		LoginModalComponent
-	]
+	],
+
+  providers: [
+
+  ]
 })
 
 export class ThemeModule { }

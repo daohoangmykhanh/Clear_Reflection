@@ -23,8 +23,8 @@ class BEProductController extends Controller
             $imageData = [];
             foreach ($product->images as $image) {
                 $imageData[] = [
-                    'image_id' => $image->image_id,
-                    'image_url' => $image->image->image_url
+                    'imageId' => $image -> image_id,
+                    'imageUrl' => $image -> image -> image_url
                 ];
             }
             $category = $product->category;
@@ -32,25 +32,25 @@ class BEProductController extends Controller
             $product_style = $product->product_style;
 
             $productData[] = [
-                'product_id' => $product->product_id,
-                'product_name' => $product->product_name,
+                'productId' => $product->product_id,
+                'productName' => $product -> product_name,
                 'description' => $product->description,
-                'is_hide' => $product->is_hide,
-                'images' => $imageData,
+                'isHide' => $product->is_hide,
+                'imageUrls' => $imageData,
                 'category' => [
-                    'category_id' => $category->category_id,
-                    'category_name' => $category->category_name,
+                    'categoryId' => $category->category_id,
+                    'categoryName' => $category->category_name,
                 ],
-                'product_shape' => [
-                    'product_shape_id' => $product_shape->product_shape_id,
-                    'shape_name' => $product_shape->shape_name,
+                'productShape' => [
+                    'productShapeId' => $product_shape->product_shape_id,
+                    'shapeName' => $product_shape->shape_name,
                 ],
-                'product_style' => [
-                    'product_style_id' => $product_style->product_style_id,
-                    'style_name' => $product_style->style_name,
+                'productStyle' => [
+                    'productStyleId' => $product_style->product_style_id,
+                    'styleName' => $product_style->style_name,
                 ],
-                'created_at' => $product->created_at,
-                'updated_at' => $product->updated_at,
+                'createdAt' => $product->created_at,
+                'updatedAt' => $product->updated_at,
             ];
         }
         return response()->json($productData);
@@ -67,8 +67,8 @@ class BEProductController extends Controller
             $imageData = [];
             foreach ($product->images as $image) {
                 $imageData[] = [
-                    'image_id' => $image->image_id,
-                    'image_url' => $image->image->image_url
+                    'imageId' => $image -> image_id,
+                    'imageUrl' => $image -> image -> image_url
                 ];
             }
             $variantData = [];
@@ -82,14 +82,14 @@ class BEProductController extends Controller
                     'height' => $variant->height,
                     'width' => $variant->width,
                     'color' => [
-                        'color_id' => $color->product_color_id,
-                        'color_name' => $color->color_name
+                        'colorId' => $color -> product_color_id,
+                        'colorName' => $color -> color_name
                     ],
                     'quantity' => $variant->quantity,
                     'price' => $variant->price,
                     'image' => [
-                        'image_id' => $image->image_id,
-                        'image_url' => $image->image_url
+                        'imageId' => $image -> image_id,
+                        'imageUrl' => $image -> image_url
                     ]
                 ];
             }
@@ -97,23 +97,23 @@ class BEProductController extends Controller
                 'product_id' => $product->product_id,
                 'product_name' => $product->product_name,
                 'description' => $product->description,
-                'is_hide' => $product->is_hide,
+                'isHide' => $product->is_hide,
                 'images' => $imageData,
                 'category' => [
-                    'category_id' => $category->category_id,
-                    'category_name' => $category->category_name,
+                    'categoryId' => $category->category_id,
+                    'categoryName' => $category->category_name,
                 ],
-                'product_shape' => [
-                    'product_shape_id' => $product_shape->product_shape_id,
-                    'shape_name' => $product_shape->shape_name,
+                'productShape' => [
+                    'productShapeId' => $product_shape->product_shape_id,
+                    'shapeName' => $product_shape->shape_name,
                 ],
-                'product_style' => [
-                    'product_style_id' => $product_style->product_style_id,
-                    'style_name' => $product_style->style_name,
+                'productStyle' => [
+                    'productStyleId' => $product_style->product_style_id,
+                    'styleName' => $product_style->style_name,
                 ],
-                'product_variant' => $variantData,
-                'created_at' => $product->created_at,
-                'updated_at' => $product->updated_at,
+                'productVariant' => $variantData,
+                'createdAt' => $product->created_at,
+                'updatedAt' => $product->updated_at,
             ];
         }
         return response()->json($productData);
@@ -122,34 +122,34 @@ class BEProductController extends Controller
     public function create(Request $request)
     {
         $validatedData = $request->validate([
-            'product_name' => 'required|string',
+            'productName' => 'required|string',
             'description' => 'nullable|string',
-            'is_hide' => 'required|boolean',
-            'category_id' => 'required|integer',
-            'product_shape_id' => 'required|integer',
-            'product_style_id' => 'required|integer',
-            'product_variant' => 'required|array',
-            'image_url' => 'required|array',
-            'product_variant.*.height' => 'required|numeric',
-            'product_variant.*.width' => 'required|numeric',
-            'product_variant.*.color.color_id' => 'nullable|integer',
-            'product_variant.*.color.color_name' => 'nullable|string',
-            'product_variant.*.quantity' => 'required|integer',
-            'product_variant.*.price' => 'required|numeric',
-            'product_variant.*.image_url' => 'nullable|string',
+            'isHide' => 'required|boolean',
+            'categoryId' => 'required|integer',
+            'productShapeId' => 'required|integer',
+            'productStyleId' => 'required|integer',
+            'productVariant' => 'required|array',
+            'imageUrl' => 'required|array',
+            'productVariant.*.height' => 'required|numeric',
+            'productVariant.*.width' => 'required|numeric',
+            'productVariant.*.color.colorId' => 'nullable|integer',
+            'productVariant.*.color.colorName' => 'nullable|string',
+            'productVariant.*.quantity' => 'required|integer',
+            'productVariant.*.price' => 'required|numeric',
+            'productVariant.*.imageUrl' => 'nullable|string',
         ]);
 
         $product = new Product();
-        $product->product_name = $validatedData['product_name'];
-        $product->description = $validatedData['description'];
-        $product->is_hide = $validatedData['is_hide'];
-        $product->category_id = $validatedData['category_id'];
-        $product->product_shape_id = $validatedData['product_shape_id'];
-        $product->product_style_id = $validatedData['product_style_id'];
-        $product->created_at = now();
-        $product->save();
+        $product-> product_name = $validatedData['productName'];
+        $product -> description = $validatedData['description'];
+        $product -> is_hide = $validatedData['isHide'];
+        $product -> category_id = $validatedData['categoryId'];
+        $product -> product_shape_id = $validatedData['productShapeId'];
+        $product -> product_style_id = $validatedData['productStyleId'];
+        $product -> created_at = now();
+        $product -> save();
 
-        foreach ($validatedData['image_url'] as $imageUrl) {
+        foreach($validatedData['imageUrl'] as $imageUrl){
             $image = new Image();
             $image->image_url = $imageUrl;
             $image->save();
@@ -160,29 +160,29 @@ class BEProductController extends Controller
         }
 
         $variants = [];
-        foreach ($validatedData['product_variant'] as $variantData) {
+        foreach($validatedData['productVariant'] as $variantData){
             $variant = new ProductVariant();
-            $variant->product_id = $product->product_id;
-            $variant->height = $variantData['height'];
-            $variant->width = $variantData['width'];
-            $variant->quantity = $variantData['quantity'];
-            $variant->price = $variantData['price'];
+            $variant -> product_id = $product->product_id;
+            $variant -> height = $variantData['height'];
+            $variant -> width = $variantData['width'];
+            $variant -> quantity = $variantData['quantity'];
+            $variant -> price = $variantData['price'];
 
-            if (isset($variantData['color'])) {
-                if ($variantData['color']['color_id'] != null) {
-                    $variant->color_id = $variantData['color']['color_id'];
+            if(isset($variantData['color'])){
+                if($variantData['color']['colorId'] != null){
+                    $variant -> color_id = $variantData['color']['colorId'];
                 } else {
                     $color = new ProductColor();
-                    $color->color_name = $variantData['color']['color_name'];
-                    $color->save();
-                    $variant->color_id = $color->product_color_id;
+                    $color -> color_name = $variantData['color']['colorName'];
+                    $color -> save();
+                    $variant -> color_id = $color -> product_color_id;
                 }
             }
-            if (isset($variantData['image_url'])) {
+            if(isset($variantData['imageUrl'])){
                 $image = new Image();
-                $image->image_url = $variantData['image_url'];
-                $image->save();
-                $variant->image_id = $image->image_id;
+                $image -> image_url = $variantData['imageUrl'];
+                $image -> save();
+                $variant -> image_id = $image -> image_id;
             }
             $variants[] = $variant;
         }
@@ -192,7 +192,143 @@ class BEProductController extends Controller
             'message' => 'Product created successfully.',
             'product' => $product,
             'variant' => $variants,
-            'image_url' => $validatedData['image_url']
+            'imageUrl' => $validatedData['imageUrl']
         ], 201);
     }
+
+    public function edit ($id){
+        $product = Product::Find($id);
+        if(!$product){
+            return response()->json('No results found!');
+        }
+        $productData = [];
+        $imageData = [];
+        foreach($product -> images as $image){
+            $imageData[] = [
+                'imageId' => $image -> image_id,
+                'imageUrl' => $image -> image -> image_url
+            ];
+        }
+        $variantData = [];
+        $category = $product->category;
+        $product_shape = $product->product_shape;
+        $product_style = $product->product_style;
+        foreach($product->variants as $variant){
+            $color = $variant -> color;
+            $image = $variant -> image;
+            $variantData[] = [
+                'productVariantId' => $variant -> product_variant_id,
+                'height' => $variant ->height,
+                'width' => $variant -> width,
+                'color' => [
+                    'colorId' => $color -> product_color_id,
+                    'colorName' => $color -> color_name
+                ],
+                'quantity' => $variant->quantity,
+                'price' => $variant->price,
+                'image' => [
+                    'imageId' => $image -> image_id,
+                    'imageUrl' => $image -> image_url
+                ]
+            ];
+        }
+        $productData[] = [
+            'productId' => $product->product_id,
+            'productName' => $product -> product_name,
+            'description' => $product->description,
+            'isHide' => $product->is_hide,
+            'images' => $imageData,
+            'category' => [
+                'categoryId' => $category->category_id,
+                'categoryName' => $category->category_name,
+            ],
+            'productShape' => [
+                'productShapeId' => $product_shape->product_shape_id,
+                'shapeName' => $product_shape->shape_name,
+            ],
+            'productStyle' => [
+                'productStyleId' => $product_style->product_style_id,
+                'styleName' => $product_style->style_name,
+            ],
+            'productVariant' => $variantData,
+            'createdAt' => $product->created_at,
+            'updatedAt' => $product->updated_at,
+        ];
+
+        return response()->json($productData);
+    }
+
+    public function update(Request $request, $id){
+        $product = Product::Find($id);
+        $validatedData = $request->validate([
+            'productName' => 'required|string',
+            'description' => 'nullable|string',
+            'isHide' => 'required|boolean',
+            'categoryId' => 'required|integer',
+            'productShapeId' => 'required|integer',
+            'productStyleId' => 'required|integer',
+            'productVariant' => 'required|array',
+            'imageUrl' => 'required|array',
+            'productVariant.*.height' => 'required|numeric',
+            'productVariant.*.productVariantId' => 'nullable|integer',
+            'productVariant.*.width' => 'required|numeric',
+            'productVariant.*.color.colorId' => 'nullable|integer',
+            'productVariant.*.color.colorName' => 'nullable|string',
+            'productVariant.*.quantity' => 'required|integer',
+            'productVariant.*.price' => 'required|numeric',
+            'productVariant.*.imageUrl' => 'nullable|string',
+        ]);
+        $product-> product_name = $validatedData['productName'];
+        $product -> description = $validatedData['description'];
+        $product -> is_hide = $validatedData['isHide'];
+        $product -> category_id = $validatedData['categoryId'];
+        $product -> product_shape_id = $validatedData['productShapeId'];
+        $product -> product_style_id = $validatedData['productStyleId'];
+        $product -> updated_at = now();
+        $product -> save();
+
+        $variants = [];
+        foreach($validatedData['productVariant'] as $variantData){
+            $variant = new ProductVariant();
+
+            if (isset($variantData['productVariantId'])) {
+                $existingVariant = ProductVariant::find($variantData['productVariantId']);
+                if ($existingVariant !== null) {
+                    $variant = $existingVariant;
+                }
+            }
+            $variant->product_id = $product->product_id;
+            $variant -> height = $variantData['height'];
+            $variant -> width = $variantData['width'];
+            $variant -> quantity = $variantData['quantity'];
+            $variant -> price = $variantData['price'];
+
+            if(isset($variantData['color'])){
+                if($variantData['color']['colorId'] != null && isset($variantData['color']['colorId'])){
+                    $variant -> color_id = $variantData['color']['colorId'];
+                } else {
+                    $color = new ProductColor();
+                    $color -> color_name = $variantData['color']['colorName'];
+                    $color -> save();
+                    $variant -> color_id = $color -> product_color_id;
+                }
+            }
+            if(isset($variantData['imageUrl'])){
+                $image = new Image();
+                $image -> image_url = $variantData['imageUrl'];
+                $image -> save();
+                $variant -> image_id = $image -> image_id;
+            }
+            $variant -> save();
+            $variants[] = $variant;
+        }
+
+        return response()->json([
+            'message' => 'Product updated successfully.',
+            'product' => $product,
+            'variants' => $variants,
+            'imageUrl' => $validatedData['imageUrl']
+        ], 201);
+    }
+
 }

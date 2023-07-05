@@ -11,6 +11,7 @@ import { UtilsService } from './@core/services/utils.service';
 
 import { RefreshStoreAction } from 'src/app/@core/services/actions';
 import { environment } from 'src/environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var $: any;
 
@@ -27,8 +28,11 @@ export class AppComponent {
 		public viewPort: ViewportScroller,
 		public storeService: StoreService,
 		public utilsService: UtilsService,
-		public modalService: NgbModal
+		public modalService: NgbModal,
+    private translateService: TranslateService
 	) {
+    this.translateService.setDefaultLang('en-US');
+
 		const navigationEnd = this.router.events.pipe(
 			filter(event => event instanceof NavigationEnd)
 		);

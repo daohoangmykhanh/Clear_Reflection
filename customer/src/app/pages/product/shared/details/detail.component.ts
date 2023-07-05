@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
 declare var $: any;
 
 @Component({
-	selector: 'product-detail',
+	selector: 'product-detail-summary',
 	templateUrl: './detail.component.html',
 	styleUrls: ['./detail.component.scss']
 })
