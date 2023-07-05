@@ -12,27 +12,28 @@ use Illuminate\Http\Request;
 
 class BEProductController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $products = Product::all();
-        if($products -> isEmpty()){
+        if ($products->isEmpty()) {
             return response()->json('No results found!');
         }
         $productData = [];
-        foreach($products as $product){
+        foreach ($products as $product) {
             $imageData = [];
-            foreach($product -> images as $image){
+            foreach ($product->images as $image) {
                 $imageData[] = [
-                    'image_id' => $image -> image_id,
-                    'image_url' => $image -> image -> image_url
+                    'image_id' => $image->image_id,
+                    'image_url' => $image->image->image_url
                 ];
             }
-            $category = $product->category; 
+            $category = $product->category;
             $product_shape = $product->product_shape;
             $product_style = $product->product_style;
 
             $productData[] = [
                 'product_id' => $product->product_id,
-                'product_name' => $product -> product_name,
+                'product_name' => $product->product_name,
                 'description' => $product->description,
                 'is_hide' => $product->is_hide,
                 'images' => $imageData,
@@ -55,45 +56,46 @@ class BEProductController extends Controller
         return response()->json($productData);
     }
 
-    public function listDetail(){
+    public function listDetail()
+    {
         $products = Product::all();
-        if($products -> isEmpty()){
+        if ($products->isEmpty()) {
             return response()->json('No results found!');
         }
         $productData = [];
-        foreach($products as $product){
+        foreach ($products as $product) {
             $imageData = [];
-            foreach($product -> images as $image){
+            foreach ($product->images as $image) {
                 $imageData[] = [
-                    'image_id' => $image -> image_id,
-                    'image_url' => $image -> image -> image_url
+                    'image_id' => $image->image_id,
+                    'image_url' => $image->image->image_url
                 ];
             }
             $variantData = [];
-            $category = $product->category; 
+            $category = $product->category;
             $product_shape = $product->product_shape;
             $product_style = $product->product_style;
-            foreach($product->variants as $variant){
-                $color = $variant -> color;
-                $image = $variant -> image;
+            foreach ($product->variants as $variant) {
+                $color = $variant->color;
+                $image = $variant->image;
                 $variantData[] = [
-                    'height' => $variant ->height,
-                    'width' => $variant -> width,
+                    'height' => $variant->height,
+                    'width' => $variant->width,
                     'color' => [
-                        'color_id' => $color -> product_color_id,
-                        'color_name' => $color -> color_name
+                        'color_id' => $color->product_color_id,
+                        'color_name' => $color->color_name
                     ],
-                    'quantity' => $variant->quantity, 
+                    'quantity' => $variant->quantity,
                     'price' => $variant->price,
                     'image' => [
-                        'image_id' => $image -> image_id,
-                        'image_url' => $image -> image_url
+                        'image_id' => $image->image_id,
+                        'image_url' => $image->image_url
                     ]
                 ];
             }
             $productData[] = [
                 'product_id' => $product->product_id,
-                'product_name' => $product -> product_name,
+                'product_name' => $product->product_name,
                 'description' => $product->description,
                 'is_hide' => $product->is_hide,
                 'images' => $imageData,
@@ -117,7 +119,8 @@ class BEProductController extends Controller
         return response()->json($productData);
     }
 
-    public function create (Request $request){
+    public function create(Request $request)
+    {
         $validatedData = $request->validate([
             'product_name' => 'required|string',
             'description' => 'nullable|string',
@@ -137,49 +140,49 @@ class BEProductController extends Controller
         ]);
 
         $product = new Product();
-        $product-> product_name = $validatedData['product_name'];
-        $product -> description = $validatedData['description'];
-        $product -> is_hide = $validatedData['is_hide'];
-        $product -> category_id = $validatedData['category_id'];
-        $product -> product_shape_id = $validatedData['product_shape_id'];
-        $product -> product_style_id = $validatedData['product_style_id'];
-        $product -> created_at = now();
-        $product -> save();
+        $product->product_name = $validatedData['product_name'];
+        $product->description = $validatedData['description'];
+        $product->is_hide = $validatedData['is_hide'];
+        $product->category_id = $validatedData['category_id'];
+        $product->product_shape_id = $validatedData['product_shape_id'];
+        $product->product_style_id = $validatedData['product_style_id'];
+        $product->created_at = now();
+        $product->save();
 
-        foreach($validatedData['image_url'] as $imageUrl){
+        foreach ($validatedData['image_url'] as $imageUrl) {
             $image = new Image();
-            $image -> image_url = $imageUrl;
-            $image -> save();
+            $image->image_url = $imageUrl;
+            $image->save();
             $productImage = new ProductImage();
-            $productImage -> image_id = $image -> image_id;
-            $productImage -> product_id = $product -> product_id;
-            $productImage -> save();
+            $productImage->image_id = $image->image_id;
+            $productImage->product_id = $product->product_id;
+            $productImage->save();
         }
-      
+
         $variants = [];
-        foreach($validatedData['product_variant'] as $variantData){
+        foreach ($validatedData['product_variant'] as $variantData) {
             $variant = new ProductVariant();
-            $variant -> product_id = $product->product_id;
-            $variant -> height = $variantData['height'];
-            $variant -> width = $variantData['width'];
-            $variant -> quantity = $variantData['quantity'];
-            $variant -> price = $variantData['price'];
-            
-            if(isset($variantData['color'])){
-                if($variantData['color']['color_id'] != null){
-                    $variant -> color_id = $variantData['color']['color_id'];
+            $variant->product_id = $product->product_id;
+            $variant->height = $variantData['height'];
+            $variant->width = $variantData['width'];
+            $variant->quantity = $variantData['quantity'];
+            $variant->price = $variantData['price'];
+
+            if (isset($variantData['color'])) {
+                if ($variantData['color']['color_id'] != null) {
+                    $variant->color_id = $variantData['color']['color_id'];
                 } else {
                     $color = new ProductColor();
-                    $color -> color_name = $variantData['color']['color_name'];
-                    $color -> save();
-                    $variant -> color_id = $color -> product_color_id;
+                    $color->color_name = $variantData['color']['color_name'];
+                    $color->save();
+                    $variant->color_id = $color->product_color_id;
                 }
             }
-            if(isset($variantData['image_url'])){
+            if (isset($variantData['image_url'])) {
                 $image = new Image();
-                $image -> image_url = $variantData['image_url'];
-                $image -> save();
-                $variant -> image_id = $image -> image_id;
+                $image->image_url = $variantData['image_url'];
+                $image->save();
+                $variant->image_id = $image->image_id;
             }
             $variants[] = $variant;
         }
@@ -192,6 +195,4 @@ class BEProductController extends Controller
             'image_url' => $validatedData['image_url']
         ], 201);
     }
-
-
 }
