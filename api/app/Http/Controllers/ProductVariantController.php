@@ -51,7 +51,6 @@ class ProductVariantController extends Controller
         }
 
         return response()->json([
-            'message' => 'Product variant created successfully.',
             'product_variant' => $productVariant,
         ], 201);
     }
@@ -71,16 +70,7 @@ class ProductVariantController extends Controller
         $productVariant = ProductVariant::findOrFail($productVariantId);
         $updated = $productVariant->update($validatedData);
 
-        if (!$updated) {
-            return response()->json([
-                'message' => 'Failed to update product variant.',
-            ], 500);
-        }
-
-        return response()->json([
-            'message' => 'Product variant updated successfully.',
-            'product_variant' => $productVariant,
-        ]);
+        return response()->json($updated);
     }
 
     public function destroy($productVariantId)
@@ -88,14 +78,6 @@ class ProductVariantController extends Controller
         $productVariant = ProductVariant::findOrFail($productVariantId);
         $deleted = $productVariant->delete();
 
-        if (!$deleted) {
-            return response()->json([
-                'message' => 'Failed to delete product variant.',
-            ], 500);
-        }
-
-        return response()->json([
-            'message' => 'Product variant deleted successfully.',
-        ]);
+        return response()->json($deleted);
     }
 }

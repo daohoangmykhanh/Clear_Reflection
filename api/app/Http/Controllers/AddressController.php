@@ -8,59 +8,75 @@ use Illuminate\Http\Request;
 class AddressController extends Controller
 {
     /**
+     * Hiển thị danh sách tất cả các địa chỉ.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
         $addresses = Address::all();
-        foreach ($addresses as $address) {
-            $addressData[] = [
-                'address_id' => $address->address_id,
-                'house_number' => $address->house_number,
-                'road_name' => $address->road_name,
-                'wards_code' => $address->wards_code,
-                'district_code' => $address->district,
-                'province_code' => $address->province,
-                "ward" => $address->ward,
-            ];
-        }
-        return response()->json($addresses);
+
+        return response()->json([
+            'addresses' => $addresses,
+        ]);
     }
 
-
+    /**
+     * Lưu một địa chỉ mới vào cơ sở dữ liệu.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Request $request)
     {
-
         $address = Address::create($request->all());
 
-        return response()->json($address, 201);
+        return response()->json([
+            'address' => $address,
+        ], 201);
     }
 
-
+    /**
+     * Hiển thị thông tin của một địa chỉ cụ thể.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show($id)
     {
         $address = Address::findOrFail($id);
 
-        return response()->json($address);
+        return response()->json([
+            'address' => $address,
+        ]);
     }
 
-
+    /**
+     * Cập nhật thông tin của một địa chỉ cụ thể trong cơ sở dữ liệu.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(Request $request, $id)
     {
-
         $address = Address::findOrFail($id);
-        $address->update($request->all());
+        $updated = $address->update($request->all());
 
-        return response()->json($address);
+        return response()->json($updated);
     }
 
-
+    /**
+     * Xóa một địa chỉ cụ thể khỏi cơ sở dữ liệu.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroy($id)
     {
         $address = Address::findOrFail($id);
-        $address->delete();
+        $deleted = $address->delete();
 
-        return response()->json(['message' => 'Address deleted']);
+        return response()->json($deleted);
     }
 }

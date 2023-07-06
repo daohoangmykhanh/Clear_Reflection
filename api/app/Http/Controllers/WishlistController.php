@@ -11,7 +11,9 @@ class WishlistController extends Controller
     {
         $wishlists = Wishlist::with('account', 'product')->get();
 
-        return response()->json($wishlists);
+        return response()->json([
+            'wishlists' => $wishlists,
+        ]);
     }
 
     public function store(Request $request)
@@ -24,36 +26,40 @@ class WishlistController extends Controller
         $wishlist = Wishlist::create($validatedData);
 
         if ($wishlist) {
-            return response()->json($wishlist, 201);
+            return response()->json([
+                'wishlist' => $wishlist,
+            ], 201);
         } else {
-            return response()->json(['message' => 'Thêm wishlist thất bại'], 500);
+            return response()->json([
+                'message' => 'Failed to create wishlist.',
+            ], 500);
         }
     }
+
 
     public function show($id)
     {
         $wishlist = Wishlist::with('account', 'product')->findOrFail($id);
 
-        return response()->json($wishlist);
+        return response()->json([
+            'wishlist' => $wishlist,
+        ]);
     }
 
     public function update(Request $request, $id)
     {
         $wishlist = Wishlist::findOrFail($id);
-        $wishlist->update($request->all());
+        $updated = $wishlist->update($request->all());
 
-        if ($wishlist) {
-            return response()->json(['message' => 'Cập nhật wishlist thành công']);
-        } else {
-            return response()->json(['message' => 'Cập nhật wishlist thất bại'], 500);
-        }
+        return response()->json($updated);
     }
+
 
     public function destroy($id)
     {
         $wishlist = Wishlist::findOrFail($id);
-        $wishlist->delete();
+        $deleted = $wishlist->delete();
 
-        return response()->json(['message' => 'Xóa wishlist thành công']);
+        return response()->json($deleted);
     }
 }

@@ -87,8 +87,8 @@ class AddressAccountController extends Controller
     public function destroy($id)
     {
         $addressAccount = AddressAccount::findOrFail($id);
-        $addressAccount->delete();
+        $de = $addressAccount->delete();
 
-        return response()->json(['message' => 'AddressAccount deleted']);
+        return response()->json($de);
     }
 }

@@ -17,13 +17,17 @@ use App\Http\Controllers\FEAccountController;
 use App\Http\Controllers\BEProductController;
 use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\ListProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
+use App\Http\Controllers\OrderAddressController;
 use App\Http\Controllers\BECouponController;
 use App\Http\Controllers\BECouponTypeController;
 use App\Http\Controllers\BECompanyController;
 use App\Http\Controllers\BEOrderController;
+use App\Http\Controllers\CategoryController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -50,6 +54,18 @@ use App\Http\Controllers\BEOrderController;
 // Route::group(['prefix' => 'admin', 'middleware' => 'auth:api'], function () {}
 
 
+//category
+Route::resource('category', CategoryController::class);
+
+//order-address
+Route::resource('order-address', OrderAddressController::class);
+
+// district
+Route::resource('districts', DistrictController::class);
+Route::get('districts/{districtCode}/wards', [WardController::class, 'getAllWardsByDistrict']);
+
+
+//product-variant
 Route::resource('product-variant', ProductVariantController::class);
 //cart
 Route::resource('cart', CartController::class);
@@ -61,8 +77,16 @@ Route::resource('wishlist', WishlistController::class);
 Route::resource('address', AddressController::class);
 //provinces
 Route::resource('provinces', ProvinceController::class);
+Route::get('provinces/{provinceCode}/districts', [DistrictController::class, 'getAllDistrictsByProvince']);
+
+
+// ward
 Route::resource('wards', WardController::class);
+
+//account-ađress
 Route::resource('account-address', AddressAccountController::class);
+
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
