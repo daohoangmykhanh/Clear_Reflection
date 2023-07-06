@@ -10,11 +10,23 @@ class ProductReviewController extends Controller
     public function index()
     {
         $productReviews = ProductReview::with('account', 'product')->get();
+        $productReviewData = [];
+
+        foreach ($productReviews as $productReview) {
+            $productReviewData[] = [
+                'productReviewId' => $productReview->product_review_id,
+                'accountId' => $productReview->account_id,
+                'productId' => $productReview->product_id,
+                'content' => $productReview->content,
+                'rating' => $productReview->rating,
+            ];
+        }
 
         return response()->json([
-            'product_reviews' => $productReviews,
+            'product_reviews' => $productReviewData,
         ]);
     }
+
 
     public function store(Request $request)
     {
@@ -29,7 +41,13 @@ class ProductReviewController extends Controller
 
         if ($productReview) {
             return response()->json([
-                'product_review' => $productReview,
+                'product_review' => [
+                    'productReviewId' => $productReview->product_review_id,
+                    'accountId' => $productReview->account_id,
+                    'productId' => $productReview->product_id,
+                    'content' => $productReview->content,
+                    'rating' => $productReview->rating,
+                ]
             ], 201);
         } else {
             return response()->json([
@@ -43,7 +61,13 @@ class ProductReviewController extends Controller
         $productReview = ProductReview::with('account', 'product')->findOrFail($id);
 
         return response()->json([
-            'product_review' => $productReview,
+            'product_review' => [
+                'productReviewId' => $productReview->product_review_id,
+                'accountId' => $productReview->account_id,
+                'productId' => $productReview->product_id,
+                'content' => $productReview->content,
+                'rating' => $productReview->rating,
+            ]
         ]);
     }
 
@@ -59,7 +83,17 @@ class ProductReviewController extends Controller
         $productReview = ProductReview::findOrFail($id);
         $updated = $productReview->update($validatedData);
 
-        return response()->json($updated);
+        if ($updated) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Product review updated successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to update product review.',
+            ]);
+        }
     }
 
     public function destroy($id)
@@ -67,6 +101,16 @@ class ProductReviewController extends Controller
         $productReview = ProductReview::findOrFail($id);
         $deleted = $productReview->delete();
 
-        return response()->json($deleted);
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Product review deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete product review.',
+            ]);
+        }
     }
 }

@@ -10,11 +10,25 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::with('category', 'product_shape', 'product_style', 'images', 'variants')->get();
+        $productData = [];
+
+        foreach ($products as $product) {
+            $productData[] = [
+                'productId' => $product->product_id,
+                'productName' => $product->product_name,
+                'description' => $product->description,
+                'isHide' => $product->is_hide,
+                'categoryId' => $product->category_id,
+                'productShapeId' => $product->product_shape_id,
+                'productStyleId' => $product->product_style_id,
+            ];
+        }
 
         return response()->json([
-            'products' => $products,
+            'products' => $productData,
         ]);
     }
+
 
     public function show($id)
     {
@@ -27,7 +41,15 @@ class ProductController extends Controller
         }
 
         return response()->json([
-            'product' => $product,
+            'product' =>  [
+                'productId' => $product->product_id,
+                'productName' => $product->product_name,
+                'description' => $product->description,
+                'isHide' => $product->is_hide,
+                'categoryId' => $product->category_id,
+                'productShapeId' => $product->product_shape_id,
+                'productStyleId' => $product->product_style_id,
+            ]
         ]);
     }
 
@@ -45,7 +67,15 @@ class ProductController extends Controller
         $product = Product::create($validatedData);
 
         return response()->json([
-            'product' => $product,
+            'product' => [
+                'productId' => $product->product_id,
+                'productName' => $product->product_name,
+                'description' => $product->description,
+                'isHide' => $product->is_hide,
+                'categoryId' => $product->category_id,
+                'productShapeId' => $product->product_shape_id,
+                'productStyleId' => $product->product_style_id,
+            ]
         ], 201);
     }
 
@@ -63,12 +93,25 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if (!$product) {
-            return response()->json(false);
+            return response()->json([
+                'result' => false,
+                'message' => 'Product not found.',
+            ]);
         }
 
         $updated = $product->update($validatedData);
 
-        return response()->json($updated);
+        if ($updated) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Product updated successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to update product.',
+            ]);
+        }
     }
 
     public function destroy($id)
@@ -76,11 +119,24 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if (!$product) {
-            return response()->json(false);
+            return response()->json([
+                'result' => false,
+                'message' => 'Product not found.',
+            ]);
         }
 
         $deleted = $product->delete();
 
-        return response()->json($deleted);
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Product deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete product.',
+            ]);
+        }
     }
 }

@@ -10,18 +10,32 @@ class OrderAddressController extends Controller
     public function index()
     {
         $orderAddresses = OrderAddress::all();
+        $orderAddressData = [];
+
+        foreach ($orderAddresses as $orderAddress) {
+            $orderAddressData[] = [
+                'id' => $orderAddress->id,
+                'addressId' => $orderAddress->address_id,
+                'orderId' => $orderAddress->order_id,
+            ];
+        }
 
         return response()->json([
-            'order_addresses' => $orderAddresses,
+            'order_addresses' => $orderAddressData,
         ]);
     }
+
 
     public function show($id)
     {
         $orderAddress = OrderAddress::findOrFail($id);
 
         return response()->json([
-            'order_address' => $orderAddress,
+            'order_address' => [
+                'id' => $orderAddress->id,
+                'addressId' => $orderAddress->address_id,
+                'orderId' => $orderAddress->order_id,
+            ]
         ]);
     }
 
@@ -35,7 +49,11 @@ class OrderAddressController extends Controller
         $orderAddress = OrderAddress::create($validatedData);
 
         return response()->json([
-            'order_address' => $orderAddress,
+            'order_address' => [
+                'id' => $orderAddress->id,
+                'addressId' => $orderAddress->address_id,
+                'orderId' => $orderAddress->order_id,
+            ]
         ], 201);
     }
 
@@ -49,7 +67,17 @@ class OrderAddressController extends Controller
         $orderAddress = OrderAddress::findOrFail($id);
         $updated = $orderAddress->update($validatedData);
 
-        return response()->json($updated);
+        if ($updated) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Order address updated successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to update order address.',
+            ]);
+        }
     }
 
     public function destroy($id)
@@ -57,6 +85,16 @@ class OrderAddressController extends Controller
         $orderAddress = OrderAddress::findOrFail($id);
         $deleted = $orderAddress->delete();
 
-        return response()->json($deleted);
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Order address deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete order address.',
+            ]);
+        }
     }
 }

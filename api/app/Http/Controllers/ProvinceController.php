@@ -10,9 +10,22 @@ class ProvinceController extends Controller
     public function index()
     {
         $provinces = Province::all();
+        $provinceData = [];
+
+        foreach ($provinces as $province) {
+            $provinceData[] = [
+                'code' => $province->code,
+                'name' => $province->name,
+                'nameEn' => $province->name_en,
+                'fullName' => $province->full_name,
+                'fullNameEn' => $province->full_name_en,
+                'codeName' => $province->code_name,
+                'administrativeUnitId' => $province->administrative_unit_id,
+            ];
+        }
 
         return response()->json([
-            'provinces' => $provinces,
+            'provinces' => $provinceData,
         ]);
     }
 
@@ -21,7 +34,15 @@ class ProvinceController extends Controller
         $province = Province::where('code', $id)->firstOrFail();
 
         return response()->json([
-            'province' => $province,
+            'province' =>  [
+                'code' => $province->code,
+                'name' => $province->name,
+                'nameEn' => $province->name_en,
+                'fullName' => $province->full_name,
+                'fullNameEn' => $province->full_name_en,
+                'codeName' => $province->code_name,
+                'administrativeUnitId' => $province->administrative_unit_id,
+            ]
         ]);
     }
 
@@ -30,7 +51,15 @@ class ProvinceController extends Controller
         $province = Province::create($request->all());
 
         return response()->json([
-            'province' => $province,
+            'province' =>  [
+                'code' => $province->code,
+                'name' => $province->name,
+                'nameEn' => $province->name_en,
+                'fullName' => $province->full_name,
+                'fullNameEn' => $province->full_name_en,
+                'codeName' => $province->code_name,
+                'administrativeUnitId' => $province->administrative_unit_id,
+            ]
         ], 201);
     }
 
@@ -39,7 +68,17 @@ class ProvinceController extends Controller
         $province = Province::findOrFail($id);
         $updated = $province->update($request->all());
 
-        return response()->json($updated ? true : false);
+        if ($updated) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Province updated successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to update province.',
+            ]);
+        }
     }
 
     public function destroy($id)
@@ -47,6 +86,16 @@ class ProvinceController extends Controller
         $province = Province::where('code', $id)->firstOrFail();
         $deleted = $province->delete();
 
-        return response()->json($deleted ? true : false);
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Province deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete province.',
+            ]);
+        }
     }
 }

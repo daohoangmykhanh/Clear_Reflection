@@ -16,7 +16,6 @@ class BEProductStyleController extends Controller
             $styleData[] = [
                 'productStyleId' => $style->product_style_id,
                 'styleName' => $style->style_name,
-      
             ];
         }
         return response()->json($styleData);
@@ -31,7 +30,7 @@ class BEProductStyleController extends Controller
         $result -> save();
         if(!$result)
             return response()->json('Created unsuccessfully !');
-        
+
         return response()->json('Created successfully !', 201);
     }
 
@@ -45,7 +44,7 @@ class BEProductStyleController extends Controller
         $result -> save();
         if(!$result)
             return response()->json('Updated unsuccessfully !');
-    
+
         return response()->json('Updated successfully !', 201);
     }
 
@@ -55,7 +54,7 @@ class BEProductStyleController extends Controller
         $result = ProductStyle::destroy($id);
         if(!$result)
             return response()->json('Deleted unsuccessfully !');
-    
+
         return response()->json('Deleted successfully !', 201);
     }
 }

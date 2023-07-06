@@ -15,11 +15,24 @@ class AddressController extends Controller
     public function index()
     {
         $addresses = Address::all();
+        $addressData = [];
+
+        foreach ($addresses as $address) {
+            $addressData[] = [
+                'address_id' => $address->address_id,
+                'house_number' => $address->house_number,
+                'road_name' => $address->road_name,
+                'wards_code' => $address->wards_code,
+                'district_code' => $address->district_code,
+                'province_code' => $address->province_code,
+            ];
+        }
 
         return response()->json([
-            'addresses' => $addresses,
+            'addresses' => $addressData,
         ]);
     }
+
 
     /**
      * Lưu một địa chỉ mới vào cơ sở dữ liệu.
@@ -32,7 +45,14 @@ class AddressController extends Controller
         $address = Address::create($request->all());
 
         return response()->json([
-            'address' => $address,
+            'address' => [
+                'address_id' => $address->address_id,
+                'house_number' => $address->house_number,
+                'road_name' => $address->road_name,
+                'wards_code' => $address->wards_code,
+                'district_code' => $address->district_code,
+                'province_code' => $address->province_code,
+            ]
         ], 201);
     }
 
@@ -47,7 +67,14 @@ class AddressController extends Controller
         $address = Address::findOrFail($id);
 
         return response()->json([
-            'address' => $address,
+            'address' => [
+                'address_id' => $address->address_id,
+                'house_number' => $address->house_number,
+                'road_name' => $address->road_name,
+                'wards_code' => $address->wards_code,
+                'district_code' => $address->district_code,
+                'province_code' => $address->province_code,
+            ]
         ]);
     }
 
@@ -63,20 +90,34 @@ class AddressController extends Controller
         $address = Address::findOrFail($id);
         $updated = $address->update($request->all());
 
-        return response()->json($updated);
+        if ($updated) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Address updated successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to update address.',
+            ], 500);
+        }
     }
 
-    /**
-     * Xóa một địa chỉ cụ thể khỏi cơ sở dữ liệu.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function destroy($id)
     {
         $address = Address::findOrFail($id);
         $deleted = $address->delete();
 
-        return response()->json($deleted);
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Address deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete address.',
+            ], 500);
+        }
     }
 }

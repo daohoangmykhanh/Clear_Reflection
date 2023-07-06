@@ -10,18 +10,42 @@ class WardController extends Controller
     public function index()
     {
         $wards = Ward::all();
+        $wardData = [];
+
+        foreach ($wards as $ward) {
+            $wardData[] = [
+                'code' => $ward->code,
+                'name' => $ward->name,
+                'nameEn' => $ward->name_en,
+                'fullName' => $ward->full_name,
+                'fullNameEn' => $ward->full_name_en,
+                'codeName' => $ward->code_name,
+                'districtCode' => $ward->district_code,
+                'administrativeUnitId' => $ward->administrative_unit_id,
+            ];
+        }
 
         return response()->json([
-            'wards' => $wards,
+            'wards' => $wardData,
         ]);
     }
+
 
     public function show($id)
     {
         $ward = Ward::whereRaw("BINARY code = ?", [$id])->firstOrFail();
 
         return response()->json([
-            'ward' => $ward,
+            'ward' => [
+                'code' => $ward->code,
+                'name' => $ward->name,
+                'nameEn' => $ward->name_en,
+                'fullName' => $ward->full_name,
+                'fullNameEn' => $ward->full_name_en,
+                'codeName' => $ward->code_name,
+                'districtCode' => $ward->district_code,
+                'administrativeUnitId' => $ward->administrative_unit_id,
+            ]
         ]);
     }
 
@@ -30,7 +54,16 @@ class WardController extends Controller
         $ward = Ward::create($request->all());
 
         return response()->json([
-            'ward' => $ward,
+            'ward' => [
+                'code' => $ward->code,
+                'name' => $ward->name,
+                'nameEn' => $ward->name_en,
+                'fullName' => $ward->full_name,
+                'fullNameEn' => $ward->full_name_en,
+                'codeName' => $ward->code_name,
+                'districtCode' => $ward->district_code,
+                'administrativeUnitId' => $ward->administrative_unit_id,
+            ]
         ], 201);
     }
 
@@ -39,7 +72,10 @@ class WardController extends Controller
         $ward = Ward::findOrFail($id);
         $updated = $ward->update($request->all());
 
-        return response()->json($updated ? true : false);
+        return response()->json([
+            'result' => $updated ? true : false,
+            'message' => $updated ? 'Ward updated successfully.' : 'Failed to update ward.',
+        ]);
     }
 
     public function destroy($id)
@@ -47,15 +83,16 @@ class WardController extends Controller
         $ward = Ward::findOrFail($id);
         $deleted = $ward->delete();
 
-        return response()->json($deleted ? true : false);
-    }
-
-    public function getAllWardsByDistrict($districtCode)
-    {
-        $wards = Ward::where('district_code', $districtCode)->get();
-
-        return response()->json([
-            'wards' => $wards,
-        ]);
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Ward deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete ward.',
+            ]);
+        }
     }
 }
