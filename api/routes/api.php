@@ -24,6 +24,8 @@ use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\OrderAddressController;
 use App\Http\Controllers\BECouponController;
 use App\Http\Controllers\BECouponTypeController;
+use App\Http\Controllers\CategoryController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -48,6 +50,10 @@ use App\Http\Controllers\BECouponTypeController;
 //     Route::resource('product-reviews', ProductReviewController::class);
 // });
 // Route::group(['prefix' => 'admin', 'middleware' => 'auth:api'], function () {}
+
+
+//category
+Route::resource('category', CategoryController::class);
 
 //order-address
 Route::resource('order-address', OrderAddressController::class);
