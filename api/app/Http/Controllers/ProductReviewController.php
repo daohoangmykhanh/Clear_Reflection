@@ -10,9 +10,23 @@ class ProductReviewController extends Controller
     public function index()
     {
         $productReviews = ProductReview::with('account', 'product')->get();
+        $productReviewData = [];
 
-        return response()->json($productReviews);
+        foreach ($productReviews as $productReview) {
+            $productReviewData[] = [
+                'productReviewId' => $productReview->product_review_id,
+                'accountId' => $productReview->account_id,
+                'productId' => $productReview->product_id,
+                'content' => $productReview->content,
+                'rating' => $productReview->rating,
+            ];
+        }
+
+        return response()->json([
+            'product_reviews' => $productReviewData,
+        ]);
     }
+
 
     public function store(Request $request)
     {
@@ -23,11 +37,22 @@ class ProductReviewController extends Controller
             'rating' => 'required|integer',
         ]);
 
-        try {
-            $productReview = ProductReview::create($validatedData);
-            return response()->json($productReview, 201);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Thêm product review thất bại'], 500);
+        $productReview = ProductReview::create($validatedData);
+
+        if ($productReview) {
+            return response()->json([
+                'product_review' => [
+                    'productReviewId' => $productReview->product_review_id,
+                    'accountId' => $productReview->account_id,
+                    'productId' => $productReview->product_id,
+                    'content' => $productReview->content,
+                    'rating' => $productReview->rating,
+                ]
+            ], 201);
+        } else {
+            return response()->json([
+                'message' => 'Failed to create product review.',
+            ], 500);
         }
     }
 
@@ -35,26 +60,57 @@ class ProductReviewController extends Controller
     {
         $productReview = ProductReview::with('account', 'product')->findOrFail($id);
 
-        return response()->json($productReview);
+        return response()->json([
+            'product_review' => [
+                'productReviewId' => $productReview->product_review_id,
+                'accountId' => $productReview->account_id,
+                'productId' => $productReview->product_id,
+                'content' => $productReview->content,
+                'rating' => $productReview->rating,
+            ]
+        ]);
     }
 
     public function update(Request $request, $id)
     {
-        $productReview = ProductReview::findOrFail($id);
-        $productReview->update($request->all());
+        $validatedData = $request->validate([
+            'account_id' => 'required',
+            'product_id' => 'required',
+            'content' => 'required|string',
+            'rating' => 'required|integer',
+        ]);
 
-        if ($productReview) {
-            return response()->json(['message' => 'Cập nhật product review thành công']);
+        $productReview = ProductReview::findOrFail($id);
+        $updated = $productReview->update($validatedData);
+
+        if ($updated) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Product review updated successfully.',
+            ]);
         } else {
-            return response()->json(['message' => 'Cập nhật product review thất bại'], 500);
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to update product review.',
+            ]);
         }
     }
 
     public function destroy($id)
     {
         $productReview = ProductReview::findOrFail($id);
-        $productReview->delete();
+        $deleted = $productReview->delete();
 
-        return response()->json(['message' => 'Xóa product review thành công']);
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Product review deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete product review.',
+            ]);
+        }
     }
 }

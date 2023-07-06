@@ -7,65 +7,95 @@ use Illuminate\Http\Request;
 
 class ProvinceController extends Controller
 {
-    /**
-     * Hiển thị danh sách tất cả các Province.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $provinces = Province::all();
-        return response()->json($provinces);
+        $provinceData = [];
+
+        foreach ($provinces as $province) {
+            $provinceData[] = [
+                'code' => $province->code,
+                'name' => $province->name,
+                'nameEn' => $province->name_en,
+                'fullName' => $province->full_name,
+                'fullNameEn' => $province->full_name_en,
+                'codeName' => $province->code_name,
+                'administrativeUnitId' => $province->administrative_unit_id,
+            ];
+        }
+
+        return response()->json([
+            'provinces' => $provinceData,
+        ]);
     }
 
-    /**
-     * Hiển thị thông tin của một Province cụ thể.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $province = Province::where('code', $id)->firstOrFail();
-        return response()->json($province);
+
+        return response()->json([
+            'province' =>  [
+                'code' => $province->code,
+                'name' => $province->name,
+                'nameEn' => $province->name_en,
+                'fullName' => $province->full_name,
+                'fullNameEn' => $province->full_name_en,
+                'codeName' => $province->code_name,
+                'administrativeUnitId' => $province->administrative_unit_id,
+            ]
+        ]);
     }
 
-    /**
-     * Lưu một Province mới vào cơ sở dữ liệu.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $province = Province::create($request->all());
-        return response()->json($province, 201);
+
+        return response()->json([
+            'province' =>  [
+                'code' => $province->code,
+                'name' => $province->name,
+                'nameEn' => $province->name_en,
+                'fullName' => $province->full_name,
+                'fullNameEn' => $province->full_name_en,
+                'codeName' => $province->code_name,
+                'administrativeUnitId' => $province->administrative_unit_id,
+            ]
+        ], 201);
     }
 
-    /**
-     * Cập nhật thông tin của một Province cụ thể trong cơ sở dữ liệu.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $province = Province::findOrFail($id);
-        $province->update($request->all());
-        return response()->json($province);
+        $updated = $province->update($request->all());
+
+        if ($updated) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Province updated successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to update province.',
+            ]);
+        }
     }
 
-    /**
-     * Xóa một Province cụ thể khỏi cơ sở dữ liệu.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $province = Province::where('code', $id)->firstOrFail();
-        $province->delete();
-        return response()->json(['message' => 'Province deleted']);
+        $deleted = $province->delete();
+
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Province deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete province.',
+            ]);
+        }
     }
 }
