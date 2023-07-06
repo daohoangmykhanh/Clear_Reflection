@@ -55,14 +55,12 @@ class BEProductController extends Controller
                     'styleName' => $product->product_style->style_name,
                 ];
             }
-       
-
             $productData[] = [
                 'productId' => $product->product_id,
                 'productName' => $product -> product_name,
                 'description' => $product->description,
                 'isHide' => $product->is_hide,
-                'imageUrls' => $imageData,
+                'images' => $imageData,
                 'category' => $category,
                 'productShape' => $shape,
                 'productStyle' => $style,
