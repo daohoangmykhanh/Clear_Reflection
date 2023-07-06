@@ -17,7 +17,7 @@ class BEProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = Product::with('images')->get();
         if ($products->isEmpty()) {
             return response()->json('No results found!');
         }
@@ -26,10 +26,10 @@ class BEProductController extends Controller
             $imageData = null;
             if ($product->images !== null) {
                 foreach ($product->images as $image) {
-                    if ($image->image !== null) {
+                    if ($image->image_id !== null) {
                         $imageData[] = [
                             'imageId' => $image->image_id,
-                            'imageUrl' => $image->image->image_url,
+                            'imageUrl' => $image->image_url,
                         ];
                     }
                 }
@@ -140,7 +140,7 @@ class BEProductController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'productName' => 'required|string',
+                'productName' => 'required|unique:product,product_name',
                 'description' => 'nullable|string',
                 'isHide' => 'required|boolean',
                 'categoryId' => 'required|integer',
@@ -303,7 +303,7 @@ class BEProductController extends Controller
             ]);
         try {   
             $validatedData = $request->validate([
-                'productName' => 'required|string',
+                'productName' => 'required|unique:product,product_name,'. $id . ',product_id',
                 'description' => 'nullable|string',
                 'isHide' => 'required|boolean',
                 'categoryId' => 'required|integer',
