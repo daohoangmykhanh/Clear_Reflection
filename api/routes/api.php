@@ -19,7 +19,6 @@ use App\Http\Controllers\BEProductController;
 use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\DistrictController;
-use App\Http\Controllers\ListProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\OrderAddressController;
@@ -95,10 +94,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::resource('product', ProductController::class);
 // Product Controller
 Route::get('/admin/product', [BEProductController::class, 'index']);
-Route::get('/admin/product/a', [ListProductController::class, 'listDetail']);
+Route::get('/admin/product/detail/{id}', [BEProductController::class, 'detail']);
 Route::get('/admin/product/{product_id}', [ProductVariantController::class, 'show']);
 Route::post('/admin/product/create', [BEProductController::class, 'create']);
-Route::get('/admin/product/{id}', [BEProductController::class, 'edit']);
+Route::get('/admin/product/edit/{id}', [BEProductController::class, 'edit']);
 Route::post('/admin/product/update/{id}', [BEProductController::class, 'update']);
 Route::get('/admin/product/delete/{id}', [BEProductController::class, 'delete']);
 // Role Controller
