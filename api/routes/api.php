@@ -13,6 +13,7 @@ use App\Http\Controllers\BEAccountController;
 use App\Http\Controllers\BECategoryController;
 use App\Http\Controllers\BEProductShapeController;
 use App\Http\Controllers\BEProductStyleController;
+use App\Http\Controllers\BEProductColorController;
 use App\Http\Controllers\FEAccountController;
 use App\Http\Controllers\BEProductController;
 use App\Http\Controllers\ProductReviewController;
@@ -125,6 +126,11 @@ Route::get('/admin/style', [BEProductStyleController::class, 'index']);
 Route::post('/admin/style/create', [BEProductStyleController::class, 'create']);
 Route::post('/admin/style/update/{id}', [BEProductStyleController::class, 'update']);
 Route::get('/admin/style/delete/{id}', [BEProductStyleController::class, 'delete']);
+// Product Color Controller
+Route::get('/admin/color', [BEProductColorController::class, 'index']);
+Route::post('/admin/color/create', [BEProductColorController::class, 'create']);
+Route::post('/admin/color/update/{id}', [BEProductColorController::class, 'update']);
+Route::get('/admin/color/delete/{id}', [BEProductColorController::class, 'delete']);
 // FEAccount Controller
 Route::post('/register', [FEAccountController::class, 'register']);
 Route::post('/signin', [FEAccountController::class, 'signin']);

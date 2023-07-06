@@ -382,7 +382,10 @@ class BEProductController extends Controller
     public function delete($id){
         $product = Product::Find($id);
         if($product == null){
-            return response()-> json("Product doesn't exist");
+            return response()-> json([
+                'result' => false,
+                'message' => "Product doesnt exist!",
+            ]);
         }
         $images = ProductImage::where('product_id', $id) -> get();
         if($images -> isNotEmpty()){
@@ -437,9 +440,15 @@ class BEProductController extends Controller
         }
         $delete = $product -> delete();
         if(!$delete){
-            return response()->json('Deleted unsuccessfully !');
+            return response()->json([
+                'result' => false,
+                'message' => "Deleted product unsuccessfully!",
+            ]);
         }
-        return response()->json('Deleted successfully !');
+        return response()->json([
+                'result' => true,
+                'message' => "Deleted product successfully!",
+            ]);
         
     }
 }

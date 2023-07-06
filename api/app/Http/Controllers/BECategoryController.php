@@ -102,10 +102,10 @@ class BECategoryController extends Controller
             
             $result = $cate -> save();
             if(!$result)
-            return response()->json([
-                'result' => false,
-                'message' => 'Updated unsuccessfully !'
-            ]);
+                return response()->json([
+                    'result' => false,
+                    'message' => 'Updated unsuccessfully !'
+                ]);
             return response()->json([
                 'result' => True,
                 'message' => 'Updated successfully !'

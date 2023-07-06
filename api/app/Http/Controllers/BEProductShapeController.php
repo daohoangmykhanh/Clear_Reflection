@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductShape;
 use Illuminate\Http\Request;
-
+use App\Models\Product;
 class BEProductShapeController extends Controller
 {
     public function index(){
@@ -14,9 +14,8 @@ class BEProductShapeController extends Controller
         }
         foreach($shapes as $shape){
             $shapeData[] = [
-                'productStyleId' => $shape->product_shape_id,
-                'styleName' => $shape->shape_name,
-      
+                'productShapeId' => $shape->product_shape_id,
+                'shapeName' => $shape->shape_name,
             ];
         }
         return response()->json($shapeData);
@@ -28,11 +27,14 @@ class BEProductShapeController extends Controller
         ]);
         $result = new ProductShape();
         $result -> shape_name = $validatedData['shapeName'];
-        $result -> save();
-        if(!$result)
-            return response()->json('Created unsuccessfully !');
+        $check = $result -> save();
+        if(!$check)
+            return response()->json([
+                'result' => false,
+                'message' => "Created shape unsuccessfully!",
+            ]);
         
-        return response()->json('Created successfully !', 201);
+        return response()->json($result);
     }
 
     public function update(Request $request, $id){
@@ -41,21 +43,41 @@ class BEProductShapeController extends Controller
         ]);
 
         $result = ProductShape::find($id);
-        if(!$result)
-            return response()->json('Shape not found! ');
+        if($result == null)
+            return response()->json([
+                'result' => false,
+                'message' => "Shape doesn't exist!",
+            ]);
         
         $result -> shape_name = $validatedData['shapeName'];
         $result -> save();
-        return response()->json('Updated successfully !', 201);
+        return response()->json([
+            'result' => true,
+            'message' => "Updated shape successfully!",
+        ]);
     }
 
     public function delete($id){
         if(ProductShape::find($id) == null)
-            return response()->json('Id doesn`t exist !');
+            return response()->json([
+                'result' => false,
+                'message' => "Shape doesn't exist!",
+            ]);
+        $products = Product::where('product_shape_id', $id) ->get();
+        foreach($products as $product){
+            $product -> product_shape_id = null;
+            $product -> save();
+        }
         $result = ProductShape::destroy($id);
         if(!$result)
-            return response()->json('Deleted unsuccessfully !');
+            return response()->json([
+                'result' => false,
+                'message' => "Deleted shape unsuccessfully!",
+            ]);
     
-        return response()->json('Deleted successfully !', 201);
+        return response()->json([
+            'result' => true,
+            'message' => "Deleted shape successfully!",
+        ]);
     }
 }
