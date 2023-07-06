@@ -10,18 +10,32 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::all();
+        $categoryData = [];
+
+        foreach ($categories as $category) {
+            $categoryData[] = [
+                'categoryId' => $category->category_id,
+                'category_name' => $category->category_name,
+                'image_id' => $category->image_id,
+            ];
+        }
 
         return response()->json([
-            'categories' => $categories,
+            'categories' => $categoryData,
         ]);
     }
+
 
     public function show($id)
     {
         $category = Category::with('image')->findOrFail($id);
 
         return response()->json([
-            'category' => $category,
+            'category' => [
+                'categoryId' => $category->category_id,
+                'category_name' => $category->category_name,
+                'image_id' => $category->image_id,
+            ]
         ]);
     }
 
@@ -35,7 +49,11 @@ class CategoryController extends Controller
         $category = Category::create($validatedData);
 
         return response()->json([
-            'category' => $category,
+            'category' => [
+                'categoryId' => $category->category_id,
+                'category_name' => $category->category_name,
+                'image_id' => $category->image_id,
+            ]
         ], 201);
     }
 
@@ -49,7 +67,17 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
         $updated = $category->update($validatedData);
 
-        return response()->json($updated);
+        if ($updated) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Category updated successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to update category.',
+            ]);
+        }
     }
 
     public function destroy($id)
@@ -57,6 +85,16 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
         $deleted = $category->delete();
 
-        return response()->json($deleted);
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Category deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete category.',
+            ]);
+        }
     }
 }

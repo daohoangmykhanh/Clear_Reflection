@@ -10,18 +10,34 @@ class CartController extends Controller
     public function index()
     {
         $carts = Cart::all();
+        $cartData = [];
+
+        foreach ($carts as $cart) {
+            $cartData[] = [
+                'cart_id' => $cart->cart_id,
+                'account_id' => $cart->account_id,
+                'created_at' => $cart->created_at,
+                'updated_at' => $cart->updated_at,
+            ];
+        }
 
         return response()->json([
-            'carts' => $carts,
+            'carts' => $cartData,
         ]);
     }
+
 
     public function show($cartId)
     {
         $cart = Cart::findOrFail($cartId);
 
         return response()->json([
-            'cart' => $cart,
+            'cart' => [
+                'cart_id' => $cart->cart_id,
+                'account_id' => $cart->account_id,
+                'created_at' => $cart->created_at,
+                'updated_at' => $cart->updated_at,
+            ]
         ]);
     }
 
@@ -34,7 +50,12 @@ class CartController extends Controller
         $cart = Cart::create($validatedData);
 
         return response()->json([
-            'cart' => $cart,
+            'cart' => [
+                'cart_id' => $cart->cart_id,
+                'account_id' => $cart->account_id,
+                'created_at' => $cart->created_at,
+                'updated_at' => $cart->updated_at,
+            ]
         ], 201);
     }
 
@@ -47,7 +68,17 @@ class CartController extends Controller
         $cart = Cart::findOrFail($cartId);
         $updated = $cart->update($validatedData);
 
-        return response()->json($updated);
+        if ($updated) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Cart updated successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to update cart.',
+            ]);
+        }
     }
 
     public function destroy($cartId)
@@ -55,11 +86,24 @@ class CartController extends Controller
         $cart = Cart::find($cartId);
 
         if (!$cart) {
-            return response()->json(false);
+            return response()->json([
+                'result' => false,
+                'message' => 'Cart not found.',
+            ]);
         }
 
         $deleted = $cart->delete();
 
-        return response()->json($deleted);
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Cart deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete cart.',
+            ]);
+        }
     }
 }

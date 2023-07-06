@@ -10,10 +10,17 @@ class WishlistController extends Controller
     public function index()
     {
         $wishlists = Wishlist::with('account', 'product')->get();
+        $wishlistData = [];
 
-        return response()->json([
-            'wishlists' => $wishlists,
-        ]);
+        foreach ($wishlists as $wishlist) {
+            $wishlistData[] = [
+                'wishlistId' => $wishlist->wishlist_id,
+                'accountId' => $wishlist->account_id,
+                'productId' => $wishlist->product_id,
+            ];
+        }
+
+        return response()->json($wishlistData);
     }
 
     public function store(Request $request)
@@ -24,26 +31,27 @@ class WishlistController extends Controller
         ]);
 
         $wishlist = Wishlist::create($validatedData);
-
-        if ($wishlist) {
-            return response()->json([
-                'wishlist' => $wishlist,
-            ], 201);
+        $wishlistData[] = [
+            'wishlistId' => $wishlist->wishlist_id,
+            'accountId' => $wishlist->account_id,
+            'productId' => $wishlist->product_id,
+        ];
+        if ($wishlistData) {
+            return response()->json($wishlistData, 201);
         } else {
-            return response()->json([
-                'message' => 'Failed to create wishlist.',
-            ], 500);
+            return response()->json(['message' => 'Thêm wishlist thất bại'], 500);
         }
     }
-
 
     public function show($id)
     {
         $wishlist = Wishlist::with('account', 'product')->findOrFail($id);
-
-        return response()->json([
-            'wishlist' => $wishlist,
-        ]);
+        $wishlistData = [
+            'wishlistId' => $wishlist->wishlist_id,
+            'accountId' => $wishlist->account_id,
+            'productId' => $wishlist->product_id
+        ];
+        return response()->json($wishlistData);
     }
 
     public function update(Request $request, $id)
@@ -51,15 +59,20 @@ class WishlistController extends Controller
         $wishlist = Wishlist::findOrFail($id);
         $updated = $wishlist->update($request->all());
 
-        return response()->json($updated);
+        return response()->json([
+            'result' => $updated ? true : false,
+            'message' => $updated ? 'Wishlist updated successfully.' : 'Failed to update wishlist.',
+        ]);
     }
-
 
     public function destroy($id)
     {
         $wishlist = Wishlist::findOrFail($id);
         $deleted = $wishlist->delete();
 
-        return response()->json($deleted);
+        return response()->json([
+            'result' => $deleted ? true : false,
+            'message' => $deleted ? 'Wishlist deleted successfully.' : 'Failed to delete wishlist.',
+        ]);
     }
 }

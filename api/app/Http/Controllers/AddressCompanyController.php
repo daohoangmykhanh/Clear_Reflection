@@ -77,16 +77,36 @@ class AddressCompanyController extends Controller
     public function update(Request $request, $id)
     {
         $addressCompany = CompanyAddress::findOrFail($id);
-        $addressCompany->update($request->all());
+        $updated = $addressCompany->update($request->all());
 
-        return response()->json($addressCompany);
+        if ($updated) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Address company updated successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to update address company.',
+            ]);
+        }
     }
 
     public function destroy($id)
     {
         $addressCompany = CompanyAddress::findOrFail($id);
-        $addressCompany->delete();
+        $deleted = $addressCompany->delete();
 
-        return response()->json(['message' => 'AddressCompany deleted']);
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Address company deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete address company.',
+            ]);
+        }
     }
 }

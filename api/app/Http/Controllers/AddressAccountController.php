@@ -79,16 +79,36 @@ class AddressAccountController extends Controller
     public function update(Request $request, $id)
     {
         $addressAccount = AddressAccount::findOrFail($id);
-        $addressAccount->update($request->all());
+        $updated = $addressAccount->update($request->all());
 
-        return response()->json($addressAccount);
+        if ($updated) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Address account updated successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to update address account.',
+            ]);
+        }
     }
 
     public function destroy($id)
     {
         $addressAccount = AddressAccount::findOrFail($id);
-        $de = $addressAccount->delete();
+        $deleted = $addressAccount->delete();
 
-        return response()->json($de);
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Address account deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete address account.',
+            ]);
+        }
     }
 }
