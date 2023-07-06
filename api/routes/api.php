@@ -22,6 +22,8 @@ use App\Http\Controllers\ListProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\OrderAddressController;
+use App\Http\Controllers\BECouponController;
+use App\Http\Controllers\BECouponTypeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -119,3 +121,13 @@ Route::get('/admin/style/delete/{id}', [BEProductStyleController::class, 'delete
 Route::post('/register', [FEAccountController::class, 'register']);
 Route::post('/signin', [FEAccountController::class, 'signin']);
 Route::post('/checkUsername', [FEAccountController::class, 'checkUsername']);
+// BECoupon Controller
+Route::get('/admin/coupon', [BECouponController::class, 'index']);
+Route::post('/admin/coupon/create', [BECouponController::class, 'create']);
+Route::post('/admin/coupon/update/{id}', [BECouponController::class, 'update']);
+Route::get('/admin/coupon/delete/{id}', [BECouponController::class, 'delete']);
+// BECouponType Controller
+Route::get('/admin/coupontype', [BECouponTypeController::class, 'index']);
+Route::post('/admin/coupontype/create', [BECouponTypeController::class, 'create']);
+Route::post('/admin/coupontype/update/{id}', [BECouponTypeController::class, 'update']);
+Route::get('/admin/coupontype/delete/{id}', [BECouponTypeController::class, 'delete']);
