@@ -34,7 +34,6 @@ class CartController extends Controller
         $cart = Cart::create($validatedData);
 
         return response()->json([
-            'message' => 'Cart created successfully.',
             'cart' => $cart,
         ], 201);
     }
@@ -46,21 +45,21 @@ class CartController extends Controller
         ]);
 
         $cart = Cart::findOrFail($cartId);
-        $cart->update($validatedData);
+        $updated = $cart->update($validatedData);
 
-        return response()->json([
-            'message' => 'Cart updated successfully.',
-            'cart' => $cart,
-        ]);
+        return response()->json($updated);
     }
 
     public function destroy($cartId)
     {
-        $cart = Cart::findOrFail($cartId);
-        $cart->delete();
+        $cart = Cart::find($cartId);
 
-        return response()->json([
-            'message' => 'Cart deleted successfully.',
-        ]);
+        if (!$cart) {
+            return response()->json(false);
+        }
+
+        $deleted = $cart->delete();
+
+        return response()->json($deleted);
     }
 }

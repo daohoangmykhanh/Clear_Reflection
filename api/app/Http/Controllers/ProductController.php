@@ -45,7 +45,6 @@ class ProductController extends Controller
         $product = Product::create($validatedData);
 
         return response()->json([
-            'message' => 'Product created successfully.',
             'product' => $product,
         ], 201);
     }
@@ -64,17 +63,12 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if (!$product) {
-            return response()->json([
-                'message' => 'Product not found.',
-            ], 404);
+            return response()->json(false);
         }
 
-        $product->update($validatedData);
+        $updated = $product->update($validatedData);
 
-        return response()->json([
-            'message' => 'Product updated successfully.',
-            'product' => $product,
-        ]);
+        return response()->json($updated);
     }
 
     public function destroy($id)
@@ -82,15 +76,11 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if (!$product) {
-            return response()->json([
-                'message' => 'Product not found.',
-            ], 404);
+            return response()->json(false);
         }
 
-        $product->delete();
+        $deleted = $product->delete();
 
-        return response()->json([
-            'message' => 'Product deleted successfully.',
-        ]);
+        return response()->json($deleted);
     }
 }
