@@ -43,8 +43,8 @@ import { CommonModule } from '@angular/common';
     CoreModule.forRoot(), // @core
     ThemeModule.forRoot(), // @theme
     NbToastrModule.forRoot(),
-    PagesModule
-    
+    PagesModule,
+    NbWindowModule.forRoot(),
   ],
   bootstrap: [AppComponent],
 })

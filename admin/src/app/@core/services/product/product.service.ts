@@ -64,7 +64,7 @@ export class ProductService {
   }
 
   findAll(): Observable<Product[]> {
-    const url = `${this.baseUrlService.baseURL}/admin/product`
+    const url = `${this.baseUrlService.baseURL}/product`
     return this.httpClient.get<Product[]>(url);
   }
   
@@ -96,11 +96,18 @@ export class ProductService {
     return of(null)
   }
 
-  insert(product: Product): Product {
-    return new Product()
+  insert(product: Product): Observable<Product> {
+    const url: string = `${this.baseUrlService.baseURL}/product/create`
+    return this.httpClient.post<Product>(url, product);
   }
 
-  edit(product: Product): boolean {
-    return true;
+  edit(product: Product): Observable<boolean> {
+    const url: string = `${this.baseUrlService.baseURL}/product/update`
+    return this.httpClient.post<boolean>(url, product);
+  }
+
+  delete(productId: number): Observable<boolean> {    
+    const url: string = `${this.baseUrlService.baseURL}/product/delete/${productId}`
+    return this.httpClient.delete<boolean>(url); 
   }
 }
