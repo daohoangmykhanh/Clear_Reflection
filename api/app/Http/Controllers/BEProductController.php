@@ -23,16 +23,39 @@ class BEProductController extends Controller
         }
         $productData = [];
         foreach ($products as $product) {
-            $imageData = [];
-            foreach ($product->images as $image) {
-                $imageData[] = [
-                    'imageId' => $image -> image_id,
-                    'imageUrl' => $image -> image -> image_url
+            $imageData = null;
+            if ($product->images !== null) {
+                foreach ($product->images as $image) {
+                    if ($image->image !== null) {
+                        $imageData[] = [
+                            'imageId' => $image->image_id,
+                            'imageUrl' => $image->image->image_url,
+                        ];
+                    }
+                }
+            }
+            $category = null;
+            if ($product->category_id !== null) {
+                $category = [
+                    'categoryId' => $product->category -> category_id,
+                    'categoryName' => $product->category ->category_name,
                 ];
             }
-            $category = $product->category;
-            $product_shape = $product->product_shape;
-            $product_style = $product->product_style;
+            $shape = null;
+            if ($product->product_shape_id !== null) {
+                $shape = [
+                    'productShapeId' => $product->product_shape_id,
+                    'shapeName' => $product->product_shape->shape_name,
+                ];
+            }
+            $style = null;
+            if ($product->product_style_id !== null) {
+                $style =[
+                    'productStyleId' => $product->product_style_id,
+                    'styleName' => $product->product_style->style_name,
+                ];
+            }
+       
 
             $productData[] = [
                 'productId' => $product->product_id,
@@ -40,18 +63,9 @@ class BEProductController extends Controller
                 'description' => $product->description,
                 'isHide' => $product->is_hide,
                 'imageUrls' => $imageData,
-                'category' => [
-                    'categoryId' => $category->category_id,
-                    'categoryName' => $category->category_name,
-                ],
-                'productShape' => [
-                    'productShapeId' => $product_shape->product_shape_id,
-                    'shapeName' => $product_shape->shape_name,
-                ],
-                'productStyle' => [
-                    'productStyleId' => $product_style->product_style_id,
-                    'styleName' => $product_style->style_name,
-                ],
+                'category' => $category,
+                'productShape' => $shape,
+                'productStyle' => $style,
                 'createdAt' => $product->created_at,
                 'updatedAt' => $product->updated_at,
             ];
