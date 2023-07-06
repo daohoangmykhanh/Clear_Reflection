@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\CartDetail;
 use App\Models\Image;
 use App\Models\OrderDetail;
-use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\ProductColor;
 use App\Models\ProductImage;
@@ -13,7 +12,7 @@ use App\Models\ProductReview;
 use App\Models\ProductVariant;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
-
+use Illuminate\Validation\ValidationException;
 class BEProductController extends Controller
 {
     public function index()
@@ -125,79 +124,98 @@ class BEProductController extends Controller
 
     public function create(Request $request)
     {
-        $validatedData = $request->validate([
-            'productName' => 'required|string',
-            'description' => 'nullable|string',
-            'isHide' => 'required|boolean',
-            'categoryId' => 'required|integer',
-            'productShapeId' => 'required|integer',
-            'productStyleId' => 'required|integer',
-            'productVariant' => 'required|array',
-            'imageUrl' => 'required|array',
-            'productVariant.*.height' => 'required|numeric',
-            'productVariant.*.width' => 'required|numeric',
-            'productVariant.*.color.colorId' => 'nullable|integer',
-            'productVariant.*.color.colorName' => 'nullable|string',
-            'productVariant.*.quantity' => 'required|integer',
-            'productVariant.*.price' => 'required|numeric',
-            'productVariant.*.imageUrl' => 'nullable|string',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'productName' => 'required|string',
+                'description' => 'nullable|string',
+                'isHide' => 'required|boolean',
+                'categoryId' => 'required|integer',
+                'productShapeId' => 'required|integer',
+                'productStyleId' => 'required|integer',
+                'productVariant' => 'required|array',
+                'imageUrl' => 'required|array',
+                'productVariant.*.height' => 'required|numeric',
+                'productVariant.*.width' => 'required|numeric',
+                'productVariant.*.color.colorId' => 'nullable|integer',
+                'productVariant.*.color.colorName' => 'nullable|string',
+                'productVariant.*.quantity' => 'required|integer',
+                'productVariant.*.price' => 'required|numeric',
+                'productVariant.*.imageUrl' => 'nullable|string',
+            ]);
 
-        $product = new Product();
-        $product-> product_name = $validatedData['productName'];
-        $product -> description = $validatedData['description'];
-        $product -> is_hide = $validatedData['isHide'];
-        $product -> category_id = $validatedData['categoryId'];
-        $product -> product_shape_id = $validatedData['productShapeId'];
-        $product -> product_style_id = $validatedData['productStyleId'];
-        $product -> created_at = now();
-        $product -> save();
+            $product = new Product();
+            $product-> product_name = $validatedData['productName'];
+            $product -> description = $validatedData['description'];
+            $product -> is_hide = $validatedData['isHide'];
+            $product -> category_id = $validatedData['categoryId'];
+            $product -> product_shape_id = $validatedData['productShapeId'];
+            $product -> product_style_id = $validatedData['productStyleId'];
+            $product -> created_at = now();
+            $product -> save();
 
-        foreach($validatedData['imageUrl'] as $imageUrl){
-            $image = new Image();
-            $image->image_url = $imageUrl;
-            $image->save();
-            $productImage = new ProductImage();
-            $productImage->image_id = $image->image_id;
-            $productImage->product_id = $product->product_id;
-            $productImage->save();
-        }
-
-        $variants = [];
-        foreach($validatedData['productVariant'] as $variantData){
-            $variant = new ProductVariant();
-            $variant -> product_id = $product->product_id;
-            $variant -> height = $variantData['height'];
-            $variant -> width = $variantData['width'];
-            $variant -> quantity = $variantData['quantity'];
-            $variant -> price = $variantData['price'];
-
-            if(isset($variantData['color'])){
-                if($variantData['color']['colorId'] != null){
-                    $variant -> color_id = $variantData['color']['colorId'];
-                } else {
-                    $color = new ProductColor();
-                    $color -> color_name = $variantData['color']['colorName'];
-                    $color -> save();
-                    $variant -> color_id = $color -> product_color_id;
-                }
-            }
-            if(isset($variantData['imageUrl'])){
+            foreach($validatedData['imageUrl'] as $imageUrl){
                 $image = new Image();
-                $image -> image_url = $variantData['imageUrl'];
-                $image -> save();
-                $variant -> image_id = $image -> image_id;
+                $base64String = $imageUrl;
+                $base64Data = substr($base64String, strpos($base64String, ',') + 1);
+                $imageData = base64_decode($base64Data);
+                $filename = uniqid() . '.png'; 
+                $storagePath = public_path('images/product/');
+                file_put_contents($storagePath. $filename, $imageData);
+                $image->image_url = $filename;
+                $image->save();
+                $productImage = new ProductImage();
+                $productImage->image_id = $image->image_id;
+                $productImage->product_id = $product->product_id;
+                $productImage->save();
             }
-            $variants[] = $variant;
-        }
-        $product->variants()->saveMany($variants);
 
-        return response()->json([
-            'message' => 'Product created successfully.',
-            'product' => $product,
-            'variant' => $variants,
-            'imageUrl' => $validatedData['imageUrl']
-        ], 201);
+            $variants = [];
+            foreach($validatedData['productVariant'] as $variantData){
+                $variant = new ProductVariant();
+                $variant -> product_id = $product->product_id;
+                $variant -> height = $variantData['height'];
+                $variant -> width = $variantData['width'];
+                $variant -> quantity = $variantData['quantity'];
+                $variant -> price = $variantData['price'];
+
+                if(isset($variantData['color'])){
+                    if($variantData['color']['colorId'] != null){
+                        $variant -> color_id = $variantData['color']['colorId'];
+                    } else {
+                        $color = new ProductColor();
+                        $color -> color_name = $variantData['color']['colorName'];
+                        $color -> save();
+                        $variant -> color_id = $color -> product_color_id;
+                    }
+                }
+                if(isset($variantData['imageUrl'])){
+                    $image = new Image();
+                    $base64String = $variantData['imageUrl']; 
+                    $base64Data = substr($base64String, strpos($base64String, ',') + 1);
+                    $imageData = base64_decode($base64Data);
+                    $filename = uniqid() . '.png'; 
+                    $storagePath = public_path('images/product/');
+                    file_put_contents($storagePath. $filename, $imageData);
+                    $image->image_url = $filename;
+                    $image -> save();
+                    $variant -> image_id = $image -> image_id;
+                }
+                $variants[] = $variant;
+            }
+            $product->variants()->saveMany($variants);
+
+            return response()->json([
+                'message' => 'Product created successfully.',
+                'product' => $product,
+                'variant' => $variants,
+                'imageUrl' => $validatedData['imageUrl']
+            ], 201);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'result' => false,
+                'message' => $e->errors(),
+            ], 422);
+        }
     }
 
     public function edit ($id){
@@ -264,75 +282,101 @@ class BEProductController extends Controller
 
     public function update(Request $request, $id){
         $product = Product::Find($id);
-        $validatedData = $request->validate([
-            'productName' => 'required|string',
-            'description' => 'nullable|string',
-            'isHide' => 'required|boolean',
-            'categoryId' => 'required|integer',
-            'productShapeId' => 'required|integer',
-            'productStyleId' => 'required|integer',
-            'productVariant' => 'required|array',
-            'imageUrl' => 'required|array',
-            'productVariant.*.height' => 'required|numeric',
-            'productVariant.*.productVariantId' => 'nullable|integer',
-            'productVariant.*.width' => 'required|numeric',
-            'productVariant.*.color.colorId' => 'nullable|integer',
-            'productVariant.*.color.colorName' => 'nullable|string',
-            'productVariant.*.quantity' => 'required|integer',
-            'productVariant.*.price' => 'required|numeric',
-            'productVariant.*.imageUrl' => 'nullable|string',
-        ]);
-        $product-> product_name = $validatedData['productName'];
-        $product -> description = $validatedData['description'];
-        $product -> is_hide = $validatedData['isHide'];
-        $product -> category_id = $validatedData['categoryId'];
-        $product -> product_shape_id = $validatedData['productShapeId'];
-        $product -> product_style_id = $validatedData['productStyleId'];
-        $product -> updated_at = now();
-        $product -> save();
+        if($product == null)
+            return response()->json([
+                'result' => false,
+                'message' => 'Product doesnt exist!'
+            ]);
+        try {   
+            $validatedData = $request->validate([
+                'productName' => 'required|string',
+                'description' => 'nullable|string',
+                'isHide' => 'required|boolean',
+                'categoryId' => 'required|integer',
+                'productShapeId' => 'required|integer',
+                'productStyleId' => 'required|integer',
+                'productVariant' => 'required|array',
+                'imageUrl' => 'required|array',
+                'productVariant.*.height' => 'required|numeric',
+                'productVariant.*.productVariantId' => 'nullable|integer',
+                'productVariant.*.width' => 'required|numeric',
+                'productVariant.*.color.colorId' => 'nullable|integer',
+                'productVariant.*.color.colorName' => 'nullable|string',
+                'productVariant.*.quantity' => 'required|integer',
+                'productVariant.*.price' => 'required|numeric',
+                'productVariant.*.imageUrl' => 'nullable|string',
+            ]);
+            $product-> product_name = $validatedData['productName'];
+            $product -> description = $validatedData['description'];
+            $product -> is_hide = $validatedData['isHide'];
+            $product -> category_id = $validatedData['categoryId'];
+            $product -> product_shape_id = $validatedData['productShapeId'];
+            $product -> product_style_id = $validatedData['productStyleId'];
+            $product -> updated_at = now();
+            $product -> save();
 
-        $variants = [];
-        foreach($validatedData['productVariant'] as $variantData){
-            $variant = new ProductVariant();
+            $variants = [];
+            foreach($validatedData['productVariant'] as $variantData){
+                $variant = new ProductVariant();
 
-            if (isset($variantData['productVariantId'])) {
-                $existingVariant = ProductVariant::find($variantData['productVariantId']);
-                if ($existingVariant !== null) {
-                    $variant = $existingVariant;
+                if (isset($variantData['productVariantId'])) {
+                    $existingVariant = ProductVariant::find($variantData['productVariantId']);
+                    if ($existingVariant !== null) {
+                        $variant = $existingVariant;
+                    }
                 }
-            }
-            $variant->product_id = $product->product_id;
-            $variant -> height = $variantData['height'];
-            $variant -> width = $variantData['width'];
-            $variant -> quantity = $variantData['quantity'];
-            $variant -> price = $variantData['price'];
+                $variant->product_id = $product->product_id;
+                $variant -> height = $variantData['height'];
+                $variant -> width = $variantData['width'];
+                $variant -> quantity = $variantData['quantity'];
+                $variant -> price = $variantData['price'];
 
-            if(isset($variantData['color'])){
-                if($variantData['color']['colorId'] != null && isset($variantData['color']['colorId'])){
-                    $variant -> color_id = $variantData['color']['colorId'];
-                } else {
-                    $color = new ProductColor();
-                    $color -> color_name = $variantData['color']['colorName'];
-                    $color -> save();
-                    $variant -> color_id = $color -> product_color_id;
+                if(isset($variantData['color'])){
+                    if($variantData['color']['colorId'] != null && isset($variantData['color']['colorId'])){
+                        $variant -> color_id = $variantData['color']['colorId'];
+                    } else {
+                        $color = new ProductColor();
+                        $color -> color_name = $variantData['color']['colorName'];
+                        $color -> save();
+                        $variant -> color_id = $color -> product_color_id;
+                    }
                 }
+                if(isset($variantData['imageUrl'])){
+                    if($variant -> image_id != null){
+                        $oldImageFilename = $variant -> image -> image_url;
+                        $oldImagePath = public_path('images/product/') . $oldImageFilename;
+                        if (file_exists($oldImagePath)) {
+                            unlink($oldImagePath);
+                        }
+                        $image = Image::find($variant->image_id);
+                    } else {
+                        $image = new Image();
+                    }
+                    $base64String = $variantData['imageUrl'];
+                    $base64Data = substr($base64String, strpos($base64String, ',') + 1);
+                    $imageData = base64_decode($base64Data);
+                    $filename = uniqid() . '.png'; 
+                    $storagePath = public_path('images/product/');
+                    file_put_contents($storagePath. $filename, $imageData);
+                    $image -> image_url = $filename; 
+                    $image -> save();
+                    $variant -> image_id = $image -> image_id;
+                }
+                $variant -> save();
+                $variants[] = $variant;
             }
-            if(isset($variantData['imageUrl'])){
-                $image = new Image();
-                $image -> image_url = $variantData['imageUrl'];
-                $image -> save();
-                $variant -> image_id = $image -> image_id;
-            }
-            $variant -> save();
-            $variants[] = $variant;
+
+
+            return response()->json([
+                'result' => true,
+                'message' => "Updated product successfully",
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'result' => false,
+                'message' => $e->errors(),
+            ], 422);
         }
-
-        return response()->json([
-            'message' => 'Product updated successfully.',
-            'product' => $product,
-            'variants' => $variants,
-            'imageUrl' => $validatedData['imageUrl']
-        ], 201);
     }
 
     public function delete($id){
@@ -344,6 +388,11 @@ class BEProductController extends Controller
         if($images -> isNotEmpty()){
             foreach($images as $image){
                 $img = Image::find($image->image_id);
+                $oldImageFilename = $img -> image_url;
+                $oldImagePath = public_path('images/product/') . $oldImageFilename;
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
                 $image->delete();
                 $img -> delete();
             }
@@ -352,6 +401,11 @@ class BEProductController extends Controller
         if($variants -> isNotEmpty()){
            foreach($variants as $variant){
                 $img = Image::find($variant->image_id);
+                $oldImageFilename = $img -> image_url;
+                $oldImagePath = public_path('images/product/') . $oldImageFilename;
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
                 $variant->delete();
                 $img -> delete();
            }

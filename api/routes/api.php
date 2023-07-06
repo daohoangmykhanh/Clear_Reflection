@@ -98,7 +98,7 @@ Route::get('/admin/product/a', [ListProductController::class, 'listDetail']);
 Route::get('/admin/product/{product_id}', [ProductVariantController::class, 'show']);
 Route::post('/admin/product/create', [BEProductController::class, 'create']);
 Route::get('/admin/product/{id}', [BEProductController::class, 'edit']);
-Route::post('/admin/product/update', [BEProductController::class, 'update']);
+Route::post('/admin/product/update/{id}', [BEProductController::class, 'update']);
 Route::get('/admin/product/delete/{id}', [BEProductController::class, 'delete']);
 // Role Controller
 Route::get('/admin/role', [BERoleController::class, 'index']);
