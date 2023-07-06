@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use Carbon\Carbon;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class BECategoryController extends Controller
@@ -17,8 +17,8 @@ class BECategoryController extends Controller
             $categoryData[] = [
                 'category_id' => $category->category_id,
                 'category_name' => $category->category_name,
-                'created_at' => Carbon::parse($category->created_at)->format('d-M-Y H:i'),
-                'updated_at' => Carbon::parse($category->updated_at)->format('d-M-Y H:i'),
+                'created_at' => $category->created_at,
+                'updated_at' => $category->updated_at,
             ];
         }
         return response()->json($categoryData);
@@ -62,6 +62,11 @@ class BECategoryController extends Controller
     public function delete($id){
         if(Category::find($id) == null)
             return response()->json('Id doesn`t exist !');
+        $products = Product::where('category_id', $id) -> all();
+        foreach($products as $product){
+            $product -> category_id = null;
+            $product -> save();
+        }
         $result = Category::destroy($id);
         if(!$result)
             return response()->json('Deleted unsuccessfully !');
