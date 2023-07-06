@@ -20,7 +20,7 @@ import { CustomShapeActionComponent } from "./custom/custom-shape-action.compone
 })
 export class ProductStyleShapeComponent implements OnInit {
   state: string = "add"; // default
-  
+
   // Setting for List layout
   numberOfItem: number = localStorage.getItem('itemPerPage') != null ? +localStorage.getItem('itemPerPage') : 10; // default
   sourceStyle: LocalDataSource = new LocalDataSource();
@@ -101,16 +101,26 @@ export class ProductStyleShapeComponent implements OnInit {
     private router: Router
   ) {
   }
-  
+
   ngOnInit() {
-    this.styleService.findAll().subscribe(data => {
-        this.sourceStyle.load(data);
-    })
-    this.shapeService.findAll().subscribe(data => {
-      this.sourceShape.load(data);
-    })
+    this.styleService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          this.sourceStyle.load(data);
+        }
+      })
+    this.shapeService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          this.sourceShape.load(data);
+        }
+      })
   }
-  
+
   changeCursor(): void {
     const element = document.getElementById("product-table"); // Replace 'myElement' with the ID of your element
     if (element) {

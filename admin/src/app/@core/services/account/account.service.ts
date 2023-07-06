@@ -9,6 +9,7 @@ import { Address } from '../../models/address/address.model';
 import { Province } from '../../models/address/provinces.model';
 import { District } from '../../models/address/districts.model';
 import { Ward } from '../../models/address/wards.model';
+import { Image } from '../../models/Image';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class AccountService {
         fullName: 'Đào Hoàng Mỹ Khánh',
         email: 'daohoangmykhanh@gmail.com',
         phoneNumber: '0123456789',
-        imageUrl: 'assets/images/eva.png',
+        image: {imageId: 1, imageUrl: 'assets/images/eva.png'},
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -320,7 +321,7 @@ export class AccountService {
           fullName: 'Đào Hoàng Mỹ Khánh',
           email: 'daohoangmykhanh@gmail.com',
           phoneNumber: '0123456789',
-          imageUrl: 'assets/images/eva.png',
+          image: {imageId: 1, imageUrl: 'assets/images/eva.png'},
           createdAt: new Date(),
           updatedAt: new Date(),
           orders: this.orders

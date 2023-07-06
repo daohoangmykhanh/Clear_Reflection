@@ -48,10 +48,11 @@ export function isEmailNotExisting(accountService: AccountService) {
 }
 
 export function isProductidNotExisting(productService: ProductService) {
-    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    // return (control: AbstractControl): Observable<ValidationErrors | null> => {
         // Use the AccountService to check if the email exists
-        return productService.findById(+control.value).pipe(
-            map(product => product == null ? { productNotExisting: true } : null)
-        );
-    };
+        // return productService.findById(+control.value).pipe(
+        //     map(product => product == null ? { productNotExisting: true } : null)
+        // );
+    // };
+    return;
 }

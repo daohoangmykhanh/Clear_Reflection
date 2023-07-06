@@ -1,4 +1,4 @@
-import { Image } from "../image.model";
+import { Image } from "../Image";
 import { ProductCategory } from "./product-category.model";
 import { ProductShape } from "./product-shape.model";
 import { ProductStyle } from "./product-style.model";
@@ -17,7 +17,7 @@ export class Product {
     
     // optionals
     productVariants?: ProductVariant[]
-    imageUrls?: string[]
+    images?: Image[]
     totalQuantity?: number
     quantitySold?: number
     totalLikes?: number

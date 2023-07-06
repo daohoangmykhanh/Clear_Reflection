@@ -23,7 +23,7 @@ export class ProductDetailComponent {
     this.activatedRoute.params.subscribe(
       params => {
         this.productId = params['id']
-        this.productService.findById(params['id']).subscribe(data => this.product = data)
+        // this.productService.findById(params['id']).subscribe(data => this.product = data)
       }
     )
   }

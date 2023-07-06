@@ -19,7 +19,10 @@ class BEProductController extends Controller
     {
         $products = Product::all();
         if ($products->isEmpty()) {
-            return response()->json('No results found!');
+            return response()->json([
+                'result' => false,
+                'message' => "No results found!",
+            ]);
         }
         $productData = [];
         foreach ($products as $product) {
@@ -132,15 +135,15 @@ class BEProductController extends Controller
                 'categoryId' => 'required|integer',
                 'productShapeId' => 'required|integer',
                 'productStyleId' => 'required|integer',
-                'productVariant' => 'required|array',
-                'imageUrl' => 'required|array',
-                'productVariant.*.height' => 'required|numeric',
-                'productVariant.*.width' => 'required|numeric',
-                'productVariant.*.color.colorId' => 'nullable|integer',
-                'productVariant.*.color.colorName' => 'nullable|string',
-                'productVariant.*.quantity' => 'required|integer',
-                'productVariant.*.price' => 'required|numeric',
-                'productVariant.*.imageUrl' => 'nullable|string',
+                'productVariants' => 'required|array',
+                'imageUrls' => 'required|array',
+                'productVariants.*.height' => 'required|numeric',
+                'productVariants.*.width' => 'required|numeric',
+                'productVariants.*.color.colorId' => 'nullable|integer',
+                'productVariants.*.color.colorName' => 'nullable|string',
+                'productVariants.*.quantity' => 'required|integer',
+                'productVariants.*.price' => 'required|numeric',
+                'productVariants.*.imageUrl' => 'nullable|string',
             ]);
 
             $product = new Product();
@@ -153,12 +156,12 @@ class BEProductController extends Controller
             $product -> created_at = now();
             $product -> save();
 
-            foreach($validatedData['imageUrl'] as $imageUrl){
+            foreach($validatedData['imageUrls'] as $imageUrl){
                 $image = new Image();
                 $base64String = $imageUrl;
                 $base64Data = substr($base64String, strpos($base64String, ',') + 1);
                 $imageData = base64_decode($base64Data);
-                $filename = uniqid() . '.png'; 
+                $filename = uniqid() . '.png';
                 $storagePath = public_path('images/product/');
                 file_put_contents($storagePath. $filename, $imageData);
                 $image->image_url = $filename;
@@ -170,7 +173,7 @@ class BEProductController extends Controller
             }
 
             $variants = [];
-            foreach($validatedData['productVariant'] as $variantData){
+            foreach($validatedData['productVariants'] as $variantData){
                 $variant = new ProductVariant();
                 $variant -> product_id = $product->product_id;
                 $variant -> height = $variantData['height'];
@@ -190,10 +193,10 @@ class BEProductController extends Controller
                 }
                 if(isset($variantData['imageUrl'])){
                     $image = new Image();
-                    $base64String = $variantData['imageUrl']; 
+                    $base64String = $variantData['imageUrl'];
                     $base64Data = substr($base64String, strpos($base64String, ',') + 1);
                     $imageData = base64_decode($base64Data);
-                    $filename = uniqid() . '.png'; 
+                    $filename = uniqid() . '.png';
                     $storagePath = public_path('images/product/');
                     file_put_contents($storagePath. $filename, $imageData);
                     $image->image_url = $filename;
@@ -287,7 +290,7 @@ class BEProductController extends Controller
                 'result' => false,
                 'message' => 'Product doesnt exist!'
             ]);
-        try {   
+        try {
             $validatedData = $request->validate([
                 'productName' => 'required|string',
                 'description' => 'nullable|string',
@@ -355,10 +358,10 @@ class BEProductController extends Controller
                     $base64String = $variantData['imageUrl'];
                     $base64Data = substr($base64String, strpos($base64String, ',') + 1);
                     $imageData = base64_decode($base64Data);
-                    $filename = uniqid() . '.png'; 
+                    $filename = uniqid() . '.png';
                     $storagePath = public_path('images/product/');
                     file_put_contents($storagePath. $filename, $imageData);
-                    $image -> image_url = $filename; 
+                    $image -> image_url = $filename;
                     $image -> save();
                     $variant -> image_id = $image -> image_id;
                 }
@@ -440,6 +443,8 @@ class BEProductController extends Controller
             return response()->json('Deleted unsuccessfully !');
         }
         return response()->json('Deleted successfully !');
-        
+
     }
+
+
 }

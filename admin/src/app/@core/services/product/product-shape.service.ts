@@ -4,6 +4,7 @@ import { BaseURLService } from '../base-url.service';
 import { HttpClient } from '@angular/common/http';
 import { ProductShape } from '../../models/product/product-shape.model';
 import { Product } from '../../models/product/product.model';
+import { ModelResponse } from '../../models/response/ModelResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +16,9 @@ export class ProductShapeService {
     private httpClient: HttpClient
   ) { }
 
-  findAll(): Observable<ProductShape[]> {
+  findAll(): Observable<ProductShape[] | ModelResponse> {
     const url: string = `${this.baseUrlService.baseURL}/shape`
-    return this.httpClient.get<ProductShape[]>(url)
+    return this.httpClient.get<ProductShape[]  | ModelResponse>(url)
   }
 
   insert(shape: ProductShape): Observable<ProductShape> {

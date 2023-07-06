@@ -14,6 +14,8 @@ import { ProductStyle } from '../../../@core/models/product/product-style.model'
 import { ProductCategory } from '../../../@core/models/product/product-category.model';
 import { CustomCategoryImageComponent } from '../product-category/custom/custom-category-image.component';
 import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { ModelResponse } from '../../../@core/models/response/ModelResponse';
+import { Product } from '../../../@core/models/product/product.model';
 
 @Component({
   selector: 'ngx-product-list',
@@ -24,10 +26,9 @@ export class ProductListComponent implements OnInit, AfterViewInit {
   numberOfItem: number = localStorage.getItem('itemPerPage') != null ? +localStorage.getItem('itemPerPage') : 10; // default
   source: LocalDataSource = new LocalDataSource();
   // Setting for List layout
-  shapes: ProductShape[];
-  colors: ProductColor[];
-  styles: ProductStyle[];
-  categories: ProductCategory[];
+  shapes: ProductShape[] = [];
+  styles: ProductStyle[] = [];
+  categories: ProductCategory[] = [];
 
   settings = {};
 
@@ -41,10 +42,56 @@ export class ProductListComponent implements OnInit, AfterViewInit {
     private colorService: ProductColorService,
     private toastService: NbToastrService
   ) {
-    this.categoryService.findAll().subscribe(data => this.categories = data)
-    this.shapeService.findAll().subscribe(data => this.shapes = data)
-    this.colorService.findAll().subscribe(data => this.colors = data)
-    this.styleService.findAll().subscribe(data => this.styles = data)
+
+  }
+
+  ngOnInit(): void {
+    this.categoryService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          this.categories = data
+        }
+      })
+    this.shapeService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          this.shapes = data
+        }
+      })
+    this.styleService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          this.styles = data
+        }
+      })
+    this.productService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          const mappedProducts: any[] = (data as Product[]).map(pro => {
+            return {
+              productId: pro.productId,
+              productName: pro.productName,
+              isHide: pro.isHide,
+              category: pro.category.categoryName,
+              shape: pro.productShape.shapeName,
+              style: pro.productStyle.styleName,
+              image: pro.images[0],
+              quantitySold: pro.quantitySold,
+              totalLikes: pro.totalLikes,
+              rating: pro.rating
+            }
+          })
+          this.source.load(mappedProducts)
+        }
+      })
     this.settings = {
       actions: {
         position: 'right',
@@ -78,8 +125,8 @@ export class ProductListComponent implements OnInit, AfterViewInit {
             config: {
               selectText: 'Category...',
               list: this.categories.map(cate => {
-                return { value: cate.categoryName, title: cate.categoryName}
-              }) ,
+                return { value: cate.categoryName, title: cate.categoryName }
+              }),
             },
           },
         },
@@ -91,8 +138,8 @@ export class ProductListComponent implements OnInit, AfterViewInit {
             config: {
               selectText: 'Shape...',
               list: this.shapes.map(shape => {
-                return { value: shape.shapeName, title: shape.shapeName}
-              }) ,
+                return { value: shape.shapeName, title: shape.shapeName }
+              }),
             },
           },
         },
@@ -104,8 +151,8 @@ export class ProductListComponent implements OnInit, AfterViewInit {
             config: {
               selectText: 'Style...',
               list: this.styles.map(style => {
-                return { value: style.styleName, title: style.styleName}
-              }) 
+                return { value: style.styleName, title: style.styleName }
+              })
             },
           },
         },
@@ -140,34 +187,8 @@ export class ProductListComponent implements OnInit, AfterViewInit {
         perPage: this.numberOfItem
       },
     }
-    this.productService.findAll().subscribe(
-      data => {
-        console.log(data);
-        
-        const mappedProducts: any[] = data.map(pro => {
-          return {
-            productId: pro.productId,
-            productName: pro.productName,
-            isHide: pro.isHide,
-            category: pro.category.categoryName,
-            shape: pro.productShape.shapeName,
-            style: pro.productStyle.styleName,
-            image: pro.imageUrls[0],
-            quantitySold: pro.quantitySold,
-            totalLikes: pro.totalLikes,
-            rating: pro.rating
-          }
-        })
-        this.source.load(mappedProducts)
-      }
-
-    )
   }
 
-  ngOnInit(): void {
-    let x;
-  }
-  
   ngAfterViewInit() {
     const pager = document.querySelector('ng2-smart-table-pager');
     pager.classList.add('d-block')

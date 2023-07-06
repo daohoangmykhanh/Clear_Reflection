@@ -52,10 +52,31 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
   }
   
   ngOnInit() {
-    this.categoryService.findAll().subscribe(data => this.categories = data)
-    this.shapeService.findAll().subscribe(data => this.shapes = data)
+    this.categoryService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          this.categories = data
+        }
+      })
+    this.shapeService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          this.shapes = data
+        }
+      })
+    this.styleService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          this.styles = data
+        }
+      })
     this.colorService.findAll().subscribe(data => this.colors = data)
-    this.styleService.findAll().subscribe(data => this.styles = data)
     this.settingFormGroup()
     this.addVariant()
   }
@@ -160,7 +181,7 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
     insertProduct.category = this.categories.find(cate => cate.categoryName = this.product.get('category').value);
     insertProduct.productShape = this.shapes.find(shape => shape.shapeName = this.product.get('shape').value);
     insertProduct.productStyle = this.styles.find(style => style.styleName = this.product.get('style').value) ;
-    insertProduct.imageUrls = this.product.get('images').value
+    insertProduct.images = this.product.get('images').value
     insertProduct.createdAt = new Date();
     insertProduct.updatedAt = new Date();
     const productVariants: ProductVariant[] = this.variants.controls.map(group => {

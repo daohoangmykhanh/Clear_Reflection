@@ -17,6 +17,7 @@ import { ImagesCarouselComponent } from '../images-carousel.component';
 import { ProductVariant } from '../../../@core/models/product/product-variant.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastState, UtilsService } from '../../../@core/services/utils.service';
+import { Image } from '../../../@core/models/Image';
 
 @Component({
   selector: 'ngx-product-edit',
@@ -50,10 +51,31 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
     private utilsService: UtilsService,
     private router: Router
   ) {
-    this.categoryService.findAll().subscribe(data => this.categories = data)
-    this.shapeService.findAll().subscribe(data => this.shapes = data)
+    this.categoryService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          this.categories = data
+        }
+      })
+    this.shapeService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          this.shapes = data
+        }
+      })
+    this.styleService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          this.styles = data
+        }
+      })
     this.colorService.findAll().subscribe(data => this.colors = data)
-    this.styleService.findAll().subscribe(data => this.styles = data)
     this.settingFormGroup()
     this.activatedRoute.params.subscribe(
         params => { this.edittingProductId = params['id'] }
@@ -68,12 +90,13 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
   }
   
   ngAfterViewInit(): void {
-    this.productService.findById(+this.edittingProductId).subscribe((data) => {
-      this.edittingProduct = data
-      setTimeout(() => { // detect change
-        this.fillFormValues();
-      }, 0)
-    })
+    // this.productService.findById(+this.edittingProductId).subscribe((data) => {
+    //   this.edittingProduct = data
+    //   setTimeout(() => { // detect change
+    //     this.fillFormValues();
+    //   }, 0)
+    // })
+    let x;
   }
 
   fillFormValues(): void {
@@ -84,9 +107,12 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
     this.product.get('shape').setValue(this.edittingProduct.productShape.shapeName)
     this.product.get('style').setValue(this.edittingProduct.productStyle.styleName)
     this.product.get('description').setValue(this.edittingProduct.description)
-    this.product.get('images').setValue(this.edittingProduct.imageUrls)
+    this.product.get('images').setValue(this.edittingProduct.images)
 
-    this.carousel.show(this.edittingProduct.imageUrls)
+    let images: string[] =  this.edittingProduct.images.map((img: Image) => {
+      return img.imageUrl;
+    })
+    this.carousel.show(images);
 
     if(this.edittingProduct.productVariants.length == 0 || 
         this.edittingProduct.productVariants == null) {
@@ -111,7 +137,7 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
         variantForm.get('colorType').setValue('Custom Color')
         variantForm.get('customColorValue').setValue(variant.color.colorName)
       }
-      variantForm.get('imageUrl').setValue(variant.imageUrl)
+      variantForm.get('imageUrl').setValue(variant.image)
     }
     
   }
@@ -209,7 +235,7 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
     editedProduct.category = this.categories.find(cate => cate.categoryName = this.product.get('category').value);
     editedProduct.productShape = this.shapes.find(shape => shape.shapeName = this.product.get('shape').value);
     editedProduct.productStyle = this.styles.find(style => style.styleName = this.product.get('style').value) ;
-    editedProduct.imageUrls = this.product.get('images').value
+    editedProduct.images = this.product.get('images').value
     editedProduct.createdAt = new Date();
     editedProduct.updatedAt = new Date();
 

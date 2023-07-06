@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs-compat';
 import { ProductCategory } from '../../models/product/product-category.model';
 import { of, BehaviorSubject } from 'rxjs';
+import { ModelResponse } from '../../models/response/ModelResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -29,9 +30,9 @@ export class ProductCategoryService {
   ) { 
   }
 
-  findAll(): Observable<ProductCategory[]> {
+  findAll(): Observable<ProductCategory[]  | ModelResponse> {
     const url: string = `${this.baseUrlService.baseURL}/category`
-    return this.httpClient.get<ProductCategory[]>(url)
+    return this.httpClient.get<ProductCategory[]  | ModelResponse>(url)
   }
 
   insert(category: ProductCategory): Observable<ProductCategory> {
