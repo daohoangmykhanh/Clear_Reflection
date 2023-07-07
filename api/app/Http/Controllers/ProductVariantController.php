@@ -32,23 +32,24 @@ class ProductVariantController extends Controller
 
     public function show($productId)
     {
-        $productVariant = ProductVariant::where('product_id', $productId)->get();
+        $productVariants = ProductVariant::where('product_id', $productId)->get();
 
-        if ($productVariant->isEmpty()) {
+        if ($productVariants->isEmpty()) {
             return response()->json([
+                'result' => false,
                 'message' => 'No product variants found for the given product ID.',
             ], 404);
         }
 
         return response()->json([
             'product_variants' =>  [
-                'productId' => $productVariant->product_id,
-                'height' => $productVariant->height,
-                'width' => $productVariant->width,
-                'colorName' => $productVariant->product_color->color_name ?? null,
-                'quantity' => $productVariant->quantity ?? null,
-                'price' => $productVariant->price ?? null,
-                'imageId' => $productVariant->image_id ?? null,
+                'productId' => $productVariants->product_id,
+                'height' => $productVariants->height,
+                'width' => $productVariants->width,
+                'colorName' => $productVariants->product_color->color_name ?? null,
+                'quantity' => $productVariants->quantity ?? null,
+                'price' => $productVariants->price ?? null,
+                'imageId' => $productVariants->image_id ?? null,
             ]
         ]);
     }
@@ -86,48 +87,48 @@ class ProductVariantController extends Controller
     }
 
     public function update(Request $request, $productVariantId)
-{
-    $validatedData = $request->validate([
-        'product_id' => 'required|integer',
-        'height' => 'required|integer',
-        'width' => 'required|integer',
-        'color_id' => 'required|integer',
-        'quantity' => 'required|integer',
-        'price' => 'required|numeric',
-        'image_id' => 'nullable|integer',
-    ]);
-
-    $productVariant = ProductVariant::findOrFail($productVariantId);
-    $updated = $productVariant->update($validatedData);
-
-    if ($updated) {
-        return response()->json([
-            'result' => true,
-            'message' => 'Product variant updated successfully.',
+    {
+        $validatedData = $request->validate([
+            'product_id' => 'required|integer',
+            'height' => 'required|integer',
+            'width' => 'required|integer',
+            'color_id' => 'required|integer',
+            'quantity' => 'required|integer',
+            'price' => 'required|numeric',
+            'image_id' => 'nullable|integer',
         ]);
-    } else {
-        return response()->json([
-            'result' => false,
-            'message' => 'Failed to update product variant.',
-        ]);
+
+        $productVariant = ProductVariant::findOrFail($productVariantId);
+        $updated = $productVariant->update($validatedData);
+
+        if ($updated) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Product variant updated successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to update product variant.',
+            ]);
+        }
     }
-}
 
-public function destroy($productVariantId)
-{
-    $productVariant = ProductVariant::findOrFail($productVariantId);
-    $deleted = $productVariant->delete();
+    public function destroy($productVariantId)
+    {
+        $productVariant = ProductVariant::findOrFail($productVariantId);
+        $deleted = $productVariant->delete();
 
-    if ($deleted) {
-        return response()->json([
-            'result' => true,
-            'message' => 'Product variant deleted successfully.',
-        ]);
-    } else {
-        return response()->json([
-            'result' => false,
-            'message' => 'Failed to delete product variant.',
-        ]);
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Product variant deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete product variant.',
+            ]);
+        }
     }
-}
 }

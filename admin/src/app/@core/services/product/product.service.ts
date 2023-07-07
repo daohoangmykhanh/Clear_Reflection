@@ -3,6 +3,7 @@ import { Observable, of, BehaviorSubject } from 'rxjs';
 import { Product } from '../../models/product/product.model';
 import { BaseURLService } from '../base-url.service';
 import { HttpClient } from '@angular/common/http';
+import { ModelResponse } from '../../models/response/ModelResponse';
 
 export class ToastState {
   bahavior: String;
@@ -63,44 +64,38 @@ export class ProductService {
     //   }])
   }
 
-  findAll(): Observable<Product[]> {
-    const url = `${this.baseUrlService.baseURL}/admin/product`
-    return this.httpClient.get<Product[]>(url);
+  findAll(): Observable<Product[] | ModelResponse> {
+    const url = `${this.baseUrlService.baseURL}/product`
+    return this.httpClient.get<Product[] | ModelResponse>(url);
   }
   
-  findById(id: number): Observable<Product | null>  {
-    if(id >= 1 && id <= 10) {
-      return of({
-        productId: 1,
-        productName: 'Product Name',
-        description: 'Description',
-        isHide: false,
-        category: {categoryId: 1, categoryName: 'Category 1', imageUrl: 'assets/images/alan.png'},
-        productShape: {productShapeId: 1, shapeName: 'Shape 1'},
-        productStyle: {productStyleId: 1, styleName: 'Style 1'},
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        productVariants: [
-          {productVariantId: 1, height: 10, width: 10, quantity: 10, price: 10, imageUrl: null, color: {productColorId: 1, colorName: 'Color 1'}},
-          {productVariantId: 2, height: 20, width: 20, quantity: 20, price: 20, imageUrl: 'assets/images/cover2.jpg', color: {productColorId: 2, colorName: 'Color 2'}},
-          {productVariantId: 3, height: 30, width: 30, quantity: 30, price: 30, imageUrl: 'assets/images/cover3.jpg', color: {productColorId: 3, colorName: 'Color 3g'}},
-        ],
-        imageUrls: [
-          'assets/images/camera1.jpg',
-          'assets/images/camera2.jpg',
-          'assets/images/camera2.jpg',
-          'assets/images/camera2.jpg',
-        ]
-      })
-    } 
-    return of(null)
+  findById(id: number): Observable<Product | ModelResponse>  {
+    const url: string = `${this.baseUrlService.baseURL}/product/${id}`
+    return this.httpClient.get<Product>(url);
+  } 
+
+  insert(product: Product): Observable<Product> {
+    const url: string = `${this.baseUrlService.baseURL}/product/create`
+    return this.httpClient.post<Product>(url, product);
   }
 
-  insert(product: Product): Product {
-    return new Product()
+  update(product: Product): Observable<ModelResponse> {
+    const url: string = `${this.baseUrlService.baseURL}/product/update/${product.productId}`
+    return this.httpClient.post<ModelResponse>(url, product);
   }
 
-  edit(product: Product): boolean {
-    return true;
+  delete(productId: number): Observable<ModelResponse> {    
+    const url: string = `${this.baseUrlService.baseURL}/product/delete/${productId}`
+    return this.httpClient.delete<ModelResponse>(url); 
+  }
+
+  hideProduct(productId: number): Observable<ModelResponse> {
+    const url: string = `${this.baseUrlService.baseURL}/product/hideProduct/${productId}`
+    return this.httpClient.get<ModelResponse>(url); 
+  }
+
+  getDetails(productId: number): Observable<Product | ModelResponse> {
+    const url: string = `${this.baseUrlService.baseURL}/product/details1/${productId}`;
+    return this.httpClient.get<ModelResponse >(url)
   }
 }

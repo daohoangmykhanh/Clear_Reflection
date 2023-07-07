@@ -5,13 +5,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Account extends Model
+class Account extends Model 
 {
     use HasFactory;
     protected $table = 'account';
     protected $primaryKey = 'account_id';
     protected $fillable = ['username','password','full_name','email','phone_number', 'image_id', 'role_id', 'created_at', 'updated_at'];
     public $timestamps = true;
+
 
     public static function store($validatedData){
         $username = $validatedData['username'];

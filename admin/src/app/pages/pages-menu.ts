@@ -31,6 +31,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Product Coupon',
         link: '/admin/products/coupon',
+      },
+      {
+        title: 'Product Style & Shape',
+        link: '/admin/products/style-n-shape',
       }
     ],
   },

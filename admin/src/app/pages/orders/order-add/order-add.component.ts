@@ -1,3 +1,4 @@
+import { ToastState, UtilsService } from './../../../@core/services/utils.service';
 import { ProductService } from './../../../@core/services/product/product.service';
 import { PaymentMethodService } from './../../../@core/services/order/payment-method.service';
 import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
@@ -19,6 +20,7 @@ import { District } from '../../../@core/models/address/districts.model';
 import { Address } from '../../../@core/models/address/address.model';
 import { Product } from '../../../@core/models/product/product.model';
 import { CustomValidator, isEmailNotExisting, isProductidNotExisting } from '../../../@core/validators/custom-validator';
+import { Order } from '../../../@core/models/order/order.model';
 
 @Component({
   selector: 'ngx-order-add',
@@ -52,7 +54,8 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     private paymentMethodService: PaymentMethodService,
     private accountService: AccountService,
     private formBuilder: FormBuilder,
-    private productService: ProductService
+    private productService: ProductService,
+    private utilsService: UtilsService
   ) {
       this.orderStatusService.findAll().subscribe(data => this.orderStatuses = data)
       this.paymentMethodService.findAll().subscribe(data => this.paymentMethods = data)
@@ -167,8 +170,10 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     console.log(this.addOrderFormGroup.value);
     if(this.addOrderFormGroup.invalid) {
       this.addOrderFormGroup.markAllAsTouched();
-      // this.utilsService.updateToastState(new ToastState('add', 'product', 'danger'))
-      return; 
+      this.utilsService.updateToastState(new ToastState('add', 'order', 'danger'))
+      return;
     }
+
+    let order: Order = new Order();
   }
 }

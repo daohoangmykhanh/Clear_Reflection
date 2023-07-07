@@ -1,35 +1,13 @@
-import { style } from "@angular/animations";
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, ViewChild, TemplateRef } from "@angular/core";
 import { Router } from "@angular/router";
+import { NbWindowRef, NbWindowService } from "@nebular/theme";
 import { ViewCell } from "ng2-smart-table";
+import { ProductService } from "../../../../@core/services/product/product.service";
+import { ToastState, UtilsService } from "../../../../@core/services/utils.service";
 
 @Component({
     selector: 'ngx-custom-action',
-    template: `
-        <div class="row ">
-            <div class="col-lg-3 col-md-6 d-flex justify-content-center">
-                <button nbButton status="primary" (click)="onGetDetail()">
-                    <nb-icon icon="folder-outline"></nb-icon>
-                </button>
-            </div>
-            <div class="col-lg-3 col-md-6  d-flex justify-content-center">
-                <button nbButton status="warning" (click)="onEdit()">
-                    <nb-icon icon="edit-2-outline"></nb-icon>
-                </button>
-            </div>
-            <div class="col-lg-3 col-md-6  d-flex justify-content-center">
-                <button nbButton status="danger" (click)="onDelete($event)">
-                    <nb-icon icon="trash-outline"></nb-icon>
-                </button>
-            </div>
-            <div class="col-lg-3 col-md-6  d-flex justify-content-center">
-            <button nbButton status="info" (click)="onHide()">
-                    <nb-icon *ngIf="isHide()" icon="eye-off-outline"></nb-icon>
-                    <nb-icon *ngIf="!isHide()" icon="eye-outline"></nb-icon>
-                </button>
-            </div>
-        </div>
-    `,
+    templateUrl: 'custom-product-action.component.html',
     styles: [
         `
             button {
@@ -42,18 +20,36 @@ import { ViewCell } from "ng2-smart-table";
     ]
 })
 
-export class CustomProductActionComponent implements ViewCell {
+export class CustomProductActionComponent implements ViewCell, OnInit {
     renderValue: string;
 
     @Input() value: string | number;
     @Input() rowData: any;
 
+    productId: number;
+
+    @ViewChild('onHideTemplate') hideWindow: TemplateRef<any>;
+    hideWindowRef: NbWindowRef;
+
+    @ViewChild('onDeleteTemplate') deleteWindow: TemplateRef<any>;
+    deleteWindowRef: NbWindowRef;
+
     constructor(
-        private router: Router
-    ) { }
+        private router: Router,
+        private windowService: NbWindowService,
+        private productService: ProductService,
+        private utilsService: UtilsService
+    ) {
+        
+    }
+    
+    ngOnInit(): void {
+        // console.log(this.rowData);
+        this.productId = this.rowData.productId
+    }
 
     isHide(): boolean {
-        return this.rowData.isHide;
+        return this.rowData.isHide === 1;
     }
 
     onGetDetail() {
@@ -65,14 +61,44 @@ export class CustomProductActionComponent implements ViewCell {
     }
 
     onDelete(event: any) {
-        if (window.confirm('Are you sure you want to delete?')) {
-            event.confirm.resolve();
-        } else {
-            event.confirm.reject();
-        }
+        const windowRef = this.windowService
+            .open(this.hideWindow, { title: `Delete Product` }); 
     }
 
     onHide() {
+        const windowRef = this.windowService
+            .open(this.hideWindow, { title: `Hide Product` });
+    }
 
+    hideProduct() {
+        this.productService.hideProduct(this.productId).subscribe(
+            data => {
+                if (data.result) {
+                    this.utilsService.updateToastState(new ToastState('hide', 'product', 'success'))
+                    this.hideWindowRef.close()
+                } else {
+                    this.utilsService.updateToastState(new ToastState('hide', 'product', 'danger'))
+                }
+            }, 
+            error => {
+                this.utilsService.updateToastState(new ToastState('hide', 'product', 'danger'))
+            }
+        )
+    }
+
+    deleteProduct() {
+        this.productService.delete(this.productId).subscribe(
+            data => {
+                if (data.result) {
+                    this.utilsService.updateToastState(new ToastState('delete', 'product', 'success'))
+                    this.hideWindowRef.close()
+                } else {
+                    this.utilsService.updateToastState(new ToastState('delete', 'product', 'danger'))
+                }
+            }, 
+            error => {
+                this.utilsService.updateToastState(new ToastState('delete', 'product', 'danger'))
+            }
+        )
     }
 }

@@ -1,4 +1,4 @@
-import { Image } from "../image.model";
+import { Image } from "../Image";
 import { ProductColor } from "./product-color.model";
 
 export class ProductVariant {
@@ -8,5 +8,5 @@ export class ProductVariant {
     color: ProductColor;
     quantity: number;
     price: number;
-    imageUrl?: string;
+    image?: Image;
 }

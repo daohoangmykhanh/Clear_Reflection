@@ -13,12 +13,12 @@ use App\Http\Controllers\BEAccountController;
 use App\Http\Controllers\BECategoryController;
 use App\Http\Controllers\BEProductShapeController;
 use App\Http\Controllers\BEProductStyleController;
+use App\Http\Controllers\BEProductColorController;
 use App\Http\Controllers\FEAccountController;
 use App\Http\Controllers\BEProductController;
 use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\DistrictController;
-use App\Http\Controllers\ListProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\OrderAddressController;
@@ -27,6 +27,7 @@ use App\Http\Controllers\BECouponTypeController;
 use App\Http\Controllers\BECompanyController;
 use App\Http\Controllers\BEOrderController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,11 +101,12 @@ Route::get('/product/sort/{value}', [ProductController::class, 'sortByRating']);
 
 // Product Controller
 Route::get('/admin/product', [BEProductController::class, 'index']);
-Route::get('/admin/product/a', [ListProductController::class, 'listDetail']);
+Route::get('/admin/product/detail/{id}', [BEProductController::class, 'detail']);
+Route::get('/admin/product/hide/{id}', [BEProductController::class, 'hide']);
 Route::get('/admin/product/{product_id}', [ProductVariantController::class, 'show']);
 Route::post('/admin/product/create', [BEProductController::class, 'create']);
-Route::get('/admin/product/{id}', [BEProductController::class, 'edit']);
-Route::post('/admin/product/update', [BEProductController::class, 'update']);
+Route::get('/admin/product/edit/{id}', [BEProductController::class, 'edit']);
+Route::post('/admin/product/update/{id}', [BEProductController::class, 'update']);
 Route::get('/admin/product/delete/{id}', [BEProductController::class, 'delete']);
 // Role Controller
 Route::get('/admin/role', [BERoleController::class, 'index']);
@@ -126,11 +128,21 @@ Route::get('/admin/shape', [BEProductShapeController::class, 'index']);
 Route::post('/admin/shape/create', [BEProductShapeController::class, 'create']);
 Route::post('/admin/shape/update/{id}', [BEProductShapeController::class, 'update']);
 Route::get('/admin/shape/delete/{id}', [BEProductShapeController::class, 'delete']);
+// Product Color Controller
+Route::get('/admin/color', [BEProductColorController::class, 'index']);
+Route::post('/admin/color/create', [BEProductColorController::class, 'create']);
+Route::post('/admin/color/update/{id}', [BEProductColorController::class, 'update']);
+Route::get('/admin/color/delete/{id}', [BEProductColorController::class, 'delete']);
 // Product Style Controller
 Route::get('/admin/style', [BEProductStyleController::class, 'index']);
 Route::post('/admin/style/create', [BEProductStyleController::class, 'create']);
 Route::post('/admin/style/update/{id}', [BEProductStyleController::class, 'update']);
 Route::get('/admin/style/delete/{id}', [BEProductStyleController::class, 'delete']);
+// Product Color Controller
+Route::get('/admin/color', [BEProductColorController::class, 'index']);
+Route::post('/admin/color/create', [BEProductColorController::class, 'create']);
+Route::post('/admin/color/update/{id}', [BEProductColorController::class, 'update']);
+Route::get('/admin/color/delete/{id}', [BEProductColorController::class, 'delete']);
 // FEAccount Controller
 Route::post('/register', [FEAccountController::class, 'register']);
 Route::post('/signin', [FEAccountController::class, 'signin']);
@@ -154,3 +166,8 @@ Route::get('/admin/order/{id}', [BEOrderController::class, 'detail']);
 Route::post('/admin/order/create', [BECouponTypeController::class, 'create']);
 Route::post('/admin/order/update/{id}', [BECouponTypeController::class, 'update']);
 Route::get('/admin/order/delete/{id}', [BECouponTypeController::class, 'delete']);
+// Auth Controller
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::get('/logout', [AuthController::class, 'logout']);
+Route::get('/test', [AuthController::class, 'test']);

@@ -70,9 +70,14 @@ export class ProductCategoryComponent implements OnInit {
     private utilsService: UtilsService,
     private router: Router
   ) {
-    this.categoryService.findAll().subscribe(data => {
-        this.source.load(data);
-    })
+    this.categoryService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          this.source.load(data)
+        }
+      })
     this.addCategoryFormGroup = this.formBuilder.group({
       name: ['', [CustomValidator.notBlank, Validators.maxLength(100)]],
       imageUrl: [, [Validators.required]]
@@ -132,7 +137,7 @@ export class ProductCategoryComponent implements OnInit {
 
     let category: ProductCategory = new ProductCategory()
     category.categoryName = this.addCategoryFormGroup.get('name').value
-    category.imageUrl = this.addCategoryFormGroup.get('imageUrl').value
+    category.image = this.addCategoryFormGroup.get('imageUrl').value
     if(this.categoryService.insert(category)) {
       this.utilsService.updateToastState(new ToastState('add', 'category', 'success'))
       this.addCategoryFormGroup.reset()
@@ -150,9 +155,9 @@ export class ProductCategoryComponent implements OnInit {
     let category: ProductCategory = new ProductCategory()
     category.categoryId = this.editCategoryFormGroup.get('id').value
     category.categoryName = this.addCategoryFormGroup.get('name').value
-    category.imageUrl = this.addCategoryFormGroup.get('imageUrl').value
+    category.image = this.addCategoryFormGroup.get('imageUrl').value
 
-    if(this.categoryService.edit(category)) {
+    if(this.categoryService.update(category)) {
       this.utilsService.updateToastState(new ToastState('edit', 'category', 'success'))
       this.categoryService.updateHandleAndRowData('add');
       this.router.navigate(['/admin/products/category'])

@@ -1,7 +1,9 @@
-import { Image } from "../image.model";
+import { Image } from "../Image";
 
 export class ProductCategory {
     categoryId: number;
     categoryName: string;
-    imageUrl: string;
+    image: Image;
+    createdAt: Date;
+    updatedAt: Date;
 }
