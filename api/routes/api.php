@@ -27,6 +27,7 @@ use App\Http\Controllers\BECouponTypeController;
 use App\Http\Controllers\BECompanyController;
 use App\Http\Controllers\BEOrderController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,6 +96,7 @@ Route::resource('product', ProductController::class);
 // Product Controller
 Route::get('/admin/product', [BEProductController::class, 'index']);
 Route::get('/admin/product/detail/{id}', [BEProductController::class, 'detail']);
+Route::get('/admin/product/hide/{id}', [BEProductController::class, 'hide']);
 Route::get('/admin/product/{product_id}', [ProductVariantController::class, 'show']);
 Route::post('/admin/product/create', [BEProductController::class, 'create']);
 Route::get('/admin/product/edit/{id}', [BEProductController::class, 'edit']);
@@ -153,3 +155,8 @@ Route::get('/admin/order/{id}', [BEOrderController::class, 'detail']);
 Route::post('/admin/order/create', [BECouponTypeController::class, 'create']);
 Route::post('/admin/order/update/{id}', [BECouponTypeController::class, 'update']);
 Route::get('/admin/order/delete/{id}', [BECouponTypeController::class, 'delete']);
+// Auth Controller
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::get('/logout', [AuthController::class, 'logout']);
+Route::get('/test', [AuthController::class, 'test']);

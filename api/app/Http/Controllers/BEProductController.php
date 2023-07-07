@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CartDetail;
 use App\Models\Image;
+use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Models\ProductColor;
@@ -32,6 +33,30 @@ class BEProductController extends Controller
                             'imageUrl' => $image->image_url,
                         ];
                     }
+                }
+            }
+            $orders = OrderDetail::where('product_id',$product -> product_id) -> get();
+            $sold = 0;
+            if($orders -> isNotEmpty()){
+                foreach($orders as $order){
+                    $sold += $order -> quantity;
+                }
+            }
+            $ratings = ProductReview::where('product_id',$product -> product_id) -> get();
+            $count = ProductReview::where('product_id',$product -> product_id) -> get() ->count();
+            $ratingStar = 0;
+            $star = 0;
+            if($count != 0){
+                foreach($ratings as $rating){
+                    $star += $rating -> rating;
+                }
+                $ratingStar = $star / $count;
+            }
+            $likes = 0;
+            $wishes = Wishlist::where('product_id',$product -> product_id) -> get();
+            if($wishes -> isNotEmpty()){
+                foreach($wishes as $wish){
+                    $likes += 1;
                 }
             }
             $category = null;
@@ -64,6 +89,9 @@ class BEProductController extends Controller
                 'category' => $category,
                 'productShape' => $shape,
                 'productStyle' => $style,
+                'sold' => $sold,
+                'ratingStar' => $ratingStar,
+                'likes' => $likes,
                 'createdAt' => $product->created_at,
                 'updatedAt' => $product->updated_at,
             ];
@@ -165,21 +193,33 @@ class BEProductController extends Controller
         return response()->json($productData);
     }
 
+    public function hide($id){
+        $product = Product::Find($id);
+        if($product == null)
+            return response()-> json([
+                'result' => false,
+                'message' => "Product doesnt exist!",
+            ]);
+        $product -> is_hide = false;
+        return response()-> json([
+            'result' => true,
+            'message' => "Product was hidden!",
+        ]);
+    }
     public function create(Request $request)
     {
         try {
             $validatedData = $request->validate([
                 'productName' => 'required|unique:product,product_name',
                 'description' => 'nullable|string',
-                'isHide' => 'required|boolean',
-                'categoryId' => 'required|integer',
-                'productShapeId' => 'required|integer',
-                'productStyleId' => 'required|integer',
+                'categoryId' => 'nullable|integer',
+                'productShapeId' => 'nullable|integer',
+                'productStyleId' => 'nullable|integer',
                 'productVariant' => 'required|array',
                 'imageUrl' => 'required|array',
                 'productVariant.*.height' => 'required|numeric',
                 'productVariant.*.width' => 'required|numeric',
-                'productVariant.*.color.colorId' => 'required|integer',
+                'productVariant.*.color.colorId' => 'nullable|integer',
                 'productVariant.*.color.colorName' => 'required|string',
                 'productVariant.*.quantity' => 'required|integer',
                 'productVariant.*.price' => 'required|numeric',
@@ -189,7 +229,7 @@ class BEProductController extends Controller
             $product = new Product();
             $product-> product_name = $validatedData['productName'];
             $product -> description = $validatedData['description'];
-            $product -> is_hide = $validatedData['isHide'];
+            $product -> is_hide = true;
             $product -> category_id = $validatedData['categoryId'];
             $product -> product_shape_id = $validatedData['productShapeId'];
             $product -> product_style_id = $validatedData['productStyleId'];
