@@ -19,12 +19,11 @@ class AddressController extends Controller
 
         foreach ($addresses as $address) {
             $addressData[] = [
-                'address_id' => $address->address_id,
-                'house_number' => $address->house_number,
-                'road_name' => $address->road_name,
-                'wards_code' => $address->wards_code,
-                'district_code' => $address->district_code,
-                'province_code' => $address->province_code,
+                'addressId' => $address->address_id,
+                'roadName' => $address->road_name,
+                'wardsCode' => $address->wards_code,
+                'districtCode' => $address->district_code,
+                'provinceCode' => $address->province_code,
             ];
         }
 
@@ -46,12 +45,11 @@ class AddressController extends Controller
 
         return response()->json([
             'address' => [
-                'address_id' => $address->address_id,
-                'house_number' => $address->house_number,
-                'road_name' => $address->road_name,
-                'wards_code' => $address->wards_code,
-                'district_code' => $address->district_code,
-                'province_code' => $address->province_code,
+                'addressId' => $address->address_id,
+                'roadName' => $address->road_name,
+                'wardsCode' => $address->wards_code,
+                'districtCode' => $address->district_code,
+                'provinceCode' => $address->province_code,
             ]
         ], 201);
     }
@@ -68,12 +66,11 @@ class AddressController extends Controller
 
         return response()->json([
             'address' => [
-                'address_id' => $address->address_id,
-                'house_number' => $address->house_number,
-                'road_name' => $address->road_name,
-                'wards_code' => $address->wards_code,
-                'district_code' => $address->district_code,
-                'province_code' => $address->province_code,
+                'addressId' => $address->address_id,
+                'roadName' => $address->road_name,
+                'wardsCode' => $address->wards_code,
+                'districtCode' => $address->district_code,
+                'provinceCode' => $address->province_code,  
             ]
         ]);
     }

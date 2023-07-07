@@ -9,30 +9,49 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category', 'product_shape', 'product_style', 'images', 'variants')->get();
+        $paginationLimit = 10; // Number of products per page
+
+        $products = Product::with('category', 'product_shape', 'product_style', 'images', 'variants')
+            ->paginate($paginationLimit);
+
         $productData = [];
 
         foreach ($products as $product) {
+            $imageData = [];
+            foreach ($product->images as $image) {
+                $imageData[] = [
+                    'imageId' => $image->image_id,
+                    'imageUrl' => $image->image->image_url
+                ];
+            }
             $productData[] = [
                 'productId' => $product->product_id,
                 'productName' => $product->product_name,
                 'description' => $product->description,
                 'isHide' => $product->is_hide,
-                'categoryId' => $product->category_id,
-                'productShapeId' => $product->product_shape_id,
-                'productStyleId' => $product->product_style_id,
+                'imageUrls' => $imageData,
+                'category' => $product->category->category_name ?? null,
+                'productShapeName' => $product->product_shape->shape_name ?? null,
+                'productStyleName' => $product->product_style->style_name ?? null,
             ];
         }
 
         return response()->json([
             'products' => $productData,
+            'pagination' => [
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+                'per_page' => $products->perPage(),
+                'total' => $products->total(),
+            ],
         ]);
     }
 
 
+
     public function show($id)
     {
-        $product = Product::with('category', 'productShape', 'productStyle', 'images', 'variants')->find($id);
+        $product = Product::with('category', 'product_shape', 'product_style', 'images', 'variants')->find($id);
 
         if (!$product) {
             return response()->json([
@@ -46,9 +65,9 @@ class ProductController extends Controller
                 'productName' => $product->product_name,
                 'description' => $product->description,
                 'isHide' => $product->is_hide,
-                'categoryId' => $product->category_id,
-                'productShapeId' => $product->product_shape_id,
-                'productStyleId' => $product->product_style_id,
+                'category' => $product->category->category_name ?? null,
+                'productShape' => $product->product_shape->shape_name ?? null,
+                'productStyle' => $product->product_style->style_name ?? null,
             ]
         ]);
     }
@@ -138,5 +157,31 @@ class ProductController extends Controller
                 'message' => 'Failed to delete product.',
             ]);
         }
+    }
+
+    public function sortByRating(Request $request, $order)
+    {
+        $products = Product::with(['category', 'product_shape', 'product_style', 'images', 'variants', 'reviews'])
+            ->leftJoin('product_review', 'product.product_id', '=', 'product_review.product_id')
+            ->orderBy('product_review.rating', $order)
+            ->get();
+
+        $productData = [];
+
+        foreach ($products as $product) {
+            $productData[] = [
+                'productId' => $product->product_id,
+                'productName' => $product->product_name,
+                'description' => $product->description,
+                'isHide' => $product->is_hide,
+                'category' => $product->category->category_name ?? null,
+                'productShapeName' => $product->product_shape->shape_name ?? null,
+                'productStyleName' => $product->product_style->style_name ?? null,
+            ];
+        }
+
+        return response()->json([
+            'products' => $productData,
+        ]);
     }
 }
