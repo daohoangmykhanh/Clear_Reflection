@@ -163,9 +163,7 @@ Route::post('/admin/company/update', [BECompanyController::class, 'update']);
 // BEOrder Controller
 Route::get('/admin/order', [BEOrderController::class, 'index']);
 Route::get('/admin/order/{id}', [BEOrderController::class, 'detail']);
-Route::post('/admin/order/create', [BECouponTypeController::class, 'create']);
-Route::post('/admin/order/update/{id}', [BECouponTypeController::class, 'update']);
-Route::get('/admin/order/delete/{id}', [BECouponTypeController::class, 'delete']);
+Route::post('/admin/order/update/{id}', [BEOrderController::class, 'update']);
 // Auth Controller
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);

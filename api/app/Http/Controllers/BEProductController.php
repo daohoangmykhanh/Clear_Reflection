@@ -224,11 +224,19 @@ class BEProductController extends Controller
                 'result' => false,
                 'message' => "Product doesnt exist!",
             ]);
-        $product -> is_hide = false;
-        return response()-> json([
-            'result' => true,
-            'message' => "Product was hidden!",
-        ]);
+        if($product -> is_hide == true){
+            $product -> is_hide = false;
+            return response()-> json([
+                'result' => true,
+                'message' => "Product was hidden!",
+            ]);
+        } else {
+            $product -> is_hide = true;
+            return response()-> json([
+                'result' => true,
+                'message' => "Product was shown!",
+            ]);
+        }
     }
     public function create(Request $request)
     {
@@ -441,11 +449,11 @@ class BEProductController extends Controller
             $variants = [];
             foreach($validatedData['productVariants'] as $variantData){
                 $variant = new ProductVariant();
-
                 if (isset($variantData['productVariantId'])) {
                     $existingVariant = ProductVariant::find($variantData['productVariantId']);
                     if ($existingVariant !== null) {
                         $variant = $existingVariant;
+                        $newVariant[] = $variant -> product_variant_id;
                     }
                 }
                 $variant->product_id = $product->product_id;
@@ -488,8 +496,19 @@ class BEProductController extends Controller
                 $variant -> save();
                 $variants[] = $variant;
             }
-
-
+            $oldVariant = ProductVariant::where('product_id', $id) -> get();
+            foreach($oldVariant as $old){
+                $found = false;
+                foreach($newVariant as $new){
+                    if($old -> product_variant_id == $new){
+                        $found = true;
+                        break;
+                    }
+                }
+                if(!$found){
+                    $old->delete();
+                }
+            }
             return response()->json([
                 'result' => true,
                 'message' => "Updated product successfully",
@@ -525,16 +544,18 @@ class BEProductController extends Controller
          }
         $variants = ProductVariant::where('product_id', $id) -> get();
         if($variants -> isNotEmpty()){
-           foreach($variants as $variant){
-                $img = Image::find($variant->image_id);
-                $oldImageFilename = $img -> image_url;
-                $oldImagePath = public_path('images/product/') . $oldImageFilename;
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
+            foreach($variants as $variant){
+                if($variant -> image_id != null ){
+                    $img = Image::find($variant->image_id);
+                    $oldImageFilename = $img -> image_url;
+                    $oldImagePath = public_path('images/product/') . $oldImageFilename;
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                    }
                 }
                 $variant->delete();
                 $img -> delete();
-           }
+            }
         }
         $carts = CartDetail::where('product_id', $id) -> get();
         if($carts -> isNotEmpty()){

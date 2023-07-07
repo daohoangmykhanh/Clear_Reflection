@@ -14,7 +14,7 @@ class BEOrderController extends Controller
             return response()->json('No results found!');
         }
         foreach($orders as $order){
-            
+
             $orderData[] = [
                 'order_id' => $order->order_id,
                 'order_tracking_number' => $order->order_tracking_number,
@@ -84,9 +84,34 @@ class BEOrderController extends Controller
             ],
             'shippingAddress' => $shippingAddress,
             'createdAt' => $order->created_at,
-            
+
         ];
         return response()->json($orderData);
+    }
+
+    public function update(Request $request, $id){
+        $order = Order::find($id);
+        if($order == null)
+            return response()->json([
+                'result' => false,
+                'message' => 'Order doesn`t exist!',
+            ]);
+        $validatedData = $request -> validate([
+            'orderStatusId' => 'required|integer'
+        ]);
+        $order -> order_status_id = $validatedData['orderStatusId'];
+        $order -> updated_at = now();
+        $result = $order -> save();
+        if(!$result)
+            return response()->json([
+                'result' => false,
+                'message' => 'Updated unsuccessfully!',
+            ]);
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Updated successfully.',
+        ]);
     }
 
 }

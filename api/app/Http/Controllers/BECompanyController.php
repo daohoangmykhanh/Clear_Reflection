@@ -13,14 +13,14 @@ class BECompanyController extends Controller
         $info = CompanyInformation::first();
         if($info == null){
             return response()->json('No results found!');
-        }      
+        }
         $infoData = [
             'companyName' => $info->company_name,
             'companyAddress' => $info->company_address,
             'companyPhoneNumber' => $info->company_phone_number,
             'companyVatNumber' => $info->company_vat_number,
         ];
-      
+
         return response()->json($infoData);
     }
 
@@ -38,11 +38,14 @@ class BECompanyController extends Controller
         $info -> company_vat_number = $validatedData['companyVatNumber'];
         $result = $info -> save();
         if(!$result)
-            return response()->json('Updated unsuccessfully !');
-    
         return response()->json([
+            'result' => false,
+            'message' => 'Updated unsuccessfully.',
+        ]);
+
+        return response()->json([
+            'result' => true,
             'message' => 'Updated successfully.',
-            'info' => $info
         ]);
     }
 
