@@ -68,10 +68,11 @@ class BEProductColorController extends Controller
                 'message' => "Color doesn't exist!",
             ]);
         $products = ProductVariant::where('color_id', $id) ->get();
-        foreach($products as $product){
-            $product -> color_id = null;
-            $product -> save();
-        }
+        if($products -> isNotEmpty())
+            return response()->json([
+                'result' => false,
+                'message' => "Color was applied in Product Variant!",
+            ]);
         $result = ProductColor::destroy($id);
         if(!$result)
             return response()->json([

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Order;
+use App\Models\OrderAddress;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 
@@ -43,7 +44,7 @@ class BEOrderController extends Controller
         } else {
             $coupon = 'NONE';
         }
-        $details = OrderDetail::where('order_id',$id) -> all();
+        $details = OrderDetail::where('order_id',$id) -> get();
         foreach($details as $detail){
             $productData[] = [
                 'productId' => $detail -> product_id,
@@ -51,10 +52,17 @@ class BEOrderController extends Controller
                 'height' => $detail -> height,
                 'width' => $detail -> width,
                 'price' => $detail -> price,
-                'color' => $detail -> color
+                'color' => $detail -> color,
+                'quantity' => $detail -> quantity
             ];
 
         }
+        $address = OrderAddress::where('order_id',$id) -> first();
+        $road = $address -> address -> road_name;
+        $ward = $address -> address -> ward -> full_name_en;
+        $district = $address -> address -> district -> full_name_en;
+        $province = $address -> address -> province -> full_name_en;
+        $shippingAddress = $road .", " . $ward .", " .  $district .", " .  $province;
         $orderData[] = [
             'orderId' => $order->order_id,
             'orderTrackingNumber' => $order->order_tracking_number,
@@ -74,6 +82,7 @@ class BEOrderController extends Controller
                 'paymentMethodId' => $order->payment-> payment_method_id,
                 'paymentMethodName' => $order->payment->payment_method_name,
             ],
+            'shippingAddress' => $shippingAddress,
             'createdAt' => $order->created_at,
             
         ];

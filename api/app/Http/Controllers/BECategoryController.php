@@ -20,9 +20,13 @@ class BECategoryController extends Controller
         foreach($categories as $category){
             $image = null;
             if ($category->image_id !== null) {
+                $storagePath = public_path('images/category/');
+                $filename = $category->image->image_url;
+                $data = file_get_contents($storagePath. $filename);
+                $base64Image = base64_encode($data);
                 $image = [
                     'imageId' => $category->image->image_id,
-                    'imageUrl' => $category->image->image_url,
+                    'imageUrl' => $base64Image,
                 ];
             }
             $categoryData[] = [
