@@ -98,7 +98,7 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
           
           return {
             accountId: account.accountId,
-            imageUrl: account.imageUrl,
+            imageUrl: account.image,
             fullName: account.fullName,
             email: account.email,
             phoneNumber: account.phoneNumber,

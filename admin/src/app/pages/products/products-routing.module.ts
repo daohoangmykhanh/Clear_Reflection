@@ -1,3 +1,4 @@
+import { ProductStyleShapeComponent } from './product-style-shape/product-style-shape.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -37,6 +38,10 @@ const routes: Routes = [{
       path: 'coupon',
       component: ProductCouponComponent,
     },
+    {
+      path: 'style-n-shape',
+      component: ProductStyleShapeComponent,
+    },
   ],
 }];
 
@@ -53,5 +58,6 @@ export const routedComponents = [
   ProductEditComponent,
   ProductDetailComponent,
   ProductCategoryComponent,
-  ProductCouponComponent
+  ProductCouponComponent,
+  ProductStyleShapeComponent
 ];

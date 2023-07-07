@@ -10,7 +10,10 @@ class BEProductShapeController extends Controller
     public function index(){
         $shapes = ProductShape::all();
         if($shapes -> isEmpty()){
-            return response()->json('No results found!');
+            return response()->json([
+                'result' => false,
+                'message' => "No results found!",
+            ]);
         }
         foreach($shapes as $shape){
             $shapeData[] = [
@@ -33,7 +36,7 @@ class BEProductShapeController extends Controller
                 'result' => false,
                 'message' => "Created shape unsuccessfully!",
             ]);
-        
+
         return response()->json($result);
     }
 
@@ -48,7 +51,7 @@ class BEProductShapeController extends Controller
                 'result' => false,
                 'message' => "Shape doesn't exist!",
             ]);
-        
+
         $result -> shape_name = $validatedData['shapeName'];
         $result -> save();
         return response()->json([
@@ -74,7 +77,7 @@ class BEProductShapeController extends Controller
                 'result' => false,
                 'message' => "Deleted shape unsuccessfully!",
             ]);
-    
+
         return response()->json([
             'result' => true,
             'message' => "Deleted shape successfully!",

@@ -122,6 +122,11 @@ Route::get('/admin/shape', [BEProductShapeController::class, 'index']);
 Route::post('/admin/shape/create', [BEProductShapeController::class, 'create']);
 Route::post('/admin/shape/update/{id}', [BEProductShapeController::class, 'update']);
 Route::get('/admin/shape/delete/{id}', [BEProductShapeController::class, 'delete']);
+// Product Color Controller
+Route::get('/admin/color', [BEProductColorController::class, 'index']);
+Route::post('/admin/color/create', [BEProductColorController::class, 'create']);
+Route::post('/admin/color/update/{id}', [BEProductColorController::class, 'update']);
+Route::get('/admin/color/delete/{id}', [BEProductColorController::class, 'delete']);
 // Product Style Controller
 Route::get('/admin/style', [BEProductStyleController::class, 'index']);
 Route::post('/admin/style/create', [BEProductStyleController::class, 'create']);

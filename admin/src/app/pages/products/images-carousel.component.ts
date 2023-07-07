@@ -55,12 +55,10 @@ export class ImagesCarouselComponent implements OnInit {
 
     prevSlide(carousel: any): void {
         this.activeSlideIndex = (this.activeSlideIndex - 1 + this.urls.length) % this.urls.length;
-        carousel.cycleTo(this.activeSlideIndex);
     }
 
     nextSlide(carousel: any): void {
         this.activeSlideIndex = (this.activeSlideIndex + 1) % this.urls.length;
-        carousel.cycleTo(this.activeSlideIndex);
     }
 
 }

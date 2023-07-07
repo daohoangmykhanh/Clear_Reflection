@@ -15,6 +15,10 @@ import { CustomCategoryFilterActionsComponent } from './product-category/custom/
 import { CustomCouponActionComponent } from './product-coupon/custom/custom-coupon-action.component';
 import { CustomCouponFilterActionsComponent } from './product-coupon/custom/custom-coupon-filter-actions.component';
 import { CustomCategoryImageComponent } from './product-category/custom/custom-category-image.component';
+import { CustomStyleActionComponent } from './product-style-shape/custom/custom-style-action.component';
+import { CustomStyleFilterActionsComponent } from './product-style-shape/custom/custom-style-filter-actions.component';
+import { CustomShapeActionComponent } from './product-style-shape/custom/custom-shape-action.component';
+import { CustomShapeFilterActionsComponent } from './product-style-shape/custom/custom-shape-filter-actions.component';
 
 @NgModule({
   imports: [
@@ -52,6 +56,10 @@ import { CustomCategoryImageComponent } from './product-category/custom/custom-c
     CustomCategoryImageComponent,
     CustomCouponActionComponent,
     CustomCouponFilterActionsComponent,
+    CustomStyleActionComponent,
+    CustomStyleFilterActionsComponent,
+    CustomShapeActionComponent,
+    CustomShapeFilterActionsComponent
   ],
 })
 export class ProductsModule { }

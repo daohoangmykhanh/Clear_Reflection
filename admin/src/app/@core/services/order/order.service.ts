@@ -18,100 +18,100 @@ export class OrderService {
     private paymentMethodService: PaymentMethodService
   ) { }
 
-  findAll(): Observable<Order[]> {
-    return of([
-      {
-        orderId: 1,
-        orderTrackingNumber: 'abcxyz',
-        accountEmail: 'account1@gmail.com',
-        totalPrice: 111,
-        totalQuantity: 111,
-        orderStatus: {
-          orderStatusId: 1,
-          statusName: 'Handling',
-          statusDescription: 'The order are handling'
-        },
-        paymentMethod: {
-          paymentMethodId: 1,
-          paymentMethodName: 'Paypal',
-        },
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        orderId: 2,
-        orderTrackingNumber: 'abcxyz2',
-        accountEmail: 'account2@gmail.com',
-        totalPrice: 222,
-        totalQuantity: 222,
-        orderStatus: {
-          orderStatusId: 2,
-          statusName: 'Delivering',
-          statusDescription: 'The products of order are Delivering'
-        },
-        paymentMethod: {
-          paymentMethodId: 2,
-          paymentMethodName: 'Vnpay',
-        },
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        orderId: 3,
-        orderTrackingNumber: 'abcxyz3',
-        accountEmail: 'account1@gmail.com',
-        totalPrice: 333,
-        totalQuantity: 333,
-        orderStatus: {
-          orderStatusId: 1,
-          statusName: 'Handling',
-          statusDescription: 'The order are handling'
-        },
-        paymentMethod: {
-          paymentMethodId: 1,
-          paymentMethodName: 'Paypal',
-        },
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        orderId: 4,
-        orderTrackingNumber: 'abcxyz4',
-        accountEmail: 'account4@gmail.com',
-        totalPrice: 444,
-        totalQuantity: 444,
-        orderStatus: {
-          orderStatusId: 2,
-          statusName: 'Delivering',
-          statusDescription: 'The products of order are Delivering'
-        },
-        paymentMethod: {
-          paymentMethodId: 2,
-          paymentMethodName: 'Vnpay',
-        },
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        orderId: 5,
-        orderTrackingNumber: 'abcxyz5',
-        accountEmail: 'account1@gmail.com',
-        totalPrice: 555,
-        totalQuantity: 555,
-        orderStatus: {
-          orderStatusId: 1,
-          statusName: 'Handling',
-          statusDescription: 'The order are handling'
-        },
-        paymentMethod: {
-          paymentMethodId: 1,
-          paymentMethodName: 'Paypal',
-        },
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-    ])
-  }
+  // findAll(): Observable<Order[]> {
+  //   return of([
+  //     {
+  //       orderId: 1,
+  //       orderTrackingNumber: 'abcxyz',
+  //       accountEmail: 'account1@gmail.com',
+  //       totalPrice: 111,
+  //       totalQuantity: 111,
+  //       orderStatus: {
+  //         orderStatusId: 1,
+  //         statusName: 'Handling',
+  //         statusDescription: 'The order are handling'
+  //       },
+  //       paymentMethod: {
+  //         paymentMethodId: 1,
+  //         paymentMethodName: 'Paypal',
+  //       },
+  //       createdAt: new Date(),
+  //       updatedAt: new Date()
+  //     },
+  //     {
+  //       orderId: 2,
+  //       orderTrackingNumber: 'abcxyz2',
+  //       accountEmail: 'account2@gmail.com',
+  //       totalPrice: 222,
+  //       totalQuantity: 222,
+  //       orderStatus: {
+  //         orderStatusId: 2,
+  //         statusName: 'Delivering',
+  //         statusDescription: 'The products of order are Delivering'
+  //       },
+  //       paymentMethod: {
+  //         paymentMethodId: 2,
+  //         paymentMethodName: 'Vnpay',
+  //       },
+  //       createdAt: new Date(),
+  //       updatedAt: new Date()
+  //     },
+  //     {
+  //       orderId: 3,
+  //       orderTrackingNumber: 'abcxyz3',
+  //       accountEmail: 'account1@gmail.com',
+  //       totalPrice: 333,
+  //       totalQuantity: 333,
+  //       orderStatus: {
+  //         orderStatusId: 1,
+  //         statusName: 'Handling',
+  //         statusDescription: 'The order are handling'
+  //       },
+  //       paymentMethod: {
+  //         paymentMethodId: 1,
+  //         paymentMethodName: 'Paypal',
+  //       },
+  //       createdAt: new Date(),
+  //       updatedAt: new Date()
+  //     },
+  //     {
+  //       orderId: 4,
+  //       orderTrackingNumber: 'abcxyz4',
+  //       accountEmail: 'account4@gmail.com',
+  //       totalPrice: 444,
+  //       totalQuantity: 444,
+  //       orderStatus: {
+  //         orderStatusId: 2,
+  //         statusName: 'Delivering',
+  //         statusDescription: 'The products of order are Delivering'
+  //       },
+  //       paymentMethod: {
+  //         paymentMethodId: 2,
+  //         paymentMethodName: 'Vnpay',
+  //       },
+  //       createdAt: new Date(),
+  //       updatedAt: new Date()
+  //     },
+  //     {
+  //       orderId: 5,
+  //       orderTrackingNumber: 'abcxyz5',
+  //       accountEmail: 'account1@gmail.com',
+  //       totalPrice: 555,
+  //       totalQuantity: 555,
+  //       orderStatus: {
+  //         orderStatusId: 1,
+  //         statusName: 'Handling',
+  //         statusDescription: 'The order are handling'
+  //       },
+  //       paymentMethod: {
+  //         paymentMethodId: 1,
+  //         paymentMethodName: 'Paypal',
+  //       },
+  //       createdAt: new Date(),
+  //       updatedAt: new Date()
+  //     },
+  //   ])
+  // }
 
   findById(id: number): Observable<Order> {
     if(id >= 1 && id <= 10) {
@@ -150,12 +150,23 @@ export class OrderService {
     return of(null)
   }
 
-
-  insert(order: Order): Order {
-    return new Order()
+  findAll(): Observable<Order[]> {
+    const url: string = `${this.baseUrlService.baseURL}/order`
+    return this.httpClient.get<Order[]>(url)
   }
 
-  edit(product: Order): boolean {
-    return true;
+  insert(order: Order): Observable<Order> {
+    const url: string = `${this.baseUrlService.baseURL}/order/create`
+    return this.httpClient.post<Order>(url, order);
+  }
+
+  update(order: Order): Observable<boolean> {
+    const url: string = `${this.baseUrlService.baseURL}/order/update`
+    return this.httpClient.post<boolean>(url, order);
+  }
+
+  delete(orderId: number): Observable<boolean> {    
+    const url: string = `${this.baseUrlService.baseURL}/order/delete/${orderId}`
+    return this.httpClient.delete<boolean>(url); 
   }
 }

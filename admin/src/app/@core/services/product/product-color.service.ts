@@ -3,47 +3,38 @@ import { Injectable } from '@angular/core';
 import { BaseURLService } from '../base-url.service';
 import { HttpClient } from '@angular/common/http';
 import { ProductColor } from '../../models/product/product-color.model';
+import { ModelResponse } from '../../models/response/ModelResponse';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductColorService {
 
-  shapeUrl: string;
 
   constructor(
     private baseUrlService: BaseURLService,
     private httpClient: HttpClient
-  ) { 
-    this.shapeUrl = `${baseUrlService.baseURL}`
+  ) {
   }
 
-  findAll(): Observable<ProductColor[]> {
-    // const url: string = `${this.shapeUrl}/category/findAll`
-    // return this.httpClient.get<ProductCategory[]>(url)
-    const cates: ProductColor[] = [
-      {
-        productColorId: 1,
-        colorName: 'Color 1',
-      },
-      {
-        productColorId: 2,
-        colorName: 'Color 2',
-      },
-      {
-        productColorId: 3,
-        colorName: 'Color 3',
-      },
-      {
-        productColorId: 4,
-        colorName: 'Color 4',
-      },
-      {
-        productColorId: 5,
-        colorName: 'Color 5',
-      },
-    ]
-    return of(cates);
+  findAll(): Observable<ProductColor[] | ModelResponse> {
+    const url: string = `${this.baseUrlService.baseURL}/color`
+    return this.httpClient.get<ProductColor[] | ModelResponse>(url)
+  }
+
+  insert(color: ProductColor): Observable<ProductColor> {
+    const url: string = `${this.baseUrlService.baseURL}/color/create`
+    return this.httpClient.post<ProductColor>(url, color);
+  }
+
+  update(color: ProductColor): Observable<boolean> {
+    const url: string = `${this.baseUrlService.baseURL}/color/update`
+    return this.httpClient.post<boolean>(url, color);
+  }
+
+  delete(colorId: number): Observable<boolean> {    
+    const url: string = `${this.baseUrlService.baseURL}/color/delete/${colorId}`
+    return this.httpClient.delete<boolean>(url); 
   }
 
   isBasicColor(color: ProductColor): boolean {

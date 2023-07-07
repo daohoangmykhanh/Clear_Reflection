@@ -9,11 +9,13 @@ import { ProductShapeService } from '../../../@core/services/product/product-sha
 import { ProductStyleService } from '../../../@core/services/product/product-style.service';
 import { ProductColorService } from '../../../@core/services/product/product-color.service';
 import { ProductShape } from '../../../@core/models/product/product-shape.model';
-import { ProductColor } from '../../../@core/models/product/product-color.model';
 import { ProductStyle } from '../../../@core/models/product/product-style.model';
 import { ProductCategory } from '../../../@core/models/product/product-category.model';
 import { CustomCategoryImageComponent } from '../product-category/custom/custom-category-image.component';
 import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { ModelResponse } from '../../../@core/models/response/ModelResponse';
+import { Product } from '../../../@core/models/product/product.model';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'ngx-product-list',
@@ -25,11 +27,23 @@ export class ProductListComponent implements OnInit, AfterViewInit {
   source: LocalDataSource = new LocalDataSource();
   // Setting for List layout
   shapes: ProductShape[];
-  colors: ProductColor[];
   styles: ProductStyle[];
   categories: ProductCategory[];
 
-  settings = {};
+  settings = {
+    actions: {
+      position: 'right',
+      edit: false,
+      delete: false,
+      add: false,
+      columnTitle: ''
+    },
+    columns: {},
+    pager: {
+      display: true,
+      perPage: this.numberOfItem
+    },
+  };
 
 
   constructor(
@@ -41,136 +55,166 @@ export class ProductListComponent implements OnInit, AfterViewInit {
     private colorService: ProductColorService,
     private toastService: NbToastrService
   ) {
-    this.categoryService.findAll().subscribe(data => this.categories = data)
-    this.shapeService.findAll().subscribe(data => this.shapes = data)
-    this.colorService.findAll().subscribe(data => this.colors = data)
-    this.styleService.findAll().subscribe(data => this.styles = data)
-    this.settings = {
-      actions: {
-        position: 'right',
-        edit: false,
-        delete: false,
-        add: false,
-        columnTitle: ''
-      },
-      columns: {
-        productId: {
-          title: 'ID',
-          type: 'number',
-          width: '3%'
-        },
-        image: {
-          title: 'Image',
-          type: 'custom',
-          sort: false,
-          filter: false,
-          renderComponent: CustomCategoryImageComponent
-        },
-        productName: {
-          title: 'Name',
-          type: 'string',
-        },
-        category: {
-          title: 'Category',
-          type: 'string',
-          filter: {
-            type: 'list',
-            config: {
-              selectText: 'Category...',
-              list: this.categories.map(cate => {
-                return { value: cate.categoryName, title: cate.categoryName}
-              }) ,
-            },
-          },
-        },
-        shape: {
-          title: 'Shape',
-          type: 'string',
-          filter: {
-            type: 'list',
-            config: {
-              selectText: 'Shape...',
-              list: this.shapes.map(shape => {
-                return { value: shape.shapeName, title: shape.shapeName}
-              }) ,
-            },
-          },
-        },
-        style: {
-          title: 'Style',
-          type: 'string',
-          filter: {
-            type: 'list',
-            config: {
-              selectText: 'Style...',
-              list: this.styles.map(style => {
-                return { value: style.styleName, title: style.styleName}
-              }) 
-            },
-          },
-        },
-        quantitySold: {
-          title: 'Sold',
-          type: 'number',
-          width: '5%'
-        },
-        totalLikes: {
-          title: 'Likes',
-          type: 'number',
-          width: '5%'
-        },
-        rating: {
-          title: 'Rating',
-          type: 'number',
-          width: '3%'
-        },
-        actions: {
-          title: 'Actions',
-          type: 'custom',
-          sort: false,
-          filter: {
-            type: 'custom',
-            component: CustomProductFilterActionsComponent,
-          },
-          renderComponent: CustomProductActionComponent
-        }
-      },
-      pager: {
-        display: true,
-        perPage: this.numberOfItem
-      },
-    }
-    this.productService.findAll().subscribe(
-      data => {
-        console.log(data);
-        
-        const mappedProducts: any[] = data.map(pro => {
-          return {
-            productId: pro.productId,
-            productName: pro.productName,
-            isHide: pro.isHide,
-            category: pro.category.categoryName,
-            shape: pro.productShape.shapeName,
-            style: pro.productStyle.styleName,
-            image: pro.imageUrls[0],
-            quantitySold: pro.quantitySold,
-            totalLikes: pro.totalLikes,
-            rating: pro.rating
-          }
-        })
-        this.source.load(mappedProducts)
-      }
 
-    )
   }
 
   ngOnInit(): void {
-    let x;
+    const categoryObservable = this.categoryService.findAll();
+    const shapeObservable = this.shapeService.findAll();
+    const styleObservable = this.styleService.findAll();
+
+    // Combine the observables using forkJoin
+    forkJoin([categoryObservable, shapeObservable, styleObservable]).subscribe(
+      ([categoryData, shapeData, styleData]) => {
+        if ("result" in categoryData) {
+          console.error(categoryData.message);
+        } else {
+          this.categories = categoryData;
+        }
+
+        if ("result" in shapeData) {
+          console.error(shapeData.message);
+        } else {
+          this.shapes = shapeData;
+        }
+
+        if ("result" in styleData) {
+          console.error(styleData.message);
+        } else {
+          this.styles = styleData;
+        }
+
+        // after run all of them, then load settings
+        this.settings = {
+          actions: {
+            position: 'right',
+            edit: false,
+            delete: false,
+            add: false,
+            columnTitle: ''
+          },
+          columns: {
+            productId: {
+              title: 'ID',
+              type: 'number',
+              width: '3%'
+            },
+            image: {
+              title: 'Image',
+              type: 'custom',
+              sort: false,
+              filter: false,
+              renderComponent: CustomCategoryImageComponent
+            },
+            productName: {
+              title: 'Name',
+              type: 'string',
+            },
+            category: {
+              title: 'Category',
+              type: 'string',
+              filter: {
+                type: 'list',
+                config: {
+                  selectText: 'Category...',
+                  list: this.categories.map(cate => {
+                    return { value: cate.categoryName, title: cate.categoryName }
+                  }),
+                },
+              },
+            },
+            shape: {
+              title: 'Shape',
+              type: 'string',
+              filter: {
+                type: 'list',
+                config: {
+                  selectText: 'Shape...',
+                  list: this.shapes.map(shape => {
+                    return { value: shape.shapeName, title: shape.shapeName }
+                  }),
+                },
+              },
+            },
+            style: {
+              title: 'Style',
+              type: 'string',
+              filter: {
+                type: 'list',
+                config: {
+                  selectText: 'Style...',
+                  list: this.styles.map(style => {
+                    return { value: style.styleName, title: style.styleName }
+                  })
+                },
+              },
+            },
+            quantitySold: {
+              title: 'Sold',
+              type: 'number',
+              width: '5%'
+            },
+            totalLikes: {
+              title: 'Likes',
+              type: 'number',
+              width: '5%'
+            },
+            rating: {
+              title: 'Rating',
+              type: 'number',
+              width: '3%'
+            },
+            actions: {
+              title: 'Actions',
+              type: 'custom',
+              sort: false,
+              filter: {
+                type: 'custom',
+                component: CustomProductFilterActionsComponent,
+              },
+              renderComponent: CustomProductActionComponent
+            }
+          },
+          pager: {
+            display: true,
+            perPage: this.numberOfItem
+          },
+        };
+      },
+      (error: any) => {
+        console.error("Error:", error);
+      }
+    );
+
+    this.productService.findAll().subscribe(
+      data => {
+        if ("result" in data) {
+          console.error(data.message);
+        } else {
+          const mappedProducts: any[] = (data as Product[]).map(pro => {
+            return {
+              productId: pro.productId,
+              productName: pro.productName,
+              isHide: pro.isHide,
+              category: pro.category.categoryName,
+              shape: pro.productShape.shapeName,
+              style: pro.productStyle.styleName,
+              // image: pro.images[0].imageUrl,
+              quantitySold: pro.quantitySold,
+              totalLikes: pro.totalLikes,
+              rating: pro.rating
+            }
+          })
+          this.source.load(mappedProducts)
+        }
+      })
   }
-  
+
   ngAfterViewInit() {
     const pager = document.querySelector('ng2-smart-table-pager');
     pager.classList.add('d-block')
+    setTimeout(() => {
+    }, 1000);
   }
 
   changeCursor(): void {

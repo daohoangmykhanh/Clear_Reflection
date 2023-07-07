@@ -1,4 +1,4 @@
-<form [formGroup]="addProductFormGroup">
+<form [formGroup]="addProductFormGroup" enctype="multipart/form-data" (ngSubmit)="onSubmit()">
     <nb-card fullWidth>
         <nb-card-header>
             <div class="row">
@@ -6,7 +6,7 @@
                     <h6>
                         Add A Product
                     </h6>
-                    <button nbButton status="success" size="large" (click)="onSubmit()">PUBLISH</button>
+                    <button nbButton status="success" size="large" type="submit">PUBLISH</button>
                 </div>
             </div>
         </nb-card-header>
@@ -34,25 +34,13 @@
                         </nb-select-label>
                         <nb-option *ngFor="let cate of categories" value="{{cate.categoryName }}">{{cate.categoryName}}</nb-option>
                     </nb-select>
-                    <div class="alert alert-danger mt-1" 
-                        *ngIf="product.get('category').invalid && (product.get('category').dirty || product.get('category').touched)">
-                        <div *ngIf="product.get('category').errors['notblank']">
-                            Category is required
-                        </div>
-                    </div>
-
+                    
                     <nb-select fullWidth placeholder="Shape" formControlName="shape">
                         <nb-select-label>
                             Shape: {{ product.get('shape').value }}
                         </nb-select-label>
                         <nb-option *ngFor="let shape of shapes" value="{{shape.shapeName}}">{{shape.shapeName}}</nb-option>
                     </nb-select>
-                    <div class="alert alert-danger mt-1" 
-                        *ngIf="product.get('shape').invalid && (product.get('shape').dirty || product.get('shape').touched)">
-                        <div *ngIf="product.get('shape').errors['notblank']">
-                            Shape is required
-                        </div>
-                    </div>
 
                     <nb-select fullWidth placeholder="Style" formControlName="style">
                         <nb-select-label>
@@ -60,12 +48,6 @@
                         </nb-select-label>
                         <nb-option *ngFor="let style of styles" value="{{style.styleName}}">{{style.styleName}}</nb-option>
                     </nb-select>
-                    <div class="alert alert-danger mt-1" 
-                        *ngIf="product.get('style').invalid && (product.get('style').dirty || product.get('style').touched)">
-                        <div *ngIf="product.get('style').errors['notblank']">
-                            Style is required
-                        </div>
-                    </div>
                     
                     <ckeditor class="ckeditor" [editor]="Editor" [config]="editorConfig" formControlName="description" maxlength="500"></ckeditor>
                     <div class="alert alert-danger mt-1" 
@@ -118,13 +100,13 @@
                                 </p>
                                 <ng-container *ngIf="i !== 0">
                                     <button nbButton [size]="'small'" [status]="'danger'" 
-                                        class="mr-5" (click)="removeVariant(i)">
+                                        class="mr-5" (click)="removeVariant(i, $event)">
                                         <nb-icon icon="trash-outline"></nb-icon>
                                     </button>
                                 </ng-container>
                                 <ng-container *ngIf="i === 0">
                                     <button nbButton [size]="'small'" [status]="'danger'" 
-                                        class="mr-5" (click)="removeVariant(i)" style="visibility: hidden">
+                                        class="mr-5" (click)="removeVariant(i, $event)" style="visibility: hidden">
                                     <nb-icon icon="trash-outline"></nb-icon>
                                     </button>
                                 </ng-container>
@@ -249,9 +231,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <ng-container *ngIf="productForm.get('imageUrl').value !== null">
+                                    <ng-container *ngIf="productForm.get('image').value !== null">
                                         <div class="col-lg-8">
-                                            <img [src]="productForm.get('imageUrl').value" class="d-block w-100" alt="Slide Image">
+                                            <img [src]="productForm.get('image').value" class="d-block w-100" alt="Slide Image">
                                         </div>
                                     </ng-container>
                                 </div>
@@ -262,7 +244,7 @@
     
                 </nb-card-body>
                 <nb-card-footer>
-                    <button nbButton [status]="'success'" (click)="addVariant()">
+                    <button nbButton [status]="'success'" (click)="addVariant($event)">
                         <nb-icon icon="plus-outline"></nb-icon>
                     </button>
                 </nb-card-footer>

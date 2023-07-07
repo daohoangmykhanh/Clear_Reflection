@@ -12,7 +12,10 @@ class BECategoryController extends Controller
     public function index(){
         $categories = Category::all();
         if($categories -> isEmpty()){
-            return response()->json('No results found!');
+            return response()->json([
+                'result' => false,
+                'message' => "No results found!",
+            ]);
         }
         foreach($categories as $category){
             $image = null;
@@ -25,9 +28,7 @@ class BECategoryController extends Controller
             $categoryData[] = [
                 'categoryId' => $category->category_id,
                 'categoryName' => $category->category_name,
-                'image' => $image,
-                'createdAt' => $category->created_at,
-                'updatedAt' => $category->updated_at,
+                'image' => $image
             ];
         }
         return response()->json($categoryData);
@@ -46,7 +47,7 @@ class BECategoryController extends Controller
                 $base64String = $validatedData['imageUrl'];
                 $base64Data = substr($base64String, strpos($base64String, ',') + 1);
                 $imageData = base64_decode($base64Data);
-                $filename = uniqid() . '.png'; 
+                $filename = uniqid() . '.png';
                 $storagePath = public_path('images/category/');
                 file_put_contents($storagePath. $filename, $imageData);
                 $image->image_url = $filename;
@@ -59,7 +60,7 @@ class BECategoryController extends Controller
                     'result' => false,
                     'message' => 'Created unsuccessfully !'
                 ]);
-            
+
             return response()->json($cate, 201);
         } catch (ValidationException $e) {
             return response()->json([
@@ -69,7 +70,7 @@ class BECategoryController extends Controller
         }
     }
     public function update(Request $request, $id){
-        
+
         try {
             $validatedData = $request->validate([
                 'categoryName' => 'required|unique:category,category_name,'. $id . ',category_id',
@@ -88,18 +89,18 @@ class BECategoryController extends Controller
                 } else {
                     $image = new Image();
                 }
-                
+
                 $base64String = $validatedData['imageUrl'];
                 $base64Data = substr($base64String, strpos($base64String, ',') + 1);
                 $imageData = base64_decode($base64Data);
-                $filename = uniqid() . '.png'; 
+                $filename = uniqid() . '.png';
                 $storagePath = public_path('images/category/');
                 file_put_contents($storagePath. $filename, $imageData);
                 $image->image_url = $filename;
                 $image->save();
                 $cate -> image_id = $image -> image_id;
             }
-            
+
             $result = $cate -> save();
             if(!$result)
                 return response()->json([
@@ -145,7 +146,7 @@ class BECategoryController extends Controller
                 'result' => false,
                 'message' => 'Delete successfully !'
             ]);
-    
+
         return response()->json([
             'result' => true,
             'message' => 'Delete successfully !'
