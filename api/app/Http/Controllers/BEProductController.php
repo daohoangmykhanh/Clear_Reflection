@@ -42,7 +42,7 @@ class BEProductController extends Controller
                     }
                 }
             }
-       
+
             $orders = OrderDetail::where('product_id',$product -> product_id) -> get();
             $sold = 0;
             if($orders -> isNotEmpty()){
@@ -97,9 +97,9 @@ class BEProductController extends Controller
                 'category' => $category,
                 'productShape' => $shape,
                 'productStyle' => $style,
-                'sold' => $sold,
-                'ratingStar' => $ratingStar,
-                'likes' => $likes,
+                'quantitySold' => $sold,
+                'rating' => $ratingStar,
+                'totalLikes' => $likes,
                 'createdAt' => $product->created_at,
                 'updatedAt' => $product->updated_at,
             ];
@@ -162,6 +162,13 @@ class BEProductController extends Controller
         } else {
             $ratingStar = 0;
         }
+        $orders = OrderDetail::where('product_id',$product -> product_id) -> get();
+        $sold = 0;
+        if($orders -> isNotEmpty()){
+            foreach($orders as $order){
+                $sold += $order -> quantity;
+            }
+        }
         $variantData = null;
         foreach ($product->variants as $variant) {
             $color = $variant->color;
@@ -190,21 +197,22 @@ class BEProductController extends Controller
             $totalQuantity += $variant -> quantity;
         }
         $productData[] = [
-            'product_id' => $product->product_id,
-            'product_name' => $product->product_name,
+            'productId' => $product->product_id,
+            'productName' => $product->product_name,
             'description' => $product->description,
             'isHide' => $product->is_hide,
             'images' => $imageData,
             'category' => $category,
             'productShape' => $shape,
             'productStyle' => $style,
-            'productVariant' => $variantData,
+            'quantitySold' => $sold,
+            'productVariants' => $variantData,
             'createdAt' => $product->created_at,
             'updatedAt' => $product->updated_at,
             'totalQuantity' => $totalQuantity,
-            'ratingStar' => $ratingStar,
+            'rating' => $ratingStar,
             'totalRating' => $totalRating,
-            'totalLove' => $totalLove
+            'totalLikes' => $totalLove
         ];
         return response()->json($productData);
     }
@@ -228,33 +236,34 @@ class BEProductController extends Controller
             $validatedData = $request->validate([
                 'productName' => 'required|unique:product,product_name',
                 'description' => 'nullable|string',
-                'categoryId' => 'nullable|integer',
-                'productShapeId' => 'nullable|integer',
-                'productStyleId' => 'nullable|integer',
-                'productVariant' => 'required|array',
-                'imageUrl' => 'required|array',
-                'productVariant.*.height' => 'required|numeric',
-                'productVariant.*.width' => 'required|numeric',
-                'productVariant.*.color.colorId' => 'nullable|integer',
-                'productVariant.*.color.colorName' => 'required|string',
-                'productVariant.*.quantity' => 'required|integer',
-                'productVariant.*.price' => 'required|numeric',
-                'productVariant.*.imageUrl' => 'nullable|string',
+                'isHide' => 'required|boolean',
+                'categoryId' => 'required|integer',
+                'productShapeId' => 'required|integer',
+                'productStyleId' => 'required|integer',
+                'productVariants' => 'required|array',
+                'images' => 'required|array',
+                'productVariants.*.height' => 'required|numeric',
+                'productVariants.*.width' => 'required|numeric',
+                'productVariants.*.color.productColorId' => 'nullable|integer',
+                'productVariants.*.color.colorName' => 'nullable|string',
+                'productVariants.*.quantity' => 'required|integer',
+                'productVariants.*.price' => 'required|numeric',
+                'productVariants.*.image' => 'nullable|string',
             ]);
 
             $product = new Product();
             $product-> product_name = $validatedData['productName'];
             $product -> description = $validatedData['description'];
-            $product -> is_hide = true;
+            $product -> is_hide = $validatedData['isHide'];
             $product -> category_id = $validatedData['categoryId'];
             $product -> product_shape_id = $validatedData['productShapeId'];
             $product -> product_style_id = $validatedData['productStyleId'];
             $product -> created_at = now();
             $product -> save();
 
-            foreach($validatedData['images'] as $image){
+            foreach($validatedData['images'] as $imageUrl){
                 $image = new Image();
-                $base64String = $image;
+                $base64String = $imageUrl;
                 $base64Data = substr($base64String, strpos($base64String, ',') + 1);
                 $imageData = base64_decode($base64Data);
                 $filename = uniqid() . '.png';
@@ -406,10 +415,9 @@ class BEProductController extends Controller
             $validatedData = $request->validate([
                 'productName' => 'required|unique:product,product_name,'. $id . ',product_id',
                 'description' => 'nullable|string',
-                'isHide' => 'required|boolean',
-                'categoryId' => 'required|integer',
-                'productShapeId' => 'required|integer',
-                'productStyleId' => 'required|integer',
+                'categoryId' => 'nullable|integer',
+                'productShapeId' => 'nullable|integer',
+                'productStyleId' => 'nullable|integer',
                 'productVariants' => 'required|array',
                 'images' => 'required|array',
                 'productVariants.*.height' => 'required|numeric',
