@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CartDetail;
 use App\Models\Image;
+use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Models\ProductColor;
@@ -17,7 +18,7 @@ class BEProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = Product::with('images')->get();
         if ($products->isEmpty()) {
             return response()->json([
                 'result' => false,
@@ -26,35 +27,74 @@ class BEProductController extends Controller
         }
         $productData = [];
         foreach ($products as $product) {
-            $imageData = [];
-            foreach ($product->images as $image) {
-                $imageData[] = [
-                    'imageId' => $image -> image_id,
-                    'imageUrl' => $image -> image_url
+            $imageData = null;
+            if ($product->images !== null) {
+                foreach ($product->images as $image) {
+                    if ($image->image_id !== null) {
+                        $imageData[] = [
+                            'imageId' => $image->image_id,
+                            'imageUrl' => $image->image_url,
+                        ];
+                    }
+                }
+            }
+            $orders = OrderDetail::where('product_id',$product -> product_id) -> get();
+            $sold = 0;
+            if($orders -> isNotEmpty()){
+                foreach($orders as $order){
+                    $sold += $order -> quantity;
+                }
+            }
+            $ratings = ProductReview::where('product_id',$product -> product_id) -> get();
+            $count = ProductReview::where('product_id',$product -> product_id) -> get() ->count();
+            $ratingStar = 0;
+            $star = 0;
+            if($count != 0){
+                foreach($ratings as $rating){
+                    $star += $rating -> rating;
+                }
+                $ratingStar = $star / $count;
+            }
+            $likes = 0;
+            $wishes = Wishlist::where('product_id',$product -> product_id) -> get();
+            if($wishes -> isNotEmpty()){
+                foreach($wishes as $wish){
+                    $likes += 1;
+                }
+            }
+            $category = null;
+            if ($product->category_id !== null) {
+                $category = [
+                    'categoryId' => $product->category -> category_id,
+                    'categoryName' => $product->category ->category_name,
                 ];
             }
-            $category = $product->category;
-            $product_shape = $product->product_shape;
-            $product_style = $product->product_style;
-
+            $shape = null;
+            if ($product->product_shape_id !== null) {
+                $shape = [
+                    'productShapeId' => $product->product_shape_id,
+                    'shapeName' => $product->product_shape->shape_name,
+                ];
+            }
+            $style = null;
+            if ($product->product_style_id !== null) {
+                $style =[
+                    'productStyleId' => $product->product_style_id,
+                    'styleName' => $product->product_style->style_name,
+                ];
+            }
             $productData[] = [
                 'productId' => $product->product_id,
                 'productName' => $product -> product_name,
                 'description' => $product->description,
                 'isHide' => $product->is_hide,
                 'images' => $imageData,
-                'category' => [
-                    'categoryId' => $category->category_id,
-                    'categoryName' => $category->category_name,
-                ],
-                'productShape' => [
-                    'productShapeId' => $product_shape->product_shape_id,
-                    'shapeName' => $product_shape->shape_name,
-                ],
-                'productStyle' => [
-                    'productStyleId' => $product_style->product_style_id,
-                    'styleName' => $product_style->style_name,
-                ],
+                'category' => $category,
+                'productShape' => $shape,
+                'productStyle' => $style,
+                'sold' => $sold,
+                'ratingStar' => $ratingStar,
+                'likes' => $likes,
                 'createdAt' => $product->created_at,
                 'updatedAt' => $product->updated_at,
             ];
@@ -62,94 +102,137 @@ class BEProductController extends Controller
         return response()->json($productData);
     }
 
-    public function listDetail()
+    public function detail($id)
     {
-        $products = Product::all();
-        if ($products->isEmpty()) {
+        $product = Product::with('images')->find($id);
+        if ($product == null) {
             return response()->json('No results found!');
         }
-        $productData = [];
-        foreach ($products as $product) {
-            $imageData = [];
+        $imageData = null;
+        if( $product -> images !== null){
             foreach ($product->images as $image) {
                 $imageData[] = [
                     'imageId' => $image -> image_id,
-                    'imageUrl' => $image -> image -> image_url
+                    'imageUrl' => $image -> image_url
                 ];
             }
-            $variantData = [];
-            $category = $product->category;
-            $product_shape = $product->product_shape;
-            $product_style = $product->product_style;
-            foreach ($product->variants as $variant) {
-                $color = $variant->color;
-                $image = $variant->image;
-                $variantData[] = [
-                    'height' => $variant->height,
-                    'width' => $variant->width,
-                    'color' => [
-                        'colorId' => $color -> product_color_id,
-                        'colorName' => $color -> color_name
-                    ],
-                    'quantity' => $variant->quantity,
-                    'price' => $variant->price,
-                    'image' => [
-                        'imageId' => $image -> image_id,
-                        'imageUrl' => $image -> image_url
-                    ]
+        }
+        $category = null;
+            if ($product->category_id !== null) {
+                $category = [
+                    'categoryId' => $product->category -> category_id,
+                    'categoryName' => $product->category ->category_name,
                 ];
             }
-            $productData[] = [
-                'product_id' => $product->product_id,
-                'product_name' => $product->product_name,
-                'description' => $product->description,
-                'isHide' => $product->is_hide,
-                'images' => $imageData,
-                'category' => [
-                    'categoryId' => $category->category_id,
-                    'categoryName' => $category->category_name,
-                ],
-                'productShape' => [
-                    'productShapeId' => $product_shape->product_shape_id,
-                    'shapeName' => $product_shape->shape_name,
-                ],
-                'productStyle' => [
-                    'productStyleId' => $product_style->product_style_id,
-                    'styleName' => $product_style->style_name,
-                ],
-                'productVariant' => $variantData,
-                'createdAt' => $product->created_at,
-                'updatedAt' => $product->updated_at,
+        $shape = null;
+        if ($product->product_shape_id !== null) {
+            $shape = [
+                'productShapeId' => $product->product_shape_id,
+                'shapeName' => $product->product_shape->shape_name,
             ];
         }
+        $style = null;
+        if ($product->product_style_id !== null) {
+            $style =[
+                'productStyleId' => $product->product_style_id,
+                'styleName' => $product->product_style->style_name,
+            ];
+        }
+        $totalQuantity = 0;
+        $totalRating = ProductReview::where('product_id',$id) -> get() -> count();
+        $totalLove = Wishlist::where('product_id', $id) -> get() -> count();
+        $ratings = ProductReview::where('product_id',$id) -> get();
+        $star = 0;
+        $count = 0;
+        foreach($ratings as $rating){
+            $star += $rating -> rating;
+            $count ++;
+        }
+        if($count != 0){
+            $ratingStar = $star / $count;
+        } else {
+            $ratingStar = 0;
+        }
+        $variantData = null;
+        foreach ($product->variants as $variant) {
+            $color = $variant->color;
+            $image = null;
+            if($variant -> image !== null){
+                $image = [
+                    'imageId' => $variant -> image -> image_id,
+                    'imageUrl' => $variant -> image -> image_url
+                ];
+            }
+            $variantData[] = [
+                'height' => $variant->height,
+                'width' => $variant->width,
+                'color' => [
+                    'colorId' => $color -> product_color_id,
+                    'colorName' => $color -> color_name
+                ],
+                'quantity' => $variant->quantity,
+                'price' => $variant->price,
+                'image' => $image
+            ];
+            $totalQuantity += $variant -> quantity;
+        }
+        $productData[] = [
+            'product_id' => $product->product_id,
+            'product_name' => $product->product_name,
+            'description' => $product->description,
+            'isHide' => $product->is_hide,
+            'images' => $imageData,
+            'category' => $category,
+            'productShape' => $shape,
+            'productStyle' => $style,
+            'productVariant' => $variantData,
+            'createdAt' => $product->created_at,
+            'updatedAt' => $product->updated_at,
+            'totalQuantity' => $totalQuantity,
+            'ratingStar' => $ratingStar,
+            'totalRating' => $totalRating,
+            'totalLove' => $totalLove
+        ];
         return response()->json($productData);
     }
 
+    public function hide($id){
+        $product = Product::Find($id);
+        if($product == null)
+            return response()-> json([
+                'result' => false,
+                'message' => "Product doesnt exist!",
+            ]);
+        $product -> is_hide = false;
+        return response()-> json([
+            'result' => true,
+            'message' => "Product was hidden!",
+        ]);
+    }
     public function create(Request $request)
     {
         try {
             $validatedData = $request->validate([
-                'productName' => 'required|string',
+                'productName' => 'required|unique:product,product_name',
                 'description' => 'nullable|string',
-                'isHide' => 'required|boolean',
                 'categoryId' => 'nullable|integer',
                 'productShapeId' => 'nullable|integer',
                 'productStyleId' => 'nullable|integer',
-                'productVariants' => 'required|array',
-                'images' => 'required|array',
-                'productVariants.*.height' => 'required|numeric',
-                'productVariants.*.width' => 'required|numeric',
-                'productVariants.*.color.productColorId' => 'nullable|integer',
-                'productVariants.*.color.colorName' => 'nullable|string',
-                'productVariants.*.quantity' => 'required|integer',
-                'productVariants.*.price' => 'required|numeric',
-                'productVariants.*.image' => 'nullable|string',
+                'productVariant' => 'required|array',
+                'imageUrl' => 'required|array',
+                'productVariant.*.height' => 'required|numeric',
+                'productVariant.*.width' => 'required|numeric',
+                'productVariant.*.color.colorId' => 'nullable|integer',
+                'productVariant.*.color.colorName' => 'required|string',
+                'productVariant.*.quantity' => 'required|integer',
+                'productVariant.*.price' => 'required|numeric',
+                'productVariant.*.imageUrl' => 'nullable|string',
             ]);
 
             $product = new Product();
             $product-> product_name = $validatedData['productName'];
             $product -> description = $validatedData['description'];
-            $product -> is_hide = $validatedData['isHide'];
+            $product -> is_hide = true;
             $product -> category_id = $validatedData['categoryId'];
             $product -> product_shape_id = $validatedData['productShapeId'];
             $product -> product_style_id = $validatedData['productStyleId'];
@@ -222,7 +305,7 @@ class BEProductController extends Controller
     }
 
     public function edit ($id){
-        $product = Product::Find($id);
+        $product = Product::Find($id) -> with('images') ;
         if(!$product){
             return response()->json([
                 'result' => false,
@@ -296,7 +379,7 @@ class BEProductController extends Controller
             ]);
         try {
             $validatedData = $request->validate([
-                'productName' => 'required|string',
+                'productName' => 'required|unique:product,product_name,'. $id . ',product_id',
                 'description' => 'nullable|string',
                 'isHide' => 'required|boolean',
                 'categoryId' => 'required|integer',
@@ -389,7 +472,10 @@ class BEProductController extends Controller
     public function delete($id){
         $product = Product::Find($id);
         if($product == null){
-            return response()-> json("Product doesn't exist");
+            return response()-> json([
+                'result' => false,
+                'message' => "Product doesnt exist!",
+            ]);
         }
         $images = ProductImage::where('product_id', $id) -> get();
         if($images -> isNotEmpty()){
@@ -444,9 +530,15 @@ class BEProductController extends Controller
         }
         $delete = $product -> delete();
         if(!$delete){
-            return response()->json('Deleted unsuccessfully !');
+            return response()->json([
+                'result' => false,
+                'message' => "Deleted product unsuccessfully!",
+            ]);
         }
-        return response()->json('Deleted successfully !');
+        return response()->json([
+                'result' => true,
+                'message' => "Deleted product successfully!",
+            ]);
 
     }
 
