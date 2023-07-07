@@ -157,7 +157,7 @@ export class ProductCategoryComponent implements OnInit {
     category.categoryName = this.addCategoryFormGroup.get('name').value
     category.image = this.addCategoryFormGroup.get('imageUrl').value
 
-    if(this.categoryService.edit(category)) {
+    if(this.categoryService.update(category)) {
       this.utilsService.updateToastState(new ToastState('edit', 'category', 'success'))
       this.categoryService.updateHandleAndRowData('add');
       this.router.navigate(['/admin/products/category'])

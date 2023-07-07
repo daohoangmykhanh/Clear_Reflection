@@ -17,8 +17,8 @@ class BEProductShapeController extends Controller
         }
         foreach($shapes as $shape){
             $shapeData[] = [
-                'productStyleId' => $shape->product_shape_id,
-                'styleName' => $shape->shape_name,
+                'productShapeId' => $shape->product_shape_id,
+                'shapeName' => $shape->shape_name,
             ];
         }
         return response()->json($shapeData);

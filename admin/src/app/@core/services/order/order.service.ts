@@ -160,7 +160,7 @@ export class OrderService {
     return this.httpClient.post<Order>(url, order);
   }
 
-  edit(order: Order): Observable<boolean> {
+  update(order: Order): Observable<boolean> {
     const url: string = `${this.baseUrlService.baseURL}/order/update`
     return this.httpClient.post<boolean>(url, order);
   }

@@ -35,9 +35,11 @@ INSERT INTO image (image_id, image_url) VALUES
 (23, 'hi'),
 (24, 'https://example.com/image1.jpg'),
 (25, 'helo'),
-(26, 'helo'),
-(27, 'hiiiiiiiiiii'),
-(28, 'https://example.com/image1.jpg');
+(26, 'https://cdn.pixabay.com/photo/2023/03/17/02/42/architecture-7857832_1280.jpg'),
+(27, 'https://cdn.pixabay.com/photo/2023/03/17/02/42/architecture-7857832_1280.jpg'),
+(28, 'https://images.unsplash.com/photo-1688499153976-7573901224ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80'),
+(29, 'https://images.unsplash.com/photo-1688499153976-7573901224ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80'),
+(30, 'https://cdn.pixabay.com/photo/2023/03/17/02/42/architecture-7857832_1280.jpg');
 
 INSERT INTO product (product_id, product_name, description, is_hide, category_id, product_shape_id, product_style_id, created_at, updated_at) VALUES
 (21, 'Example Product', 'This is an example product', b'0', 2, 1, 2, '2023-07-04 07:32:10', '2023-07-04 07:32:10'),
@@ -55,7 +57,10 @@ INSERT INTO product_color (product_color_id, color_name) VALUES
 
 INSERT INTO product_image (product_id, image_id) VALUES
 (23, 26),
-(23, 27);
+(23, 27),
+(22, 29),
+(21, 29),
+(21, 30);
 
 
 INSERT INTO product_variant (product_variant_id, product_id, height, width, color_id, quantity, price, image_id) VALUES

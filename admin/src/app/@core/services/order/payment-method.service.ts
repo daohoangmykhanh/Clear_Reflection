@@ -47,7 +47,7 @@ export class PaymentMethodService {
         return this.httpClient.post<PaymentMethod>(url, paymentMethod);
     }
 
-    edit(paymentMethod: PaymentMethod): Observable<boolean> {
+    update(paymentMethod: PaymentMethod): Observable<boolean> {
         const url: string = `${this.baseUrlService.baseURL}/payment-method/update`
         return this.httpClient.post<boolean>(url, paymentMethod);
     }

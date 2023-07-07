@@ -26,7 +26,7 @@ export class ProductShapeService {
     return this.httpClient.post<ProductShape>(url, shape);
   }
 
-  edit(shape: ProductShape): Observable<boolean> {
+  update(shape: ProductShape): Observable<boolean> {
     const url: string = `${this.baseUrlService.baseURL}/shape/update`
     return this.httpClient.post<boolean>(url, shape);
   }

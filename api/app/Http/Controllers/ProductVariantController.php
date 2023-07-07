@@ -32,23 +32,24 @@ class ProductVariantController extends Controller
 
     public function show($productId)
     {
-        $productVariant = ProductVariant::where('product_id', $productId)->get();
+        $productVariants = ProductVariant::where('product_id', $productId)->get();
 
-        if ($productVariant->isEmpty()) {
+        if ($productVariants->isEmpty()) {
             return response()->json([
+                'result' => false,
                 'message' => 'No product variants found for the given product ID.',
             ], 404);
         }
 
         return response()->json([
-            'product_variants' =>  [
-                'productId' => $productVariant->product_id,
-                'height' => $productVariant->height,
-                'width' => $productVariant->width,
-                'colorId' => $productVariant->color_id,
-                'quantity' => $productVariant->quantity,
-                'price' => $productVariant->price,
-                'imageId' => $productVariant->image_id,
+            'productVariants' =>  [
+                'productId' => $productVariants->product_id,
+                'height' => $productVariants->height,
+                'width' => $productVariants->width,
+                'colorId' => $productVariants->color_id,
+                'quantity' => $productVariants->quantity,
+                'price' => $productVariants->price,
+                'imageId' => $productVariants->image_id,
             ]
         ]);
     }

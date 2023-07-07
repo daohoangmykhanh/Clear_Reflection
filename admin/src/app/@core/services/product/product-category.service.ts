@@ -40,7 +40,7 @@ export class ProductCategoryService {
     return this.httpClient.post<ProductCategory>(url, category);
   }
 
-  edit(category: ProductCategory): Observable<boolean> {
+  update(category: ProductCategory): Observable<boolean> {
     const url: string = `${this.baseUrlService.baseURL}/category/update`
     return this.httpClient.post<boolean>(url, category);
   }

@@ -18,18 +18,19 @@ import { ProductVariant } from '../../../@core/models/product/product-variant.mo
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastState, UtilsService } from '../../../@core/services/utils.service';
 import { Image } from '../../../@core/models/Image';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'ngx-product-edit',
   templateUrl: './product-edit.component.html',
   styleUrls: ['./product-edit.component.scss']
 })
-export class ProductEditComponent implements OnInit, AfterViewInit {
+export class ProductEditComponent implements OnInit {
   @ViewChild(ImagesCarouselComponent) carousel: ImagesCarouselComponent;
   @ViewChildren(NbAccordionItemComponent) accordions: QueryList<NbAccordionItemComponent>;
   Editor = ClassicEditor;
-  editorConfig: any = {placeholder: 'Description'};
-  
+  editorConfig: any = { placeholder: 'Description' };
+
   edittingProduct: Product;
   edittingProductId: string;
   shapes: ProductShape[];
@@ -38,7 +39,7 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
   categories: ProductCategory[];
 
   editProductFormGroup: FormGroup
-  imageUrls: string[] = []
+  images: string[] = []
 
   constructor(
     private formBuilder: FormBuilder,
@@ -51,34 +52,20 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
     private utilsService: UtilsService,
     private router: Router
   ) {
-    this.categoryService.findAll().subscribe(
-      data => {
-        if ("result" in data) {
-          console.error(data.message);
-        } else {
-          this.categories = data
-        }
-      })
-    this.shapeService.findAll().subscribe(
-      data => {
-        if ("result" in data) {
-          console.error(data.message);
-        } else {
-          this.shapes = data
-        }
-      })
-    this.styleService.findAll().subscribe(
-      data => {
-        if ("result" in data) {
-          console.error(data.message);
-        } else {
-          this.styles = data
-        }
-      })
-    this.colorService.findAll().subscribe(data => this.colors = data)
     this.settingFormGroup()
     this.activatedRoute.params.subscribe(
-        params => { this.edittingProductId = params['id'] }
+      params => {
+        this.edittingProductId = params['id']
+        this.productService.findById(+this.edittingProductId).subscribe(
+          data => {
+            if ("result" in data) {
+              console.error(data.message);
+            } else {
+              this.edittingProduct = data[0] as Product;
+            }
+          }
+        )
+      }
     )
   }
 
@@ -86,17 +73,44 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
   get variants() { return this.editProductFormGroup.controls["variants"] as FormArray }
 
   ngOnInit() {
-    let x
-  }
-  
-  ngAfterViewInit(): void {
-    // this.productService.findById(+this.edittingProductId).subscribe((data) => {
-    //   this.edittingProduct = data
-    //   setTimeout(() => { // detect change
-    //     this.fillFormValues();
-    //   }, 0)
-    // })
-    let x;
+    const category$ = this.categoryService.findAll();
+    const shape$ = this.shapeService.findAll();
+    const style$ = this.styleService.findAll();
+    const color$ = this.colorService.findAll();
+
+    forkJoin([category$, shape$, style$, color$]).subscribe(
+      ([categoryData, shapeData, styleData, colorData]) => {
+        if ("result" in categoryData) {
+          console.error(categoryData.message);
+        } else {
+          this.categories = categoryData;
+        }
+
+        if ("result" in shapeData) {
+          console.error(shapeData.message);
+        } else {
+          this.shapes = shapeData;
+        }
+
+        if ("result" in styleData) {
+          console.error(styleData.message);
+        } else {
+          this.styles = styleData;
+        }
+
+        if ("result" in colorData) {
+          console.error(colorData.message);
+        } else {
+          this.colors = colorData;
+        }
+
+        this.fillFormValues();
+      },
+      error => {
+        console.error(error);
+        // Handle error if any of the observables fail
+      }
+    );
   }
 
   fillFormValues(): void {
@@ -109,19 +123,18 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
     this.product.get('description').setValue(this.edittingProduct.description)
     this.product.get('images').setValue(this.edittingProduct.images)
 
-    let images: string[] =  this.edittingProduct.images.map((img: Image) => {
+    let images: string[] = this.edittingProduct.images.map((img: Image) => {
       return img.imageUrl;
     })
     this.carousel.show(images);
 
-    if(this.edittingProduct.productVariants.length == 0 || 
-        this.edittingProduct.productVariants == null) {
+    if (this.edittingProduct.productVariants.length == 0 ||
+      this.edittingProduct.productVariants == null) {
       this.addVariant();
-      this.accordions.first.toggle()
       return;
-    } 
+    }
     // setting product's variants
-    for(let i = 0; i < this.edittingProduct.productVariants.length; i ++) {
+    for (let i = 0; i < this.edittingProduct.productVariants.length; i++) {
       const variant = this.edittingProduct.productVariants[i];
       this.addVariant()
       let variantForm: FormGroup = this.variants.at(i) as FormGroup
@@ -130,16 +143,16 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
       variantForm.get('width').setValue(variant.width)
       variantForm.get('quantity').setValue(variant.quantity)
       variantForm.get('price').setValue(variant.price)
-      if(this.colorService.isBasicColor(variant.color)) {
-        variantForm.get('colorType').setValue('Basic Color') 
+      if (this.colorService.isBasicColor(variant.color)) {
+        variantForm.get('colorType').setValue('Basic Color')
         variantForm.get('basicColorValue').setValue(variant.color.colorName)
       } else {
         variantForm.get('colorType').setValue('Custom Color')
         variantForm.get('customColorValue').setValue(variant.color.colorName)
       }
-      variantForm.get('imageUrl').setValue(variant.image)
+      if(variant.image != undefined) variantForm.get('image').setValue(variant.image.imageUrl)
     }
-    
+
   }
 
   settingFormGroup(): void {
@@ -147,11 +160,11 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
       product: this.formBuilder.group({
         id: [],
         name: ['', [CustomValidator.notBlank, Validators.maxLength(200)]],
-        category: ['', [CustomValidator.notBlank]],
-        shape: ['', [CustomValidator.notBlank]],
-        style: ['', [CustomValidator.notBlank]],
+        category: [''],
+        shape: [''],
+        style: [''],
         description: ['', [CustomValidator.notBlank, Validators.maxLength(1000)]],
-        images: [this.imageUrls] // Initialize with the array of URLs, e.g., this.urls is the array obtained from selectFile method
+        images: [this.images] // Initialize with the array of URLs, e.g., this.urls is the array obtained from selectFile method
       }),
       variants: this.formBuilder.array([])
     })
@@ -159,12 +172,12 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
 
   // for variants
   selectFile(event: any, variantIndex: number) {
-    if(event.target.files) {
+    if (event.target.files) {
       const reader = new FileReader();
-        reader.onload = (event: any) => {
-          this.variants.controls[variantIndex].get('imageUrl').setValue(event.target.result)
-        };
-        reader.readAsDataURL(event.target.files[0]);
+      reader.onload = (event: any) => {
+        this.variants.controls[variantIndex].get('image').setValue(event.target.result)
+      };
+      reader.readAsDataURL(event.target.files[0]);
     }
   }
 
@@ -174,16 +187,17 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
       for (let i = 0; i < event.target.files.length; i++) {
         const reader = new FileReader();
         reader.onload = (event: any) => {
-          this.imageUrls.push(event.target.result);
+          this.images.push(event.target.result);
         };
-  
+
         reader.readAsDataURL(event.target.files[i]);
       }
     }
-    this.carousel.show(this.imageUrls);
+    this.carousel.show(this.images);
   }
 
-  addVariant(): void {
+  addVariant(event?: Event): void {
+    event != undefined ? event.preventDefault() : "";
     const variantForm = this.formBuilder.group({
       id: [],
       height: [, [Validators.required, Validators.min(1), Validators.max(10000)]],
@@ -193,12 +207,13 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
       colorType: ['', [Validators.required]],
       basicColorValue: ['', [Validators.required]],
       customColorValue: ['', [Validators.required, Validators.maxLength(50)]],
-      imageUrl: []
+      image: []
     })
     this.variants.push(variantForm)
   }
 
-  removeVariant(variantIndex: number): void {
+  removeVariant(variantIndex: number, event?: Event): void {
+    event != undefined ? event.preventDefault() : "";
     this.variants.removeAt(variantIndex)
   }
 
@@ -211,30 +226,36 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
         group.get('basicColorValue').setErrors(null)
       }
     }
-    if(this.editProductFormGroup.invalid) {
+    if (this.editProductFormGroup.invalid) {
       this.editProductFormGroup.markAllAsTouched();
       this.utilsService.updateToastState(new ToastState('edit', 'product', 'danger'))
-      return; 
+      return;
     }
+    console.log(this.product.value);
     
+
     const editedProduct: Product = this.mapFormValue()
     console.log(editedProduct)
 
-    if(this.productService.edit(editedProduct)) {
-      this.utilsService.updateToastState(new ToastState('edit', 'product', 'success'))
-      this.router.navigate(['/admin/product/list'])
-    }
+    this.productService.update(editedProduct).subscribe(data => {
+      if (data.result) {
+        this.utilsService.updateToastState(new ToastState('edit', 'product', 'success'))
+        this.router.navigate(['/admin/product/list'])
+      } else {
+        this.utilsService.updateToastState(new ToastState('edit', 'product', 'danger'))
+      }
+    })
   }
 
   mapFormValue(): Product {
-    let editedProduct: Product = new Product();
+    let editedProduct: any = new Product();
     editedProduct.productId = this.product.get('id').value;
     editedProduct.productName = this.product.get('name').value;
     editedProduct.description = this.product.get('description').value;
     editedProduct.isHide = false;
-    editedProduct.category = this.categories.find(cate => cate.categoryName = this.product.get('category').value);
-    editedProduct.productShape = this.shapes.find(shape => shape.shapeName = this.product.get('shape').value);
-    editedProduct.productStyle = this.styles.find(style => style.styleName = this.product.get('style').value) ;
+    editedProduct.categoryId = this.categories.find(cate => cate.categoryName == this.product.get('category').value).categoryId;
+    editedProduct.productShapeId = this.shapes.find(shape => shape.shapeName == this.product.get('shape').value).productShapeId;
+    editedProduct.productStyleId = this.styles.find(style => style.styleName == this.product.get('style').value).productStyleId;
     editedProduct.images = this.product.get('images').value
     editedProduct.createdAt = new Date();
     editedProduct.updatedAt = new Date();
@@ -242,14 +263,14 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
     const productVariants: ProductVariant[] = this.variants.controls.map(group => {
       return {
         productVariantId: group.get('id').value as number,
-        height: group.get('height').value  as number,
-        width: group.get('width').value  as number,
-        price: group.get('price').value  as number,
-        quantity: group.get('quantity').value  as number,
-        color: group.get('colorType').value == 'Basic Color' ? 
-        this.getColorValueFromType(group.get('colorType').value, group.get('basicColorValue').value) : 
-        this.getColorValueFromType(group.get('colorType').value, group.get('customColorValue').value),
-        imageUrl: group.get('imageUrl').value
+        height: group.get('height').value as number,
+        width: group.get('width').value as number,
+        price: group.get('price').value as number,
+        quantity: group.get('quantity').value as number,
+        color: group.get('colorType').value == 'Basic Color' ?
+          this.getColorValueFromType(group.get('colorType').value, group.get('basicColorValue').value) :
+          this.getColorValueFromType(group.get('colorType').value, group.get('customColorValue').value),
+        image: group.get('image').value
       };
     });
     editedProduct.productVariants = productVariants;
@@ -258,10 +279,10 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
   }
 
   getColorValueFromType(colorType, value): ProductColor {
-    if(colorType == 'Basic Color') {
+    if (colorType == 'Basic Color') {
       return this.colors.find(color => color.colorName == value)
     } else {
-      let newColor =  new ProductColor();
+      let newColor = new ProductColor();
       newColor.colorName = value
       return newColor;
     }

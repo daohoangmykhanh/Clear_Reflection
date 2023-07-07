@@ -96,7 +96,7 @@ export class ProductCouponService {
     return this.httpClient.post<Coupon>(url, coupon);
   }
 
-  edit(coupon: Coupon): Observable<boolean> {
+  update(coupon: Coupon): Observable<boolean> {
     const url: string = `${this.baseUrlService.baseURL}/coupon/update`
     return this.httpClient.post<boolean>(url, coupon);
   }

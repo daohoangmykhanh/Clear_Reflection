@@ -27,7 +27,7 @@ export class ProductStyleService {
     return this.httpClient.post<ProductStyle>(url, style);
   }
 
-  edit(style: ProductStyle): Observable<boolean> {
+  update(style: ProductStyle): Observable<boolean> {
     const url: string = `${this.baseUrlService.baseURL}/style/update`
     return this.httpClient.post<boolean>(url, style);
   }

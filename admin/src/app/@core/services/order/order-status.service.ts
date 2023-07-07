@@ -60,7 +60,7 @@ export class OrderStatusService {
         return this.httpClient.post<OrderStatus>(url, orderStatus);
     }
 
-    edit(orderStatus: OrderStatus): Observable<boolean> {
+    update(orderStatus: OrderStatus): Observable<boolean> {
         const url: string = `${this.baseUrlService.baseURL}/order-status/update`
         return this.httpClient.post<boolean>(url, orderStatus);
     }

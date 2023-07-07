@@ -24,7 +24,7 @@ export class ProductReviewService {
     return this.httpClient.post<ProductReview>(url, productReview);
   }
 
-  edit(productReview: ProductReview): Observable<boolean> {
+  update(productReview: ProductReview): Observable<boolean> {
     const url: string = `${this.baseUrlService.baseURL}/product-review/update`
     return this.httpClient.post<boolean>(url, productReview);
   }
