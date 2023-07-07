@@ -31,13 +31,18 @@ class BEProductController extends Controller
             if ($product->images !== null) {
                 foreach ($product->images as $image) {
                     if ($image->image_id !== null) {
+                        $storagePath = public_path('images/product/');
+                        $filename = $image -> image_url;
+                        $data = file_get_contents($storagePath. $filename);
+                        $base64Image = base64_encode($data);
                         $imageData[] = [
                             'imageId' => $image->image_id,
-                            'imageUrl' => $image->image_url,
+                            'imageUrl' => $base64Image,
                         ];
                     }
                 }
             }
+       
             $orders = OrderDetail::where('product_id',$product -> product_id) -> get();
             $sold = 0;
             if($orders -> isNotEmpty()){
@@ -111,9 +116,13 @@ class BEProductController extends Controller
         $imageData = null;
         if( $product -> images !== null){
             foreach ($product->images as $image) {
+                $storagePath = public_path('images/product/');
+                $filename = $image -> image_url;
+                $data = file_get_contents($storagePath. $filename);
+                $base64Image = base64_encode($data);
                 $imageData[] = [
                     'imageId' => $image -> image_id,
-                    'imageUrl' => $image -> image_url
+                    'imageUrl' => $base64Image
                 ];
             }
         }
@@ -158,9 +167,13 @@ class BEProductController extends Controller
             $color = $variant->color;
             $image = null;
             if($variant -> image !== null){
+                $storagePath = public_path('images/product/');
+                $filename = $variant -> image -> image_url;
+                $data = file_get_contents($storagePath. $filename);
+                $base64Image = base64_encode($data);
                 $image = [
                     'imageId' => $variant -> image -> image_id,
-                    'imageUrl' => $variant -> image -> image_url
+                    'imageUrl' => $base64Image
                 ];
             }
             $variantData[] = [
@@ -305,7 +318,8 @@ class BEProductController extends Controller
     }
 
     public function edit ($id){
-        $product = Product::Find($id) -> with('images') ;
+        $product = Product::Find($id) ;
+        $product->load('images');
         if(!$product){
             return response()->json([
                 'result' => false,
@@ -315,9 +329,13 @@ class BEProductController extends Controller
         $productData = [];
         $imageData = [];
         foreach($product -> images as $image){
+            $storagePath = public_path('images/product/');
+            $filename = $image -> image_url;
+            $data = file_get_contents($storagePath. $filename);
+            $base64Image = base64_encode($data);
             $imageData[] = [
                 'imageId' => $image -> image_id,
-                'imageUrl' => $image -> image_url
+                'imageUrl' => $base64Image
             ];
         }
         $variantData = [];
@@ -326,7 +344,17 @@ class BEProductController extends Controller
         $product_style = $product->product_style;
         foreach ($product->variants as $variant) {
             $color = $variant->color;
-            $image = $variant->image;
+            $image = null;
+            if($variant -> image !== null){
+                $storagePath = public_path('images/product/');
+                $filename = $variant -> image -> image_url;
+                $data = file_get_contents($storagePath. $filename);
+                $base64Image = base64_encode($data);
+                $image = [
+                    'imageId' => $variant -> image -> image_id,
+                    'imageUrl' => $base64Image
+                ];
+            }
 
             $variantData[] = [
                 'productVariantId' => $variant->product_variant_id,
@@ -338,10 +366,7 @@ class BEProductController extends Controller
                 ],
                 'quantity' => $variant->quantity,
                 'price' => $variant->price,
-                'image' => $image ? [  // Use a conditional check for $variant->image
-                    'imageId' => $image->image_id,
-                    'imageUrl' => $image->image_url
-                ] : null  // If $variant->image is null, set the image key to null
+                'image' => $image
             ];
         }
         $productData[] = [

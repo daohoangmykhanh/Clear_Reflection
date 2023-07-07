@@ -4,24 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductColor;
 use Illuminate\Http\Request;
-<<<<<<< HEAD
-=======
 use App\Models\ProductVariant;
->>>>>>> 68321a68fc41a9f1eb015c345c6732363b460e6a
 
 class BEProductColorController extends Controller
 {
     public function index(){
         $colors = ProductColor::all();
         if($colors -> isEmpty()){
-<<<<<<< HEAD
-            return response()->json([
-                'result' => false,
-                'message' => "No results found!",
-            ]);
-=======
             return response()->json('No results found!');
->>>>>>> 68321a68fc41a9f1eb015c345c6732363b460e6a
         }
         foreach($colors as $color){
             $colorData[] = [
@@ -38,13 +28,6 @@ class BEProductColorController extends Controller
         ]);
         $result = new ProductColor();
         $result -> color_name = $validatedData['colorName'];
-<<<<<<< HEAD
-        $result -> save();
-        if(!$result)
-            return response()->json('Created unsuccessfully !');
-
-        return response()->json('Created successfully !', 201);
-=======
         $check = $result -> save();
         if(!$check)
             return response()->json([
@@ -53,7 +36,6 @@ class BEProductColorController extends Controller
             ]);
         
         return response()->json($result);
->>>>>>> 68321a68fc41a9f1eb015c345c6732363b460e6a
     }
 
     public function update(Request $request, $id){
@@ -62,14 +44,6 @@ class BEProductColorController extends Controller
         ]);
 
         $result = ProductColor::find($id);
-<<<<<<< HEAD
-        if(!$result)
-            return response()->json('Color not found! ');
-
-        $result -> color_name = $validatedData['colorName'];
-        $result -> save();
-        return response()->json('Updated successfully !', 201);
-=======
         if($result == null)
             return response()->json([
                 'result' => false,
@@ -82,30 +56,20 @@ class BEProductColorController extends Controller
             'result' => true,
             'message' => "Updated color successfully!",
         ]);
->>>>>>> 68321a68fc41a9f1eb015c345c6732363b460e6a
     }
 
     public function delete($id){
         if(ProductColor::find($id) == null)
-<<<<<<< HEAD
-            return response()->json('Id doesn`t exist !');
-        $result = ProductColor::destroy($id);
-        if(!$result)
-            return response()->json('Deleted unsuccessfully !');
-
-        return response()->json('Deleted successfully !', 201);
-    }
-}
-=======
             return response()->json([
                 'result' => false,
                 'message' => "Color doesn't exist!",
             ]);
         $products = ProductVariant::where('color_id', $id) ->get();
-        foreach($products as $product){
-            $product -> color_id = null;
-            $product -> save();
-        }
+        if($products -> isNotEmpty())
+            return response()->json([
+                'result' => false,
+                'message' => "Color was applied in Product Variant!",
+            ]);
         $result = ProductColor::destroy($id);
         if(!$result)
             return response()->json([
@@ -119,4 +83,3 @@ class BEProductColorController extends Controller
         ]);
     }
 }
->>>>>>> 68321a68fc41a9f1eb015c345c6732363b460e6a
