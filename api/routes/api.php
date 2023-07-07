@@ -163,7 +163,11 @@ Route::post('/admin/company/update', [BECompanyController::class, 'update']);
 // BEOrder Controller
 Route::get('/admin/order', [BEOrderController::class, 'index']);
 Route::get('/admin/order/{id}', [BEOrderController::class, 'detail']);
+Route::post('/admin/order/create', [BEOrderController::class, 'create']);
 Route::post('/admin/order/update/{id}', [BEOrderController::class, 'update']);
+Route::get('/admin/customerByEmail/{keyword}', [BEOrderController::class, 'customerByEmail']);
+Route::get('/admin/productByIdOrName/{keyword}', [BEOrderController::class, 'productByIdOrName']);
+
 // Auth Controller
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);

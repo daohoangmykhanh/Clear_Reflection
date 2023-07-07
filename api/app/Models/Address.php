@@ -10,6 +10,7 @@ class Address extends Model
     use HasFactory;
     protected $table = 'address';
     protected $primaryKey = 'address_id';
+    public $timestamps = false;
     protected $fillable = [
         'address_id',
         'house_number',
@@ -19,7 +20,7 @@ class Address extends Model
         'province_code',
     ];
 
-    
+
     public function ward()
     {
         return $this->belongsTo(Ward::class, 'wards_code', 'code');
