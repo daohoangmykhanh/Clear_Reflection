@@ -14,10 +14,8 @@ class CartController extends Controller
 
         foreach ($carts as $cart) {
             $cartData[] = [
-                'cart_id' => $cart->cart_id,
-                'account_id' => $cart->account_id,
-                'created_at' => $cart->created_at,
-                'updated_at' => $cart->updated_at,
+                'cartId' => $cart->cart_id,
+                'accountId' => $cart->account_id,
             ];
         }
 
@@ -33,10 +31,9 @@ class CartController extends Controller
 
         return response()->json([
             'cart' => [
-                'cart_id' => $cart->cart_id,
-                'account_id' => $cart->account_id,
-                'created_at' => $cart->created_at,
-                'updated_at' => $cart->updated_at,
+                'cartId' => $cart->cart_id,
+                'accountId' => $cart->account_id,
+
             ]
         ]);
     }
@@ -51,10 +48,9 @@ class CartController extends Controller
 
         return response()->json([
             'cart' => [
-                'cart_id' => $cart->cart_id,
-                'account_id' => $cart->account_id,
-                'created_at' => $cart->created_at,
-                'updated_at' => $cart->updated_at,
+                'cartId' => $cart->cart_id,
+                'accountId' => $cart->account_id,
+
             ]
         ], 201);
     }

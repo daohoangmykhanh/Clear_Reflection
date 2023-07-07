@@ -17,10 +17,10 @@ class ProductVariantController extends Controller
                 'productId' => $productVariant->product_id,
                 'height' => $productVariant->height,
                 'width' => $productVariant->width,
-                'colorId' => $productVariant->color_id,
-                'quantity' => $productVariant->quantity,
-                'price' => $productVariant->price,
-                'imageId' => $productVariant->image_id,
+                'colorName' => $productVariant->product_color->color_name ?? null,
+                'quantity' => $productVariant->quantity ?? null,
+                'price' => $productVariant->price ?? null,
+                'imageId' => $productVariant->image_id ?? null,
             ];
         }
 
@@ -45,10 +45,10 @@ class ProductVariantController extends Controller
                 'productId' => $productVariant->product_id,
                 'height' => $productVariant->height,
                 'width' => $productVariant->width,
-                'colorId' => $productVariant->color_id,
-                'quantity' => $productVariant->quantity,
-                'price' => $productVariant->price,
-                'imageId' => $productVariant->image_id,
+                'colorName' => $productVariant->product_color->color_name ?? null,
+                'quantity' => $productVariant->quantity ?? null,
+                'price' => $productVariant->price ?? null,
+                'imageId' => $productVariant->image_id ?? null,
             ]
         ]);
     }
@@ -77,10 +77,10 @@ class ProductVariantController extends Controller
                 'productId' => $productVariant->product_id,
                 'height' => $productVariant->height,
                 'width' => $productVariant->width,
-                'colorId' => $productVariant->color_id,
-                'quantity' => $productVariant->quantity,
-                'price' => $productVariant->price,
-                'imageId' => $productVariant->image_id,
+                'colorName' => $productVariant->product_color->color_name ?? null,
+                'quantity' => $productVariant->quantity ?? null,
+                'price' => $productVariant->price ?? null,
+                'imageId' => $productVariant->image_id ?? null,
             ]
         ], 201);
     }

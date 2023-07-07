@@ -54,6 +54,9 @@ use App\Http\Controllers\CategoryController;
 // Route::group(['prefix' => 'admin', 'middleware' => 'auth:api'], function () {}
 
 
+//image
+Route::resource('image', CategoryController::class);
+
 //category
 Route::resource('category', CategoryController::class);
 
@@ -90,8 +93,11 @@ Route::resource('account-address', AddressAccountController::class);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+// product
+Route::resource('/product', ProductController::class);
+Route::get('/product/sort/{value}', [ProductController::class, 'sortByRating']);
 
-Route::resource('product', ProductController::class);
+
 // Product Controller
 Route::get('/admin/product', [BEProductController::class, 'index']);
 Route::get('/admin/product/a', [ListProductController::class, 'listDetail']);

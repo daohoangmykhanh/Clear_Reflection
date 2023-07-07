@@ -15,8 +15,8 @@ class CategoryController extends Controller
         foreach ($categories as $category) {
             $categoryData[] = [
                 'categoryId' => $category->category_id,
-                'category_name' => $category->category_name,
-                'image_id' => $category->image_id,
+                'categoryName' => $category->category_name,
+                'imageUrl' => $category->image->image_url,
             ];
         }
 
@@ -33,8 +33,8 @@ class CategoryController extends Controller
         return response()->json([
             'category' => [
                 'categoryId' => $category->category_id,
-                'category_name' => $category->category_name,
-                'image_id' => $category->image_id,
+                'categoryName' => $category->category_name,
+                'imageUrl' => $category->image->image_url,
             ]
         ]);
     }
@@ -51,8 +51,8 @@ class CategoryController extends Controller
         return response()->json([
             'category' => [
                 'categoryId' => $category->category_id,
-                'category_name' => $category->category_name,
-                'image_id' => $category->image_id,
+                'categoryName' => $category->category_name,
+                'imageUrl' => $category->image->image_url,
             ]
         ], 201);
     }
