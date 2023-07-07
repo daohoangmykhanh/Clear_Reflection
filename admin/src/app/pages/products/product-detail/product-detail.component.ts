@@ -14,7 +14,7 @@ export class ProductDetailComponent {
 
   productId: string;
   product: Product;
-
+  imagesUrls: string[]
   constructor(
     private activatedRoute: ActivatedRoute,
     private productService: ProductService,
@@ -23,7 +23,15 @@ export class ProductDetailComponent {
     this.activatedRoute.params.subscribe(
       params => {
         this.productId = params['id']
-        // this.productService.findById(params['id']).subscribe(data => this.product = data)
+        this.productService.findDetailById(params['id'])
+          .subscribe(data => {
+            if("result" in data) {
+              console.error(data.message)
+            } else {
+              this.product = data[0] as Product
+              this.imagesUrls = this.product.images.map(image => image.imageUrl)
+            }
+          })
       }
     )
   }

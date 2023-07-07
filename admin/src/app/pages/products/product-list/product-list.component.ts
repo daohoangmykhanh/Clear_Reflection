@@ -199,7 +199,7 @@ export class ProductListComponent implements OnInit, AfterViewInit {
               category: pro.category.categoryName,
               shape: pro.productShape.shapeName,
               style: pro.productStyle.styleName,
-              // image: pro.images[0].imageUrl,
+              image: pro.images[0].imageUrl,
               quantitySold: pro.quantitySold,
               totalLikes: pro.totalLikes,
               rating: pro.rating

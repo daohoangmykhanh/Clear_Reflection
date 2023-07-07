@@ -74,6 +74,11 @@ export class ProductService {
     return this.httpClient.get<Product>(url);
   } 
 
+  findDetailById(id: number): Observable<Product | ModelResponse>  {
+    const url: string = `${this.baseUrlService.baseURL}/product/detail/${id}`
+    return this.httpClient.get<Product>(url);
+  } 
+
   insert(product: Product): Observable<Product> {
     const url: string = `${this.baseUrlService.baseURL}/product/create`
     return this.httpClient.post<Product>(url, product);

@@ -97,7 +97,7 @@ Route::resource('product', ProductController::class);
 Route::get('/admin/product', [BEProductController::class, 'index']);
 Route::get('/admin/product/detail/{id}', [BEProductController::class, 'detail']);
 Route::get('/admin/product/hide/{id}', [BEProductController::class, 'hide']);
-Route::get('/admin/product/{product_id}', [ProductVariantController::class, 'show']);
+Route::get('/admin/product/variant/{product_id}', [ProductVariantController::class, 'show']);
 Route::post('/admin/product/create', [BEProductController::class, 'create']);
 Route::get('/admin/product/edit/{id}', [BEProductController::class, 'edit']);
 Route::post('/admin/product/update/{id}', [BEProductController::class, 'update']);

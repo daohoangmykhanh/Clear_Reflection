@@ -174,11 +174,9 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
     }
 
     const insertProduct: Product = this.mapFormValue()
-    console.log(insertProduct);
     this.productService.insert(insertProduct).subscribe(data => {
-      console.log(data);
       this.utilsService.updateToastState(new ToastState('add', 'product', 'success'))
-
+      this.router.navigate(['/admin/product/list'])
     })
   }
 
