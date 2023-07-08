@@ -6,6 +6,8 @@ use App\Models\Account;
 use Illuminate\Http\Request;
 use App\Models\Image;
 use App\Models\Order;
+use App\Models\OrderAddress;
+
 class BEAccountController extends Controller
 {
     public function index(){
@@ -75,14 +77,6 @@ class BEAccountController extends Controller
         return response()->json($account);
     }
 
-    public function edit($id){
-        $account = Account::Find($id);
-        if($account == null )
-            return response()->json('Id doesn`t exist !');
-
-        return response()->json($account);
-    }
-
     public function update(Request $request, $id){
         $validatedData = $request->validate([
             'password' => 'nullable',
@@ -129,5 +123,45 @@ class BEAccountController extends Controller
                 'result' => true,
                 'message' => 'Updated successfully'
             ]);
+    }
+    public function detail($id){
+        $account = Account::find($id);
+        if($account == null)
+            return response()->json([
+                'result' => false,
+                'message' => 'Created unsuccessfully'
+            ]);
+        $orders = Order::where('account_id',$account -> account_id) -> get();
+        foreach($orders as $order){
+            $shippingAddress = null;
+            $address = OrderAddress::where('order_id', $order->order_id) -> first();
+            if($address){
+                $road = $address -> address -> road_name;
+                $ward = $address -> address -> ward -> full_name_en;
+                $district = $address -> address -> district -> full_name_en;
+                $province = $address -> address -> province -> full_name_en;
+                $shippingAddress = $road .", " . $ward .", " .  $district .", " .  $province;
+            }
+            $coupon = null;
+            if($order -> coupon_id != null){
+                $coupon = [
+                    'coupon_id' => $order -> coupon -> coupon_id,
+                    'code' => $order -> coupon -> code
+                ];
+            }
+
+            $orderData[] = [
+                'orderTrackingNumber' => $order -> order_tracking_number,
+                'couponCode' => $coupon,
+                'totalPrice' => $order -> total_price,
+                'totalQuantity' => $order -> total_quantity,
+                'orderStatus' => $order -> status -> status_name,
+                'paymentMethod' => $order -> payment -> payment_method_name,
+                'shippingAddress' => $shippingAddress
+            ];
+        }
+
+        return response()->json($orderData);
+
     }
 }

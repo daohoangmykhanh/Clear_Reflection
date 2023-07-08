@@ -115,7 +115,7 @@ Route::get('/admin/role/delete/{id}', [BERoleController::class, 'delete']);
 // BEAccount Controller
 Route::get('/admin/account', [BEAccountController::class, 'index']);
 Route::post('/admin/account/create', [BEAccountController::class, 'create']);
-Route::get('/admin/account/{id}', [BEAccountController::class, 'edit']);
+Route::get('/admin/account/detail/{id}', [BEAccountController::class, 'detail']);
 Route::post('/admin/account/update/{id}', [BEAccountController::class, 'update']);
 // Category Controller
 Route::get('/admin/category', [BECategoryController::class, 'index']);
