@@ -17,10 +17,10 @@ class ProductVariantController extends Controller
                 'productId' => $productVariant->product_id,
                 'height' => $productVariant->height,
                 'width' => $productVariant->width,
-                'colorId' => $productVariant->color_id,
-                'quantity' => $productVariant->quantity,
-                'price' => $productVariant->price,
-                'imageId' => $productVariant->image_id,
+                'colorName' => $productVariant->product_color->color_name ?? null,
+                'quantity' => $productVariant->quantity ?? null,
+                'price' => $productVariant->price ?? null,
+                'imageId' => $productVariant->image_id ?? null,
             ];
         }
 
@@ -42,14 +42,14 @@ class ProductVariantController extends Controller
         }
 
         return response()->json([
-            'productVariants' =>  [
+            'product_variants' =>  [
                 'productId' => $productVariants->product_id,
                 'height' => $productVariants->height,
                 'width' => $productVariants->width,
-                'colorId' => $productVariants->color_id,
-                'quantity' => $productVariants->quantity,
-                'price' => $productVariants->price,
-                'imageId' => $productVariants->image_id,
+                'colorName' => $productVariants->product_color->color_name ?? null,
+                'quantity' => $productVariants->quantity ?? null,
+                'price' => $productVariants->price ?? null,
+                'imageId' => $productVariants->image_id ?? null,
             ]
         ]);
     }
@@ -78,57 +78,57 @@ class ProductVariantController extends Controller
                 'productId' => $productVariant->product_id,
                 'height' => $productVariant->height,
                 'width' => $productVariant->width,
-                'colorId' => $productVariant->color_id,
-                'quantity' => $productVariant->quantity,
-                'price' => $productVariant->price,
-                'imageId' => $productVariant->image_id,
+                'colorName' => $productVariant->product_color->color_name ?? null,
+                'quantity' => $productVariant->quantity ?? null,
+                'price' => $productVariant->price ?? null,
+                'imageId' => $productVariant->image_id ?? null,
             ]
         ], 201);
     }
 
     public function update(Request $request, $productVariantId)
-{
-    $validatedData = $request->validate([
-        'product_id' => 'required|integer',
-        'height' => 'required|integer',
-        'width' => 'required|integer',
-        'color_id' => 'required|integer',
-        'quantity' => 'required|integer',
-        'price' => 'required|numeric',
-        'image_id' => 'nullable|integer',
-    ]);
-
-    $productVariant = ProductVariant::findOrFail($productVariantId);
-    $updated = $productVariant->update($validatedData);
-
-    if ($updated) {
-        return response()->json([
-            'result' => true,
-            'message' => 'Product variant updated successfully.',
+    {
+        $validatedData = $request->validate([
+            'product_id' => 'required|integer',
+            'height' => 'required|integer',
+            'width' => 'required|integer',
+            'color_id' => 'required|integer',
+            'quantity' => 'required|integer',
+            'price' => 'required|numeric',
+            'image_id' => 'nullable|integer',
         ]);
-    } else {
-        return response()->json([
-            'result' => false,
-            'message' => 'Failed to update product variant.',
-        ]);
+
+        $productVariant = ProductVariant::findOrFail($productVariantId);
+        $updated = $productVariant->update($validatedData);
+
+        if ($updated) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Product variant updated successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to update product variant.',
+            ]);
+        }
     }
-}
 
-public function destroy($productVariantId)
-{
-    $productVariant = ProductVariant::findOrFail($productVariantId);
-    $deleted = $productVariant->delete();
+    public function destroy($productVariantId)
+    {
+        $productVariant = ProductVariant::findOrFail($productVariantId);
+        $deleted = $productVariant->delete();
 
-    if ($deleted) {
-        return response()->json([
-            'result' => true,
-            'message' => 'Product variant deleted successfully.',
-        ]);
-    } else {
-        return response()->json([
-            'result' => false,
-            'message' => 'Failed to delete product variant.',
-        ]);
+        if ($deleted) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Product variant deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to delete product variant.',
+            ]);
+        }
     }
-}
 }

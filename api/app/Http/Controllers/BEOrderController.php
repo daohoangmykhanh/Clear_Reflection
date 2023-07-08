@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Account;
+use App\Models\Product;
+use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderAddress;
 use App\Models\OrderDetail;
@@ -14,7 +18,7 @@ class BEOrderController extends Controller
             return response()->json('No results found!');
         }
         foreach($orders as $order){
-            
+
             $orderData[] = [
                 'order_id' => $order->order_id,
                 'order_tracking_number' => $order->order_tracking_number,
@@ -84,9 +88,137 @@ class BEOrderController extends Controller
             ],
             'shippingAddress' => $shippingAddress,
             'createdAt' => $order->created_at,
-            
+
         ];
         return response()->json($orderData);
     }
 
+    public function update(Request $request, $id){
+        $order = Order::find($id);
+        if($order == null)
+            return response()->json([
+                'result' => false,
+                'message' => 'Order doesn`t exist!',
+            ]);
+        $validatedData = $request -> validate([
+            'orderStatusId' => 'required|integer'
+        ]);
+        $order -> order_status_id = $validatedData['orderStatusId'];
+        $order -> updated_at = now();
+        $result = $order -> save();
+        if(!$result)
+            return response()->json([
+                'result' => false,
+                'message' => 'Updated unsuccessfully!',
+            ]);
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Updated successfully.',
+        ]);
+    }
+
+    public function create(Request $request){
+        $validatedData = $request->validate([
+            'customerEmail' => 'required|email',
+            'couponId' => 'nullable|integer',
+            'totalPrice' => 'required|numeric',
+            'totalQuantity' => 'required|numeric',
+            'orderStatusId' => 'required|integer',
+            'paymentMethodId' => 'required|integer',
+            'province' => 'nullable',
+            'district' => 'nullable',
+            'ward'=> 'nullable',
+            'address' => 'nullable',
+            'products' => 'required|array',
+            'products.*.productId' => 'required|integer',
+            'products.*.height' => 'required|numeric',
+            'products.*.width' => 'required|numeric',
+            'products.*.color' => 'nullable|integer',
+            'products.*.quantity' => 'required|integer',
+            'products.*.price' => 'required|numeric'
+        ]);
+        $order = new Order();
+        $account = Account::where('email', $validatedData['customerEmail']) -> first();
+        $order -> account_id = $account -> account_id;
+        $order -> coupon_id = $validatedData['couponId'] ?? null;
+        $order -> total_price = $validatedData['totalPrice'];
+        $order -> total_quantity = $validatedData['totalQuantity'];
+        $order -> order_status_id = $validatedData['orderStatusId'];
+        $order -> payment_method_id = $validatedData['paymentMethodId'];
+        $order -> created_at = now();
+        $order -> save();
+
+        $address = new Address();
+        $address -> road_name = $validatedData['address'];
+        if(isset($validatedData['ward']))
+            $address -> wards_code = $validatedData['ward'];
+        if(isset($validatedData['district']))
+            $address -> district_code = $validatedData['district'];
+        if(isset($validatedData['province']))
+            $address -> province_code = $validatedData['province'];
+        $address -> save();
+
+        $shipping = new OrderAddress();
+        $shipping -> address_id = $address -> address_id;
+        $shipping -> account_id = $account -> account_id;
+        $shipping -> save();
+
+        foreach($validatedData['products'] as $productData){
+            $detail = new OrderDetail();
+            $detail -> order_id = $order -> order_id;
+            $detail -> product_id = $productData['productId'];
+            $detail -> quantity = $productData['quantity'];
+            $detail->height = $productData['height'] ?? null;
+            $detail->width = $productData['width'] ?? null;
+            $detail->color = $productData['color'] ?? null;
+            $detail -> price = $productData['price'];
+            $detail -> save();
+        }
+        return response()->json([
+            'result' => true,
+            'message' => 'Created successfully.',
+        ]);
+    }
+
+    public function customerByEmail($keyword){
+        $accounts = Account::where('email', 'LIKE', "%{$keyword}%")->where('role_id', 2) -> get();
+        if($accounts -> isEmpty())
+            return response()->json('No results found!');
+        foreach($accounts as $account){
+            $image = null;
+            if($account -> image_id != null){
+                $image = $account -> image -> image_url;
+            }
+            $accountData[] = [
+                'fullName' => $account -> full_name,
+                'email' => $account -> email,
+                'phoneNumber' => $account -> phone_number,
+                'image' => $image
+            ];
+        }
+        return response()->json($accountData);
+
+    }
+
+    public function productByIdOrName($keyword){
+        $products = Product::where('product_id', 'LIKE', "%{$keyword}%")
+                            -> orWhere('product_name', 'LIKE', "%{$keyword}%")
+                            -> where('is_hide', true)
+                            -> get();
+        if($products -> isEmpty())
+            return response()->json('No results found!');
+        foreach($products as $product){
+            $image = null;
+            if($product -> image_id != null){
+                $image = $product -> image -> image_url;
+            }
+            $productData[] = [
+                'productId' => $product -> product_id,
+                'productName' => $product -> product_name,
+                'image' => $image
+            ];
+        }
+        return response()->json($productData);
+    }
 }

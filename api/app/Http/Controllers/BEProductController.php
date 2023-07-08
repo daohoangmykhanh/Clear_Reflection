@@ -224,6 +224,7 @@ class BEProductController extends Controller
                 'result' => false,
                 'message' => "Product doesn't exist!",
             ]);
+<<<<<<< HEAD
 
         $product->is_hide = !$product->is_hide;
         $product->save();
@@ -232,6 +233,21 @@ class BEProductController extends Controller
             'result' => true,
             'message' => ($product->is_hide) ? "Product was hidden!" : "Product was visible",
         ]);
+=======
+        if($product -> is_hide == true){
+            $product -> is_hide = false;
+            return response()-> json([
+                'result' => true,
+                'message' => "Product was hidden!",
+            ]);
+        } else {
+            $product -> is_hide = true;
+            return response()-> json([
+                'result' => true,
+                'message' => "Product was shown!",
+            ]);
+        }
+>>>>>>> b097855a54ef23ffe51753106c7c78f7a84eff89
     }
     public function create(Request $request)
     {
@@ -418,10 +434,9 @@ class BEProductController extends Controller
             $validatedData = $request->validate([
                 'productName' => 'required|unique:product,product_name,'. $id . ',product_id',
                 'description' => 'nullable|string',
-                'isHide' => 'required|boolean',
-                'categoryId' => 'required|integer',
-                'productShapeId' => 'required|integer',
-                'productStyleId' => 'required|integer',
+                'categoryId' => 'nullable|integer',
+                'productShapeId' => 'nullable|integer',
+                'productStyleId' => 'nullable|integer',
                 'productVariants' => 'required|array',
                 'images' => 'required|array',
                 'productVariants.*.height' => 'required|numeric',
@@ -445,11 +460,11 @@ class BEProductController extends Controller
             $variants = [];
             foreach($validatedData['productVariants'] as $variantData){
                 $variant = new ProductVariant();
-
                 if (isset($variantData['productVariantId'])) {
                     $existingVariant = ProductVariant::find($variantData['productVariantId']);
                     if ($existingVariant !== null) {
                         $variant = $existingVariant;
+                        $newVariant[] = $variant -> product_variant_id;
                     }
                 }
                 $variant->product_id = $product->product_id;
@@ -492,8 +507,19 @@ class BEProductController extends Controller
                 $variant -> save();
                 $variants[] = $variant;
             }
-
-
+            $oldVariant = ProductVariant::where('product_id', $id) -> get();
+            foreach($oldVariant as $old){
+                $found = false;
+                foreach($newVariant as $new){
+                    if($old -> product_variant_id == $new){
+                        $found = true;
+                        break;
+                    }
+                }
+                if(!$found){
+                    $old->delete();
+                }
+            }
             return response()->json([
                 'result' => true,
                 'message' => "Updated product successfully",
@@ -529,16 +555,18 @@ class BEProductController extends Controller
          }
         $variants = ProductVariant::where('product_id', $id) -> get();
         if($variants -> isNotEmpty()){
-           foreach($variants as $variant){
-                $img = Image::find($variant->image_id);
-                $oldImageFilename = $img -> image_url;
-                $oldImagePath = public_path('images/product/') . $oldImageFilename;
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
+            foreach($variants as $variant){
+                if($variant -> image_id != null ){
+                    $img = Image::find($variant->image_id);
+                    $oldImageFilename = $img -> image_url;
+                    $oldImagePath = public_path('images/product/') . $oldImageFilename;
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                    }
                 }
                 $variant->delete();
                 $img -> delete();
-           }
+            }
         }
         $carts = CartDetail::where('product_id', $id) -> get();
         if($carts -> isNotEmpty()){

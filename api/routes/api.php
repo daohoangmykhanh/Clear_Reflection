@@ -55,6 +55,9 @@ use App\Http\Controllers\AuthController;
 // Route::group(['prefix' => 'admin', 'middleware' => 'auth:api'], function () {}
 
 
+//image
+Route::resource('image', CategoryController::class);
+
 //category
 Route::resource('category', CategoryController::class);
 
@@ -91,8 +94,11 @@ Route::resource('account-address', AddressAccountController::class);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+// product
+Route::resource('/product', ProductController::class);
+Route::get('/product/sort/{value}', [ProductController::class, 'sortByRating']);
 
-Route::resource('product', ProductController::class);
+
 // Product Controller
 Route::get('/admin/product', [BEProductController::class, 'index']);
 Route::get('/admin/product/detail/{id}', [BEProductController::class, 'detail']);
@@ -157,9 +163,11 @@ Route::post('/admin/company/update', [BECompanyController::class, 'update']);
 // BEOrder Controller
 Route::get('/admin/order', [BEOrderController::class, 'index']);
 Route::get('/admin/order/{id}', [BEOrderController::class, 'detail']);
-Route::post('/admin/order/create', [BECouponTypeController::class, 'create']);
-Route::post('/admin/order/update/{id}', [BECouponTypeController::class, 'update']);
-Route::get('/admin/order/delete/{id}', [BECouponTypeController::class, 'delete']);
+Route::post('/admin/order/create', [BEOrderController::class, 'create']);
+Route::post('/admin/order/update/{id}', [BEOrderController::class, 'update']);
+Route::get('/admin/customerByEmail/{keyword}', [BEOrderController::class, 'customerByEmail']);
+Route::get('/admin/productByIdOrName/{keyword}', [BEOrderController::class, 'productByIdOrName']);
+
 // Auth Controller
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class ProductReviewController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $productReviews = ProductReview::with('account', 'product')->get();
         $productReviewData = [];
@@ -26,6 +26,7 @@ class ProductReviewController extends Controller
             'product_reviews' => $productReviewData,
         ]);
     }
+
 
 
     public function store(Request $request)
@@ -113,4 +114,5 @@ class ProductReviewController extends Controller
             ]);
         }
     }
+    
 }
