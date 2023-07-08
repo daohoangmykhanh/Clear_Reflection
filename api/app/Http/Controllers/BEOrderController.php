@@ -8,6 +8,8 @@ use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderAddress;
 use App\Models\OrderDetail;
+use App\Models\OrderStatus;
+use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
 
 class BEOrderController extends Controller
@@ -63,10 +65,11 @@ class BEOrderController extends Controller
         }
         $address = OrderAddress::where('order_id',$id) -> first();
         $road = $address -> address -> road_name;
+        $house = $address -> address -> house_name;
         $ward = $address -> address -> ward -> full_name_en;
         $district = $address -> address -> district -> full_name_en;
         $province = $address -> address -> province -> full_name_en;
-        $shippingAddress = $road .", " . $ward .", " .  $district .", " .  $province;
+        $shippingAddress = $house.", " . $road .", " . $ward .", " .  $district .", " .  $province;
         $orderData[] = [
             'orderId' => $order->order_id,
             'orderTrackingNumber' => $order->order_tracking_number,
@@ -126,10 +129,11 @@ class BEOrderController extends Controller
             'totalQuantity' => 'required|numeric',
             'orderStatusId' => 'required|integer',
             'paymentMethodId' => 'required|integer',
-            'province' => 'nullable',
-            'district' => 'nullable',
-            'ward'=> 'nullable',
-            'address' => 'nullable',
+            'houseNumber' => 'required',
+            'roadName' => 'required',
+            'wardCode' => 'required',
+            'districtCode'=> 'required',
+            'provinceCode' => 'required',
             'products' => 'required|array',
             'products.*.productId' => 'required|integer',
             'products.*.height' => 'required|numeric',
@@ -149,14 +153,14 @@ class BEOrderController extends Controller
         $order -> created_at = now();
         $order -> save();
 
+        $lastAddress = Address::latest()->first();
         $address = new Address();
-        $address -> road_name = $validatedData['address'];
-        if(isset($validatedData['ward']))
-            $address -> wards_code = $validatedData['ward'];
-        if(isset($validatedData['district']))
-            $address -> district_code = $validatedData['district'];
-        if(isset($validatedData['province']))
-            $address -> province_code = $validatedData['province'];
+        $address -> address_id = $lastAddress->address_id + 1;
+        $address -> house_number = $validatedData['houseNumber'];
+        $address -> road_name = $validatedData['roadName'];
+        $address -> wards_code = $validatedData['wardCode'];
+        $address -> district_code = $validatedData['districtCode'];
+        $address -> province_code = $validatedData['provinceCode'];
         $address -> save();
 
         $shipping = new OrderAddress();
@@ -220,5 +224,19 @@ class BEOrderController extends Controller
             ];
         }
         return response()->json($productData);
+    }
+
+    public function findAllPayment(){
+        $payment = PaymentMethod::all();
+        if($payment -> isEmpty())
+            return response()->json('No result found!');
+        return response()->json($payment);
+    }
+
+    public function findAllStatus(){
+        $status = OrderStatus::all();
+        if($status -> isEmpty())
+            return response()->json('No result found!');
+        return response()->json($status);
     }
 }

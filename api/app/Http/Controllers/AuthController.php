@@ -9,20 +9,13 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+        $credentials = $request->validate([
+            'username' => 'required',
             'password' => 'required',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
-        }
-
-        $credentials = $request->only('email', 'password');
-
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-
             return response()->json(['user' => $user], 200);
         } else {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -55,7 +48,7 @@ class AuthController extends Controller
             'result' => true,
             'message' => 'Register successfully'
         ]);
-    
+
     }
     public function logout (Request $request){
        $request->session()->flush();
@@ -64,6 +57,6 @@ class AuthController extends Controller
             'message' => 'Logout successfully!'
         ]);
     }
-    
-    
+
+
 }
