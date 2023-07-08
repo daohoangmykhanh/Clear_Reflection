@@ -7,6 +7,7 @@ use App\Models\Address;
 use App\Models\Cart;
 use App\Models\CartDetail;
 use App\Models\OrderDetail;
+use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -44,6 +45,7 @@ class HomeController extends Controller
 
         $address = new Address();
         $check = Address::all() -> count();
+        $lastAddress = null;
         if($check > 0){
             $lastAddress = Address::orderBy('address_id', 'desc')->first();
             $address -> address_id = $lastAddress ->address_id + 1;
@@ -58,16 +60,23 @@ class HomeController extends Controller
         $address -> save();
 
         $shipping = new OrderAddress();
-        $shipping -> address_id  = $address -> address_id;
+        if($check > 0){
+            $shipping -> address_id = $lastAddress ->address_id + 1;
+        } else {
+            $shipping -> address_id = 1;
+        }
         $shipping -> order_id = $order -> order_id;
         $shipping -> save();
 
         $cart = Cart::where('account_id', $validatedData['accountId']) -> first();
-        $cartDetails = CartDetail::where('cart_id', $cart->id) -> get();
+        $cartDetails = CartDetail::where('cart_id', $cart->cart_id) -> get();
         foreach($cartDetails as $cartDetail){
             $orderDetail = new OrderDetail();
+
             $variant = ProductVariant::find($cartDetail -> variant -> product_variant_id);
             $quantity = $cartDetail -> variant -> quantity - $cartDetail -> quantity;
+            $product = Product::find($variant -> product_id);
+            $orderDetail -> product_name = $product -> product_name;
             $orderDetail -> order_id = $order -> order_id;
             $orderDetail -> product_id = $variant -> product_id;
             $orderDetail -> color = $variant -> color -> color_name;
@@ -85,7 +94,7 @@ class HomeController extends Controller
             'result' => true,
             'message' => 'Checkout successfully!'
         ]);
-    
+
     }
 
     public function profile(){
