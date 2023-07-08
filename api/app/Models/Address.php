@@ -26,7 +26,6 @@ class Address extends Model
         return $this->belongsTo(Ward::class, 'wards_code', 'code');
     }
 
-
     // Định nghĩa quan hệ với bảng District
     public function district()
     {

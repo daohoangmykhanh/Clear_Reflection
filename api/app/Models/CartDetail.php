@@ -11,7 +11,7 @@ class CartDetail extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'product_id',
+        'product_variant_id',
         'quantity',
         'price',
         'cart_id',
@@ -22,8 +22,8 @@ class CartDetail extends Model
         return $this->belongsTo(Cart::class, 'cart_id');
     }
 
-    public function product()
+    public function variant()
     {
-        return $this->belongsTo(Product::class, 'product_id');
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 }
