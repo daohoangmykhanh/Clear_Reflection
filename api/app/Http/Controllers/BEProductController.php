@@ -42,7 +42,7 @@ class BEProductController extends Controller
                     }
                 }
             }
-       
+
             $orders = OrderDetail::where('product_id',$product -> product_id) -> get();
             $sold = 0;
             if($orders -> isNotEmpty()){
@@ -218,28 +218,31 @@ class BEProductController extends Controller
     }
 
     public function hide($id){
-        $product = Product::Find($id);
+        $product = Product::find($id);
         if($product == null)
-            return response()-> json([
+            return response()->json([
                 'result' => false,
-                'message' => "Product doesnt exist!",
+                'message' => "Product doesn't exist!",
             ]);
-        $product -> is_hide = false;
-        return response()-> json([
+
+        $product->is_hide = !$product->is_hide;
+        $product->save();
+
+        return response()->json([
             'result' => true,
-            'message' => "Product was hidden!",
+            'message' => ($product->is_hide) ? "Product was hidden!" : "Product was visible",
         ]);
     }
     public function create(Request $request)
     {
         try {
             $validatedData = $request->validate([
-                'productName' => 'required|string',
+                'productName' => 'required|unique:product,product_name',
                 'description' => 'nullable|string',
                 'isHide' => 'required|boolean',
-                'categoryId' => 'nullable|integer',
-                'productShapeId' => 'nullable|integer',
-                'productStyleId' => 'nullable|integer',
+                'categoryId' => 'required|integer',
+                'productShapeId' => 'required|integer',
+                'productStyleId' => 'required|integer',
                 'productVariants' => 'required|array',
                 'images' => 'required|array',
                 'productVariants.*.height' => 'required|numeric',
@@ -261,9 +264,9 @@ class BEProductController extends Controller
             $product -> created_at = now();
             $product -> save();
 
-            foreach($validatedData['images'] as $image){
+            foreach($validatedData['images'] as $imageUrl){
                 $image = new Image();
-                $base64String = $image;
+                $base64String = $imageUrl;
                 $base64Data = substr($base64String, strpos($base64String, ',') + 1);
                 $imageData = base64_decode($base64Data);
                 $filename = uniqid() . '.png';

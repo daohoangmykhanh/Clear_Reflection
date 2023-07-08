@@ -15,8 +15,8 @@
         <nb-card [formGroup]="addOrderFormGroup">
             <nb-card-header>Basic Information</nb-card-header>
             <nb-card-body>
-                <input type="text" placeholder="Customer Email" nbInput fullWidth [nbAutocomplete]="account"
-                    formControlName="email" class="mb-3"/>
+                <input type="text" placeholder="Customer Email" nbInput fullWidth 
+                    [nbAutocomplete]="account" formControlName="email" class="mb-3"/>
                 <div class="alert alert-danger mt-1" 
                     *ngIf="addOrderFormGroup.get('email').invalid && (addOrderFormGroup.get('email').dirty || addOrderFormGroup.get('email').touched)">
                     <div *ngIf="addOrderFormGroup.get('email').errors['notblank']">
@@ -31,7 +31,7 @@
                         [(value)]="chosenAccount" (click)="selectCustomer(account)">
                         <div class="row">
                             <div class="col-3">
-                                <img [src]="account.imageUrl" class="d-block w-100">
+                                <img [src]="account.image.imageUrl" class="d-block w-100">
                             </div>
                             <div class="col-9 my-auto">
                                 <p class="font-weight-bold">{{ account.email }}</p>

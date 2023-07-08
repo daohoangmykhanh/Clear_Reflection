@@ -72,10 +72,17 @@ export class CustomStyleFilterActionsComponent extends DefaultFilter implements 
         }
         let style: ProductStyle = this.addStyleFormGroup.value as ProductStyle
         console.log(style);
-        if (this.styleService.insert(style)) {
-            this.utilsService.updateToastState(new ToastState('add', 'style', 'success'))
-            this.windowRef.close();
-            this.router.navigate(['/admin/products/style-n-shape'])
-        }
+        this.styleService.insert(style).subscribe(
+            data => {
+                if(data) {
+                    this.utilsService.updateToastState(new ToastState('add', 'style', 'success'))
+                    this.styleService.notifyStyleChange()
+                    this.addStyleFormGroup.reset();
+                    this.windowRef.close();
+                } else {
+                    this.utilsService.updateToastState(new ToastState('add', 'style', 'danger'))
+                }
+            }
+        )
     }
 }

@@ -83,20 +83,20 @@
                 <nb-card-header>Product Variants</nb-card-header>
                 <nb-card-body>
                     <nb-accordion multi>
-                        <nb-accordion-item *ngFor="let productForm of variants.controls; let i = index">
+                        <nb-accordion-item *ngFor="let variantForm of variants.controls; let i = index">
                             <nb-accordion-item-header class="d-flex justify-content-between align-items-center">
                                 <p class="font-weight-bold">Variant #{{i + 1}}</p>
                                 <p>
-                                    {{ productForm.get('height').value === null ? '' : 'h:' + productForm.get('height').value + 'cm'}}
-                                    {{ productForm.get('width').value === null ? '' : ' - w:' +productForm.get('width').value +'cm'}}
-                                    {{ productForm.get('price').value === null ? '' : ' - ' + (productForm.get('price').value | currency: 'USD')}}
-                                    {{ productForm.get('quantity').value === null ? '' : '*' + productForm.get('quantity').value }}
+                                    {{ variantForm.get('height').value === null ? '' : 'h:' + variantForm.get('height').value + 'cm'}}
+                                    {{ variantForm.get('width').value === null ? '' : ' - w:' +variantForm.get('width').value +'cm'}}
+                                    {{ variantForm.get('price').value === null ? '' : ' - ' + (variantForm.get('price').value | currency: 'USD')}}
+                                    {{ variantForm.get('quantity').value === null ? '' : '*' + variantForm.get('quantity').value }}
                                     
-                                    <ng-container *ngIf="productForm.get('colorType').value === 'Custom Color'">
-                                        {{' - ' + productForm.get('customColorValue').value}}
+                                    <ng-container *ngIf="variantForm.get('colorType').value === 'Custom Color'">
+                                        {{' - ' + variantForm.get('customColorValue').value}}
                                     </ng-container>
-                                    <ng-container *ngIf="productForm.get('colorType').value === 'Basic Color'">
-                                        {{' - ' + productForm.get('basicColorValue').value}}
+                                    <ng-container *ngIf="variantForm.get('colorType').value === 'Basic Color'">
+                                        {{' - ' + variantForm.get('basicColorValue').value}}
                                     </ng-container>
                                 </p>
                                 <ng-container *ngIf="i !== 0">
@@ -112,21 +112,21 @@
                                     </button>
                                 </ng-container>
                             </nb-accordion-item-header>
-                            <nb-accordion-item-body [formGroup]="productForm">
+                            <nb-accordion-item-body [formGroup]="variantForm">
                                 <div class="row">
                                     <div class="col-lg-6 col-md-12 my-2">
                                         <input type="hidden" formControlname="id">
                                         <input type="number" nbInput fullWidth 
                                             placeholder="Height (cm)" formControlName="height">
                                         <div class="alert alert-danger mt-1" 
-                                            *ngIf="productForm.get('height').invalid && (productForm.get('height').dirty || productForm.get('height').touched)">
-                                            <div *ngIf="productForm.get('height').errors['required']">
+                                            *ngIf="variantForm.get('height').invalid && (variantForm.get('height').dirty || variantForm.get('height').touched)">
+                                            <div *ngIf="variantForm.get('height').errors['required']">
                                                 Height is required
                                             </div>
-                                            <div *ngIf="productForm.get('height').errors['min']">
+                                            <div *ngIf="variantForm.get('height').errors['min']">
                                                 Min value is 1
                                             </div>
-                                            <div *ngIf="productForm.get('height').errors['max']">
+                                            <div *ngIf="variantForm.get('height').errors['max']">
                                                 Max value is 10000
                                             </div>
                                         </div>
@@ -135,14 +135,14 @@
                                         <input type="number" nbInput fullWidth 
                                             placeholder="Width (cm)" formControlName="width">
                                         <div class="alert alert-danger mt-1" 
-                                            *ngIf="productForm.get('width').invalid && (productForm.get('width').dirty || productForm.get('width').touched)">
-                                            <div *ngIf="productForm.get('width').errors['required']">
+                                            *ngIf="variantForm.get('width').invalid && (variantForm.get('width').dirty || variantForm.get('width').touched)">
+                                            <div *ngIf="variantForm.get('width').errors['required']">
                                                 Width is required
                                             </div>
-                                            <div *ngIf="productForm.get('width').errors['min']">
+                                            <div *ngIf="variantForm.get('width').errors['min']">
                                                 Min value is 1
                                             </div>
-                                            <div *ngIf="productForm.get('width').errors['max']">
+                                            <div *ngIf="variantForm.get('width').errors['max']">
                                                 Max value is 10000
                                             </div>
                                         </div>
@@ -151,14 +151,14 @@
                                         <input type="number" nbInput fullWidth 
                                             placeholder="Price ($)" formControlName="price">
                                         <div class="alert alert-danger mt-1" 
-                                            *ngIf="productForm.get('price').invalid && (productForm.get('price').dirty || productForm.get('price').touched)">
-                                            <div *ngIf="productForm.get('price').errors['required']">
+                                            *ngIf="variantForm.get('price').invalid && (variantForm.get('price').dirty || variantForm.get('price').touched)">
+                                            <div *ngIf="variantForm.get('price').errors['required']">
                                                 Price is required
                                             </div>
-                                            <div *ngIf="productForm.get('price').errors['min']">
+                                            <div *ngIf="variantForm.get('price').errors['min']">
                                                 Min value is 1
                                             </div>
-                                            <div *ngIf="productForm.get('price').errors['max']">
+                                            <div *ngIf="variantForm.get('price').errors['max']">
                                                 Max value is 10000
                                             </div>
                                         </div>
@@ -167,14 +167,14 @@
                                         <input type="number" nbInput fullWidth 
                                             placeholder="Quantity" formControlName="quantity">
                                         <div class="alert alert-danger mt-1" 
-                                            *ngIf="productForm.get('quantity').invalid && (productForm.get('quantity').dirty || productForm.get('quantity').touched)">
-                                            <div *ngIf="productForm.get('quantity').errors['required']">
+                                            *ngIf="variantForm.get('quantity').invalid && (variantForm.get('quantity').dirty || variantForm.get('quantity').touched)">
+                                            <div *ngIf="variantForm.get('quantity').errors['required']">
                                                 Quantity is required
                                             </div>
-                                            <div *ngIf="productForm.get('quantity').errors['min']">
+                                            <div *ngIf="variantForm.get('quantity').errors['min']">
                                                 Min value is 1
                                             </div>
-                                            <div *ngIf="productForm.get('quantity').errors['max']">
+                                            <div *ngIf="variantForm.get('quantity').errors['max']">
                                                 Max value is 10000
                                             </div>
                                         </div>
@@ -185,40 +185,40 @@
                                             <nb-radio value="Custom Color">Custom Color</nb-radio>
                                         </nb-radio-group>
                                         <div class="alert alert-danger mt-1" 
-                                            *ngIf="productForm.get('colorType').invalid && (productForm.get('colorType').dirty || productForm.get('colorType').touched)">
-                                            <div *ngIf="productForm.get('colorType').errors['required']">
+                                            *ngIf="variantForm.get('colorType').invalid && (variantForm.get('colorType').dirty || variantForm.get('colorType').touched)">
+                                            <div *ngIf="variantForm.get('colorType').errors['required']">
                                                 Color Type is required
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-9 my-2">
-                                        <ng-container *ngIf="productForm.get('colorType').value === 'Basic Color'">
+                                        <ng-container *ngIf="variantForm.get('colorType').value === 'Basic Color'">
                                             <nb-select fullWidth placeholder="Color" formControlName="basicColorValue">
                                                 <nb-select-label>
-                                                    Color: {{ productForm.get('basicColorValue').value }}
+                                                    Color: {{ variantForm.get('basicColorValue').value }}
                                                 </nb-select-label>
                                                 <nb-option *ngFor="let color of colors" value="{{color.colorName}}">{{color.colorName}}</nb-option>
                                             </nb-select>
                                         </ng-container>
-                                        <ng-container *ngIf="productForm.get('colorType').value === 'Custom Color'">
+                                        <ng-container *ngIf="variantForm.get('colorType').value === 'Custom Color'">
                                             <input type="text" nbInput fullWidth placeholder="Color name" formControlName="customColorValue">
                                         </ng-container>
                                         <div class="alert alert-danger my-2" 
-                                            *ngIf="productForm.get('colorType').value === 'Basic Color' && 
-                                                    productForm.get('basicColorValue').invalid &&
-                                                    (productForm.get('basicColorValue').dirty || productForm.get('basicColorValue').touched)">
-                                            <div *ngIf="productForm.get('basicColorValue').errors['required']">
+                                            *ngIf="variantForm.get('colorType').value === 'Basic Color' && 
+                                                    variantForm.get('basicColorValue').invalid &&
+                                                    (variantForm.get('basicColorValue').dirty || variantForm.get('basicColorValue').touched)">
+                                            <div *ngIf="variantForm.get('basicColorValue').errors['required']">
                                                 Color is required
                                             </div>
                                         </div>
                                         <div class="alert alert-danger my-2" 
-                                            *ngIf="productForm.get('colorType').value === 'Custom Color' && 
-                                                    productForm.get('customColorValue').invalid &&
-                                                    (productForm.get('customColorValue').dirty || productForm.get('customColorValue').touched)">
-                                            <div *ngIf="productForm.get('customColorValue').errors['required']">
+                                            *ngIf="variantForm.get('colorType').value === 'Custom Color' && 
+                                                    variantForm.get('customColorValue').invalid &&
+                                                    (variantForm.get('customColorValue').dirty || variantForm.get('customColorValue').touched)">
+                                            <div *ngIf="variantForm.get('customColorValue').errors['required']">
                                                 Color is required
                                             </div>
-                                            <div *ngIf="productForm.get('customColorValue').errors['maxlength']">
+                                            <div *ngIf="variantForm.get('customColorValue').errors['maxlength']">
                                                 Color Name must not exceed 50 characters
                                             </div>
                                         </div>
@@ -233,9 +233,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <ng-container *ngIf="productForm.get('image').value !== null">
+                                    <ng-container *ngIf="variantForm.get('image').value !== null">
                                         <div class="col-lg-8">
-                                            <img [src]="productForm.get('image').value" class="d-block w-100" alt="Slide Image">
+                                            <img [src]="variantForm.get('image').value" class="d-block w-100" alt="Slide Image">
                                         </div>
                                     </ng-container>
                                 </div>

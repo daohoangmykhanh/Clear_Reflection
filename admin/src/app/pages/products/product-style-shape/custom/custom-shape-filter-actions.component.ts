@@ -71,11 +71,15 @@ export class CustomShapeFilterActionsComponent extends DefaultFilter implements 
         }
         let shape: ProductShape = this.addShapeFormGroup.value as ProductShape
         console.log(shape);
-        if (this.shapeService.insert(shape)) {
-            this.utilsService.updateToastState(new ToastState('add', 'shape', 'success'))
-            this.windowRef.close();
-            this.addShapeFormGroup.reset();
-            this.router.navigate(['/admin/products/style-n-shape'])
-        }
+        this.shapeService.insert(shape).subscribe(
+            data => {
+                if(data) {
+                    this.utilsService.updateToastState(new ToastState('add', 'shape', 'success'))
+                    this.windowRef.close();
+                    this.addShapeFormGroup.reset();
+                    this.shapeService.notifyShapeChange()
+                }
+            }
+        )
     }
 }

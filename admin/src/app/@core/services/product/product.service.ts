@@ -4,6 +4,7 @@ import { Product } from '../../models/product/product.model';
 import { BaseURLService } from '../base-url.service';
 import { HttpClient } from '@angular/common/http';
 import { ModelResponse } from '../../models/response/ModelResponse';
+import { Subject } from 'rxjs';
 
 export class ToastState {
   bahavior: String;
@@ -14,6 +15,18 @@ export class ToastState {
   providedIn: 'root'
 })
 export class ProductService {
+  private productChangeSubject = new Subject<void>();
+
+  // Getter for the subject as an observable
+  get productChange$(): Observable<void> {
+    return this.productChangeSubject.asObservable();
+  }
+
+  // Call this method whenever a change occurs in the product list
+  notifyProductChange(): void {
+    this.productChangeSubject.next();
+  }
+
   constructor(
     private baseUrlService: BaseURLService,
     private httpClient: HttpClient
@@ -70,7 +83,7 @@ export class ProductService {
   }
   
   findById(id: number): Observable<Product | ModelResponse>  {
-    const url: string = `${this.baseUrlService.baseURL}/product/${id}`
+    const url: string = `${this.baseUrlService.baseURL}/product/edit/${id}`
     return this.httpClient.get<Product>(url);
   } 
 
@@ -91,11 +104,11 @@ export class ProductService {
 
   delete(productId: number): Observable<ModelResponse> {    
     const url: string = `${this.baseUrlService.baseURL}/product/delete/${productId}`
-    return this.httpClient.delete<ModelResponse>(url); 
+    return this.httpClient.get<ModelResponse>(url); 
   }
 
   hideProduct(productId: number): Observable<ModelResponse> {
-    const url: string = `${this.baseUrlService.baseURL}/product/hideProduct/${productId}`
+    const url: string = `${this.baseUrlService.baseURL}/product/hide/${productId}`
     return this.httpClient.get<ModelResponse>(url); 
   }
 

@@ -1,8 +1,10 @@
+import { ToastState, UtilsService } from './../../../../@core/services/utils.service';
 import { style } from "@angular/animations";
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, ViewChild, TemplateRef } from "@angular/core";
 import { Router } from "@angular/router";
 import { ViewCell } from "ng2-smart-table";
 import { ProductCategoryService } from "../../../../@core/services/product/product-category.service";
+import { NbWindowRef, NbWindowService } from "@nebular/theme";
 
 @Component({
     selector: 'ngx-custom-action',
@@ -14,11 +16,24 @@ import { ProductCategoryService } from "../../../../@core/services/product/produ
                 </button>
             </div>
             <div class="col-lg-6  d-flex justify-content-center">
-                <button nbButton status="danger" (click)="onDelete($event)">
+                <button nbButton status="danger" (click)="onDelete()">
                     <nb-icon icon="trash-outline"></nb-icon>
                 </button>
             </div>
         </div>
+
+        <ng-template #onDeleteTemplate let-data>
+            <nb-card>
+                <nb-card-header>
+                        Are you sure you want to delete this category?
+                </nb-card-header>
+                <nb-card-body>
+                    <button nbButton status="success" class="mt-3" (click)="deleteProduct()">
+                        CONFIRM
+                    </button>
+                </nb-card-body>
+            </nb-card>
+        </ng-template>
     `,
 })
 
@@ -28,19 +43,43 @@ export class CustomCategoryActionComponent implements ViewCell {
     @Input() value: string | number;
     @Input() rowData: any;
 
-    constructor(private categoryService: ProductCategoryService) {
+    @ViewChild('onDeleteTemplate') deleteWindow: TemplateRef<any>;
+    deleteWindowRef: NbWindowRef;
+
+    constructor(
+        private categoryService: ProductCategoryService,
+        private windowService: NbWindowService,
+        private utilsService: UtilsService
+    ) {
     }
 
     onEdit() {
         this.categoryService.updateHandleAndRowData('edit', this.rowData);
     }
 
-    onDelete(event: any) {
-        if (window.confirm('Are you sure you want to delete?')) {
-            event.confirm.resolve();
-        } else {
-            event.confirm.reject();
-        }
+    onDelete() {
+        this.deleteWindowRef = this.windowService
+            .open(this.deleteWindow, { title: `Delete Product` });
     }
 
+    deleteProduct() {
+        console.log(this.rowData);
+
+        this.categoryService.delete(this.rowData.categoryId).subscribe(
+            data => {
+                if (data.result) {
+                    this.deleteWindowRef.close()
+                    this.categoryService.notifyCategoryChange();
+                    this.utilsService.updateToastState(new ToastState('delete', 'category', 'success'))
+                } else {
+                    this.utilsService.updateToastState(new ToastState('delete', 'category', 'danger'))
+                }
+            },
+            error => {
+                this.utilsService.updateToastState(new ToastState('delete', 'category', 'danger'))
+                console.log(error);
+
+            }
+        )
+    }
 }

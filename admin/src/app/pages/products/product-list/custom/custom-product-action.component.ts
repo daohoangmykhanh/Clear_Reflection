@@ -44,7 +44,7 @@ export class CustomProductActionComponent implements ViewCell, OnInit {
     }
     
     ngOnInit(): void {
-        // console.log(this.rowData);
+        console.log(this.rowData);
         this.productId = this.rowData.productId
     }
 
@@ -61,12 +61,12 @@ export class CustomProductActionComponent implements ViewCell, OnInit {
     }
 
     onDelete(event: any) {
-        const windowRef = this.windowService
-            .open(this.hideWindow, { title: `Delete Product` }); 
+        this.deleteWindowRef = this.windowService
+            .open(this.deleteWindow, { title: `Delete Product` }); 
     }
 
     onHide() {
-        const windowRef = this.windowService
+        this.hideWindowRef = this.windowService
             .open(this.hideWindow, { title: `Hide Product` });
     }
 
@@ -74,8 +74,13 @@ export class CustomProductActionComponent implements ViewCell, OnInit {
         this.productService.hideProduct(this.productId).subscribe(
             data => {
                 if (data.result) {
-                    this.utilsService.updateToastState(new ToastState('hide', 'product', 'success'))
                     this.hideWindowRef.close()
+                    if(data.message == 'Product was hidden!') {
+                        this.utilsService.updateToastState(new ToastState('hide', 'product', 'success'))
+                    } else {
+                        this.utilsService.updateToastState(new ToastState('show', 'product', 'success'))
+                    }
+                    this.productService.notifyProductChange();
                 } else {
                     this.utilsService.updateToastState(new ToastState('hide', 'product', 'danger'))
                 }
@@ -90,8 +95,9 @@ export class CustomProductActionComponent implements ViewCell, OnInit {
         this.productService.delete(this.productId).subscribe(
             data => {
                 if (data.result) {
-                    this.utilsService.updateToastState(new ToastState('delete', 'product', 'success'))
                     this.hideWindowRef.close()
+                    this.productService.notifyProductChange();
+                    this.utilsService.updateToastState(new ToastState('delete', 'product', 'success'))
                 } else {
                     this.utilsService.updateToastState(new ToastState('delete', 'product', 'danger'))
                 }

@@ -3,15 +3,17 @@ import { BaseURLService } from '../base-url.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs-compat';
 import { ProductCategory } from '../../models/product/product-category.model';
-import { of, BehaviorSubject } from 'rxjs';
+import { of, BehaviorSubject, Subject } from 'rxjs';
 import { CouponType } from '../../models/coupon/coupon-type.model';
 import { Coupon } from '../../models/coupon/coupon.model';
+import { ModelResponse } from '../../models/response/ModelResponse';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductCouponService {
 
+  // for update state & rowDate and change between add & edit form
   private stateSubject: BehaviorSubject<string> = new BehaviorSubject<string>('add');
   private rowDataSubject: BehaviorSubject<Coupon> = new BehaviorSubject<Coupon>(null);
 
@@ -19,13 +21,23 @@ export class ProductCouponService {
   public rowData$: Observable<Coupon> = this.rowDataSubject.asObservable();
 
   updateHandleAndRowData(state: string, rowData?: any) {
-    console.log("state: " + state + " - rowData: " );
-    console.dir(rowData)
     this.stateSubject.next(state);
     if(rowData != undefined) {
       this.rowDataSubject.next(rowData as Coupon); 
     }
   }
+
+  // for changing when create, edit, delete => reload
+  private couponChangeSubject = new Subject<void>();
+
+  get couponChange$(): Observable<void> {
+    return this.couponChangeSubject.asObservable();
+  }
+
+  notifyCouponChange(): void {
+    this.couponChangeSubject.next();
+  }
+
   
   constructor(
     private baseUrlService: BaseURLService,
@@ -86,9 +98,9 @@ export class ProductCouponService {
   //   return of(coupons);
   // }
 
-  findAll(): Observable<Coupon[]> {
+  findAll(): Observable<Coupon[] | ModelResponse> {
     const url: string = `${this.baseUrlService.baseURL}/coupon`
-    return this.httpClient.get<Coupon[]>(url)
+    return this.httpClient.get<Coupon[] | ModelResponse>(url)
   }
 
   insert(coupon: Coupon): Observable<Coupon> {
@@ -96,14 +108,16 @@ export class ProductCouponService {
     return this.httpClient.post<Coupon>(url, coupon);
   }
 
-  update(coupon: Coupon): Observable<boolean> {
-    const url: string = `${this.baseUrlService.baseURL}/coupon/update`
-    return this.httpClient.post<boolean>(url, coupon);
+  update(coupon: Coupon): Observable<ModelResponse> {
+    const url: string = `${this.baseUrlService.baseURL}/coupon/update/${coupon.couponId}`
+    console.log(url);
+    
+    return this.httpClient.post<ModelResponse>(url, coupon);
   }
 
-  delete(couponId: number): Observable<boolean> {    
+  delete(couponId: number): Observable<ModelResponse> {    
     const url: string = `${this.baseUrlService.baseURL}/coupon/delete/${couponId}`
-    return this.httpClient.delete<boolean>(url); 
+    return this.httpClient.get<ModelResponse>(url); 
   }
 
   findCouponTypeById(id: number): CouponType {

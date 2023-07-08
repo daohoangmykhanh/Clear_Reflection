@@ -1,8 +1,5 @@
-import { style } from "@angular/animations";
 import { Component, OnInit, Input } from "@angular/core";
-import { Router } from "@angular/router";
 import { ViewCell } from "ng2-smart-table";
-import { ProductCategoryService } from "../../../../@core/services/product/product-category.service";
 
 @Component({
     template: `
@@ -16,7 +13,7 @@ export class CustomCategoryImageComponent implements ViewCell, OnInit {
     @Input() value: string | number;
     @Input() rowData: any;
 
-    constructor(private categoryService: ProductCategoryService) {
+    constructor() {
     }
 
     ngOnInit(): void {

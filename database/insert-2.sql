@@ -21,25 +21,26 @@ INSERT INTO role (role_id, name) VALUES
 (2, 'customer');
 
 INSERT INTO category (category_id, category_name, image_id) VALUES
-(2, 'Vanity Mirrors', NULL),
-(4, 'Wall Mirrors', NULL),
-(5, 'Floor Mirrors\r\n', NULL),
-(6, 'Decorative Mirrors', NULL),
-(7, 'Bathroom Mirrors', NULL);
+(1, 'Vanity Mirrors', 1),
+(2, 'Wall Mirrors', 2),
+(3, 'Floor Mirrors\r\n', 3),
+(4, 'Decorative Mirrors', 4),
+(5, 'Bathroom Mirrors', 5);
 
 INSERT INTO company_information (company_information_id, company_name, company_address, company_phone_number, company_vat_number) VALUES
 (1, 'Clear Reflection', '35/6 D5 street, Ward 25 Binh Thanh District HCM ', '090-187-1698', 'GB123456789');
 
 INSERT INTO image (image_id, image_url) VALUES
+(1, 'vanity-mirror.png'),
+(2, 'wall-mirror.png'),
+(3, 'floor-mirror.png'),
+(4, 'decorative-mirror.png'),
+(5, 'bathroom-mirror.png'),
 (22, 'helo'),
 (23, 'hi'),
 (24, 'https://example.com/image1.jpg'),
-(25, 'helo'),
-(26, 'https://cdn.pixabay.com/photo/2023/03/17/02/42/architecture-7857832_1280.jpg'),
-(27, 'https://cdn.pixabay.com/photo/2023/03/17/02/42/architecture-7857832_1280.jpg'),
-(28, 'https://images.unsplash.com/photo-1688499153976-7573901224ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80'),
-(29, 'https://images.unsplash.com/photo-1688499153976-7573901224ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80'),
-(30, 'https://cdn.pixabay.com/photo/2023/03/17/02/42/architecture-7857832_1280.jpg');
+(25, 'helo');
+
 
 INSERT INTO product (product_id, product_name, description, is_hide, category_id, product_shape_id, product_style_id, created_at, updated_at) VALUES
 (21, 'Example Product', 'This is an example product', b'0', 2, 1, 2, '2023-07-04 07:32:10', '2023-07-04 07:32:10'),
@@ -54,13 +55,6 @@ INSERT INTO product_color (product_color_id, color_name) VALUES
 (5, 'Bronze'),
 (10, 'Green'),
 (11, 'Pinl');
-
-INSERT INTO product_image (product_id, image_id) VALUES
-(23, 26),
-(23, 27),
-(22, 29),
-(21, 29),
-(21, 30);
 
 
 INSERT INTO product_variant (product_variant_id, product_id, height, width, color_id, quantity, price, image_id) VALUES
