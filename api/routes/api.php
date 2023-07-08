@@ -112,12 +112,11 @@ Route::get('/admin/product/delete/{id}', [BEProductController::class, 'delete'])
 Route::get('/admin/role', [BERoleController::class, 'index']);
 Route::post('/admin/role/create', [BERoleController::class, 'create']);
 Route::get('/admin/role/delete/{id}', [BERoleController::class, 'delete']);
-// Account Controller
+// BEAccount Controller
 Route::get('/admin/account', [BEAccountController::class, 'index']);
 Route::post('/admin/account/create', [BEAccountController::class, 'create']);
 Route::get('/admin/account/{id}', [BEAccountController::class, 'edit']);
-Route::post('/admin/account/update', [BEAccountController::class, 'update']);
-Route::get('/admin/account/delete/{id}', [BEAccountController::class, 'delete']);
+Route::post('/admin/account/update/{id}', [BEAccountController::class, 'update']);
 // Category Controller
 Route::get('/admin/category', [BECategoryController::class, 'index']);
 Route::post('/admin/category/create', [BECategoryController::class, 'create']);

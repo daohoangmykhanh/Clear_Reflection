@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use Illuminate\Http\Request;
-
+use App\Models\Image;
+use App\Models\Order;
 class BEAccountController extends Controller
 {
     public function index(){
@@ -13,21 +14,23 @@ class BEAccountController extends Controller
             return response()->json('No results found!');
         }
         foreach($accounts as $account){
-            $role = $account->role; 
+            $order = Order::where('account_id', $account -> account_id) -> get() -> count();
+            $role = $account->role;
             $accountData[] = [
-                'account_id' => $account->account_id,
+                'accountId' => $account->account_id,
                 'username' => $account->username,
                 'password' => $account->password,
-                'full_name' => $account->full_name,
+                'fullName' => $account->full_name,
                 'email' => $account->email,
-                'phone_number' => $account->phone_number,
-                'image_id' => $account->image_id,
+                'phoneNumber' => $account->phone_number,
+                'imageId' => $account->image_id,
                 'role' => [
-                    'role_id' => $role->role_id,
+                    'roleId' => $role->role_id,
                     'name' => $role->name,
                 ],
-                'created_at' => $account->created_at,
-                'updated_at' => $account->updated_at,
+                'order' => $order,
+                'createdAt' => $account->created_at,
+                'updatedAt' => $account->updated_at,
             ];
         }
         return response()->json($accountData);
@@ -35,53 +38,96 @@ class BEAccountController extends Controller
 
     public function create(Request $request){
         $validatedData = $request->validate([
-            'username' => 'required|unique:account',
+            'username' => 'required|unique:account,username',
             'password' => 'required',
-            'full_name' => 'required',
+            'fullName' => 'required',
             'email' => 'required|email',
-            'phone_number' => 'required',
-            'role_id' => 'required',
-            'image_id' => 'nullable',
+            'phoneNumber' => 'required',
+            'image' => 'nullable',
         ]);
-        $result = Account::store($validatedData);
+        $account = new Account();
+        $account -> username = $validatedData['username'];
+        $account -> password = bcrypt($validatedData['password']);
+        $account -> full_name = $validatedData['fullName'];
+        $account -> email = $validatedData['email'];
+        $account -> phone_number = $validatedData['phoneNumber'];
+        $account -> role_id = 2;
+
+        $image = new Image();
+        $base64String = $validatedData['image'];
+        $base64Data = substr($base64String, strpos($base64String, ',') + 1);
+        $imageData = base64_decode($base64Data);
+        $filename = uniqid() . '.png';
+        $storagePath = public_path('images/account/');
+        file_put_contents($storagePath. $filename, $imageData);
+        $image->image_url = $filename;
+        $image->save();
+
+        $account -> image_id = $image -> image_id;
+        $result = $account -> save();
+
         if(!$result)
-            return response()->json('Created unsuccessfully !');
-        
-        return response()->json('Created successfully !', 201);
+            return response()->json([
+                    'result' => false,
+                    'message' => 'Created unsuccessfully'
+            ]);
+
+        return response()->json($account);
     }
 
     public function edit($id){
         $account = Account::Find($id);
         if($account == null )
             return response()->json('Id doesn`t exist !');
-        
+
         return response()->json($account);
     }
 
-    public function update(Request $request){
+    public function update(Request $request, $id){
         $validatedData = $request->validate([
-            'account_id' => 'required',
-            'password' => 'required',
-            'full_name' => 'required',
+            'password' => 'nullable',
+            'fullName' => 'required',
             'email' => 'required|email',
-            'phone_number' => 'required',
-            'image_id' => 'nullable',
+            'phoneNumber' => 'required',
+            'image' => 'nullable',
         ]);
-
-        $result = Account::edit($validatedData);
+        $account = Account::Find($id);
+        if(isset($validatedData['password'])){
+            $account -> password = bcrypt($validatedData['password']);
+        }
+        $account -> email = $validatedData['email'];
+        $account -> phone_number = $validatedData['phoneNumber'];
+        if(isset($validatedData['image'])){
+            if($account -> image_id != null){
+                $oldImageFilename = $account -> image -> image_url;
+                $oldImagePath = public_path('images/account/') . $oldImageFilename;
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+                $image = Image::find($account->image_id);
+            }else {
+                $image = new Image();
+            }
+            $base64String = $validatedData['image'];
+            $base64Data = substr($base64String, strpos($base64String, ',') + 1);
+            $imageData = base64_decode($base64Data);
+            $filename = uniqid() . '.png';
+            $storagePath = public_path('images/account/');
+            file_put_contents($storagePath. $filename, $imageData);
+            $image -> image_url = $filename;
+            $image -> save();
+            $account -> image_id = $image -> image_id;
+        }
+        $result = $account -> save();
         if(!$result)
-            return response()->json('Updated unsuccessfully !');
-    
-        return response()->json('Updated successfully !', 201);
-    }
+            return response()->json([
+                'result' => false,
+                'message' => 'Updated unsuccessfully'
+            ]);
 
-    public function delete($id){
-        if(Account::find($id) == null)
-            return response()->json('Id doesn`t exist !');
-        $result = Account::destroy($id);
-        if(!$result)
-            return response()->json('Deleted unsuccessfully !');
-    
-        return response()->json('Deleted successfully !', 201);
+            return response()->json([
+                'result' => true,
+                'message' => 'Updated successfully'
+            ]);
     }
 }
