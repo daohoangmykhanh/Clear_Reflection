@@ -125,13 +125,9 @@ class BEAccountController extends Controller
             ]);
     }
     public function detail($id){
-        $account = Account::find($id);
-        if($account == null)
-            return response()->json([
-                'result' => false,
-                'message' => 'Created unsuccessfully'
-            ]);
-        $orders = Order::where('account_id',$account -> account_id) -> get();
+        $orders = Order::where('account_id',$id) -> get();
+        if($orders -> isEmpty())
+            return response()->json('Customer doesnt have any order!');
         foreach($orders as $order){
             $shippingAddress = null;
             $address = OrderAddress::where('order_id', $order->order_id) -> first();
