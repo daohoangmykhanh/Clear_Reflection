@@ -50,12 +50,22 @@ INSERT INTO coupon_type(coupon_type_id, coupon_type_name)
 VALUES (1, 'Fixed'), (2, 'Percent');
 
 
-INSERT INTO `Account`(username, password, full_name, email, phone_number, image_id, role_id)
-VALUES ('phupro123ka1', '123,', 'Nguyễn Mạnh Phú 1', 'nguyenphu1147@gmail.com', '0783562372', 1, 1),
-('daohoangmykhanh', '123,', 'Đào Hoàng Mỹ Khánh 2', 'daohoangmykhanh@gmail.com', '4812341234', 2, 1),
-('nguyenphihung', '123,', 'Nguyễn Phi Hùng', 'hungn12333@gmail.com', '2341234', 3, 1),
-('phupro123ka4', '123,', 'Nguyễn Mạnh Phú', 'nguyenphu1147@gmail.com', '0783562372', 4, 1),
-('phupro123ka5', '123,', 'Nguyễn Mạnh Phú', 'nguyenphu1147@gmail.com', '0783562372', 5, 1),
+INSERT INTO payment_method(payment_method_id, payment_method_name)
+VALUES (1, 'Paypal'), (2, 'Vnpay');
+
+INSERT INTO order_status(status_name, status_description) 
+VALUES ('Hanling', 'Order are paid, and admin are handling for shipping'),
+('Delivering', 'The good are shipping'),
+('Completed', 'Order was completed');
+
+
+
+INSERT INTO `Account`(`password`, full_name, email, phone_number, image_id, role_id)
+VALUES ('123,', 'Nguyễn Mạnh Phú 1', 'nguyenphu1147@gmail.com', '0783562372', 1, 1),
+('123,', 'Đào Hoàng Mỹ Khánh 2', 'daohoangmykhanh@gmail.com', '4812341234', 2, 1),
+('123,', 'Nguyễn Phi Hùng', 'hungn12333@gmail.com', '2341234', 3, 1),
+('123,', 'Nguyễn Mạnh Phú', 'nguyenphu11147@gmail.com', '0783562372', 4, 1),
+('123,', 'Nguyễn Mạnh Phú', 'nguyenphu1114237@gmail.com', '0783562372', 5, 1);
 
 
 

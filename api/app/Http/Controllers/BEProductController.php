@@ -248,7 +248,7 @@ class BEProductController extends Controller
                 'productVariants.*.height' => 'required|numeric',
                 'productVariants.*.width' => 'required|numeric',
                 'productVariants.*.color.productColorId' => 'nullable|integer',
-                'productVariants.*.color.colorName' => 'nullable|string',
+                'productVariants.*.color.colorName' => 'required|string',
                 'productVariants.*.quantity' => 'required|integer',
                 'productVariants.*.price' => 'required|numeric',
                 'productVariants.*.image' => 'nullable|string',
@@ -517,7 +517,7 @@ class BEProductController extends Controller
     }
 
     public function delete($id){
-        $product = Product::Find($id);
+        $product = Product::find($id);
         if($product == null){
             return response()-> json([
                 'result' => false,
@@ -525,6 +525,7 @@ class BEProductController extends Controller
             ]);
         }
         $images = ProductImage::where('product_id', $id) -> get();
+<<<<<<< HEAD
         $images -> delete();
         // if($images -> isNotEmpty()){
         //     foreach($images as $imageSuper){
@@ -537,47 +538,49 @@ class BEProductController extends Controller
         // if (file_exists($oldImagePath)) {
         //     unlink($oldImagePath);
         // };
+=======
+        $imageData = null;
+        foreach($images as $image){
+            $img = Image::find($image->image_id);
+            $oldImageFilename = $img -> image_url;
+            $oldImagePath = public_path('images/product/') . $oldImageFilename;
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
+            $imageData[] = $img -> image_id;
+        }
+        ProductImage::where('product_id', $id)->delete();
+        foreach($imageData as $data){
+            $imga = Image::find($data);
+            $imga -> delete();
+        }
+>>>>>>> 7a16ad51c21fcc79cac94e8aae693d2200420301
         $variants = ProductVariant::where('product_id', $id) -> get();
-        if($variants -> isNotEmpty()){
-            foreach($variants as $variant){
-                if($variant -> image_id != null ){
-                    $img = Image::find($variant->image_id);
-                    $oldImageFilename = $img -> image_url;
-                    $oldImagePath = public_path('images/product/') . $oldImageFilename;
-                    if (file_exists($oldImagePath)) {
-                        unlink($oldImagePath);
-                    }
-                }
-                $variant->delete();
-                $img -> delete();
+        foreach($variants as $variant){
+            if($variant->image_id == null){
+                $variant -> delete();
+                break;
             }
+            $img = Image::find($variant->image_id);
+            $oldImageFilename = $img -> image_url;
+            $oldImagePath = public_path('images/product/') . $oldImageFilename;
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
+            $variant->delete();
+            $img -> delete();
         }
-        $carts = CartDetail::where('product_id', $id) -> get();
-        if($carts -> isNotEmpty()){
-            foreach($carts as $cart){
-                $cart->delete();
-            }
-         }
-        $wishlists = Wishlist::where('product_id', $id) -> get();
-        if($variants -> isNotEmpty()){
-            foreach($wishlists as $wishlist){
-                $wishlist->delete();
-            }
-         }
-        $reviews = ProductReview::where('product_id', $id) -> get();
-        if($reviews -> isNotEmpty()){
-            foreach($reviews as $review){
-                 $review->delete();
-            }
-        }
-        $orders = OrderDetail::where('product_id', $id) -> get();
-        if($orders -> isNotEmpty()){
-            foreach($orders as $order){
-                $order-> product_id = null;
-                $order -> save();
-            }
+
+        CartDetail::where('product_id', $id)->delete();
+        $product->wishlists()->delete();
+        $product->reviews()->delete();
+        $orders = OrderDetail::where('product_id',$id) -> get();
+        foreach( $orders as $order){
+            $order -> product_id = null;
+            $order -> save();
         }
         $delete = $product -> delete();
+
         if(!$delete){
             return response()->json([
                 'result' => false,

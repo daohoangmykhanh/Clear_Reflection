@@ -58,8 +58,8 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     private productService: ProductService,
     private utilsService: UtilsService
   ) {
-      this.orderStatusService.findAll().subscribe(data => this.orderStatuses = data)
-      this.paymentMethodService.findAll().subscribe(data => this.paymentMethods = data)
+      // this.orderStatusService.findAll().subscribe(data => this.orderStatuses = data)
+      // this.paymentMethodService.findAll().subscribe(data => this.paymentMethods = data)
   }
   
   get products() { return this.addOrderFormGroup.controls["products"] as FormArray }

@@ -9,11 +9,11 @@ import { PaymentMethodService } from '../../../@core/services/order/payment-meth
 import { OrderStatusService } from '../../../@core/services/order/order-status.service';
 import { OrderService } from '../../../@core/services/order/order.service';
 import { DatePipe } from '@angular/common';
-import { CustomCustomerActionComponent } from './custom/custom-customer-action.component';
+import { CustomCustomerActionComponent } from './custom/custom-customer-action/custom-customer-action.component';
 import { CustomCustomerImageComponent } from './custom/custom-customer-image.component';
 import { AccountService } from '../../../@core/services/account/account.service';
 import { UtilsService } from '../../../@core/services/utils.service';
-import { CustomCustomerFilterActionsComponent } from './custom/custom-customer-filter-actions.component';
+import { CustomCustomerFilterActionsComponent } from './custom/custom-customer-filter-actions/custom-customer-filter-actions.component';
 import { Subject } from 'rxjs';
 
 @Component({

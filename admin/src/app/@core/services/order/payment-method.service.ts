@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { BaseURLService } from "../base-url.service";
 import { PaymentMethod } from '../../models/order/payment-method.model';
+import { ModelResponse } from '../../models/response/ModelResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -37,9 +38,9 @@ export class PaymentMethodService {
     //     return of(pm)
     // }
 
-    findAll(): Observable<PaymentMethod[]> {
+    findAll(): Observable<PaymentMethod[] | ModelResponse> {
         const url: string = `${this.baseUrlService.baseURL}/payment-method`
-        return this.httpClient.get<PaymentMethod[]>(url)
+        return this.httpClient.get<PaymentMethod[] | ModelResponse>(url)
     }
 
     insert(paymentMethod: PaymentMethod): Observable<PaymentMethod> {
@@ -47,13 +48,13 @@ export class PaymentMethodService {
         return this.httpClient.post<PaymentMethod>(url, paymentMethod);
     }
 
-    update(paymentMethod: PaymentMethod): Observable<boolean> {
+    update(paymentMethod: PaymentMethod): Observable<ModelResponse> {
         const url: string = `${this.baseUrlService.baseURL}/payment-method/update`
-        return this.httpClient.post<boolean>(url, paymentMethod);
+        return this.httpClient.post<ModelResponse>(url, paymentMethod);
     }
 
-    delete(paymentMethodId: number): Observable<boolean> {
+    delete(paymentMethodId: number): Observable<ModelResponse> {
         const url: string = `${this.baseUrlService.baseURL}/payment-method/delete/${paymentMethodId}`
-        return this.httpClient.delete<boolean>(url);
+        return this.httpClient.get<ModelResponse>(url);
     }
 }

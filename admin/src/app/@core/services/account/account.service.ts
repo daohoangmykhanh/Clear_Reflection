@@ -60,21 +60,8 @@ export class AccountService {
   }
 
   findById(id: number): Observable<Account> {
-    if(id >= 0 && id <= 10) {
-      return of(
-        {
-          accountId: 1,
-          fullName: 'Đào Hoàng Mỹ Khánh',
-          email: 'daohoangmykhanh@gmail.com',
-          phoneNumber: '0123456789',
-          image: {imageId: 1, imageUrl: 'assets/images/eva.png'},
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          orders: this.orders
-        },
-      )
-    }
-    return null
+    const url: string = `${this.baseUrlService.baseURL}/account/detail/${id}`
+    return this.httpClient.get<Account>(url);
   }
 
   insert(account: Account): Observable<Account> {
