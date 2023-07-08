@@ -224,7 +224,6 @@ class BEProductController extends Controller
                 'result' => false,
                 'message' => "Product doesn't exist!",
             ]);
-<<<<<<< HEAD
 
         $product->is_hide = !$product->is_hide;
         $product->save();
@@ -233,21 +232,6 @@ class BEProductController extends Controller
             'result' => true,
             'message' => ($product->is_hide) ? "Product was hidden!" : "Product was visible",
         ]);
-=======
-        if($product -> is_hide == true){
-            $product -> is_hide = false;
-            return response()-> json([
-                'result' => true,
-                'message' => "Product was hidden!",
-            ]);
-        } else {
-            $product -> is_hide = true;
-            return response()-> json([
-                'result' => true,
-                'message' => "Product was shown!",
-            ]);
-        }
->>>>>>> b097855a54ef23ffe51753106c7c78f7a84eff89
     }
     public function create(Request $request)
     {
@@ -541,18 +525,18 @@ class BEProductController extends Controller
             ]);
         }
         $images = ProductImage::where('product_id', $id) -> get();
-        if($images -> isNotEmpty()){
-            foreach($images as $image){
-                $img = Image::find($image->image_id);
-                $oldImageFilename = $img -> image_url;
-                $oldImagePath = public_path('images/product/') . $oldImageFilename;
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
-                }
-                $image->delete();
-                $img -> delete();
-            }
-         }
+        $images -> delete();
+        // if($images -> isNotEmpty()){
+        //     foreach($images as $imageSuper){
+        //         $img = Image::find($imageSuper->image_id);
+        //         $img -> delete();
+        //     }
+        // }
+        // $oldImageFilename = $img -> image_url;
+        // $oldImagePath = public_path('images/product/') . $oldImageFilename;
+        // if (file_exists($oldImagePath)) {
+        //     unlink($oldImagePath);
+        // };
         $variants = ProductVariant::where('product_id', $id) -> get();
         if($variants -> isNotEmpty()){
             foreach($variants as $variant){

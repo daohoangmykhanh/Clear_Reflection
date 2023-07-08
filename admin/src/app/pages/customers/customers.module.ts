@@ -9,6 +9,8 @@ import { NbAccordionModule, NbActionsModule, NbButtonModule, NbCardModule, NbChe
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomCustomerActionComponent } from './customer-list/custom/custom-customer-action.component';
 import { CustomCustomerImageComponent } from './customer-list/custom/custom-customer-image.component';
+import { CustomCustomerFilterActionsComponent } from './customer-list/custom/custom-customer-filter-actions.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -18,7 +20,8 @@ import { CustomCustomerImageComponent } from './customer-list/custom/custom-cust
     CustomerListComponent,
     CustomerDetailComponent,
     CustomCustomerActionComponent,
-    CustomCustomerImageComponent
+    CustomCustomerImageComponent,
+    CustomCustomerFilterActionsComponent
   ],
   imports: [
     CustomersRoutingModule,
@@ -34,7 +37,9 @@ import { CustomCustomerImageComponent } from './customer-list/custom/custom-cust
     NbDatepickerModule,
     NbSelectModule,
     NbAccordionModule,
-    NbIconModule
+    NbIconModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class CustomersModule { }

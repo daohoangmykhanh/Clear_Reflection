@@ -102,7 +102,7 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     );
   }
 
-  accountCompleter$: Observable<Account[]>;
+  accountCompleter$: Observable<Account[] | ModelResponse>;
   accountCompleter() {
     this.accountCompleter$ = this.addOrderFormGroup.get('email').valueChanges.pipe(
       startWith(''),
