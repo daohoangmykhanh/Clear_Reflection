@@ -171,6 +171,7 @@ class BEAccountController extends Controller
             ];
         }
         $orders = Order::where('account_id',$id) -> get();
+        $orderData = null;
         if($orders -> isNotEmpty()) {
             foreach($orders as $order){
                 $shippingAddress = null;

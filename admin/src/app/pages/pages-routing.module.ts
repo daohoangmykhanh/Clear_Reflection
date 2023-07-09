@@ -24,6 +24,11 @@ const routes: Routes = [
           import("./orders/orders.module").then((m) => m.OrdersModule),
       },
       {
+        path: 'auth', 
+        loadChildren: () =>
+          import("./auth/auth.module").then((m) => m.AuthModule),
+      },
+      {
         path: "",
         redirectTo: "dashboard",
         pathMatch: "full",

@@ -35,13 +35,13 @@ class LoginController extends Controller
             'full_name' => ($request->full_name),
         ]);
 
-        // $name = "ádsđá"; 
+        // $name = "ádsđá";
         // Mail::send("email", compact('name'), function ($email) {
         //     $email->to($request->email);
         // });
         return response()->json([
+            "result" => true,
             'message' => 'User created successfully',
-            'user' => $user
         ]);
     }
 
@@ -50,21 +50,20 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
         if (!($token = JWTAuth::attempt($credentials))) {
             return response()->json([
-                'status' => 'error',
-                'error' => 'invalid.credentials',
-                'msg' => 'Invalid Credentials.'
+                'result' => false,
+                'message' => 'Invalid Credentials.'
             ]);
         }
 
         return response()->json([
             'token' => $token,
-            'account' => auth()->user(),
         ]);
     }
     public function logout()
     {
         Auth::logout();
         return response()->json([
+            'result' => true,
             'message' => 'Successfully logged out',
         ]);
     }

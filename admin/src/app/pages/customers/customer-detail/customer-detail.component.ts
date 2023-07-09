@@ -27,10 +27,12 @@ export class CustomerDetailComponent {
       params => {
         this.accountId = params['id']
         this.accountService.findById(+params['id']).subscribe(
-          data => {
-            this.account = data
-            this.avatar.nativeElement.src = this.utilsService.getImageFromBase64(this.account.image.imageUrl)
+          (data:any) => {
+            this.account = data.account
             console.log(this.account);
+            
+            this.avatar.nativeElement.src = this.utilsService.
+                  getImageFromBase64(this.account.image.imageUrl)
           }
         )
       }

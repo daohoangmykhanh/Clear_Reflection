@@ -47,21 +47,16 @@
                         </nb-accordion-item-header>
                         <nb-accordion-item-body>
                             <div class="row">
-                                <div class="col-12">
-                                    <h6>Track Number - {{order?.orderTrackingNumber}}</h6>
-                                </div>
                                 <div class="col-lg-6 col-md-12">
                                     <p><span class="font-weight-bold">Id: </span>{{order?.orderId}}</p>
-                                    <p><span class="font-weight-bold">Customer Email: </span>{{order?.accountEmail}}</p>
                                     <p><span class="font-weight-bold">Total Quantity: </span>{{order?.totalQuantity}}</p>
                                     <p><span class="font-weight-bold">Total Price: </span>{{order?.totalPrice}}</p>
-                                    <p><span class="font-weight-bold">Coupon Applied: </span>{{ order?.coupon ? order.coupon.code : 'NONE' }}</p>
+                                    <p><span class="font-weight-bold">Coupon Applied: </span>{{ order?.couponCode !== null ? order.couponCode : 'NONE' }}</p>
                                 </div>
                                 <div class="col-lg-6 col-md-12">
-                                    <p><span class="font-weight-bold">Order Status: </span>{{order?.orderStatus ? order.orderStatus.statusName : 'NONE'}}</p>
-                                    <p><span class="font-weight-bold">Payment method: </span>{{order?.paymentMethod.paymentMethodName}} </p>
+                                    <p><span class="font-weight-bold">Order Status: </span>{{order?.orderStatus}}</p>
+                                    <p><span class="font-weight-bold">Payment method: </span>{{order?.paymentMethod}} </p>
                                     <p><span class="font-weight-bold">Shipping Address: </span>{{order?.shippingAddress}}</p>
-                                    <p><span class="font-weight-bold">Created At: </span>{{order?.createdAt | date: 'short'}}</p>
                                 </div>
                             </div>
                         </nb-accordion-item-body>
