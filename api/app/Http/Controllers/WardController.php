@@ -104,12 +104,6 @@ class WardController extends Controller
             $wardData[] = [
                 'code' => $ward->code,
                 'name' => $ward->name,
-                'nameEn' => $ward->name_en,
-                'fullName' => $ward->full_name,
-                'fullNameEn' => $ward->full_name_en,
-                'codeName' => $ward->code_name,
-                'districtCode' => $ward->district_code,
-                'administrativeUnitId' => $ward->administrative_unit_id,
             ];
         }
         return response()->json([

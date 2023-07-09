@@ -15,48 +15,18 @@ export class OrderStatusService {
     ) { }
 
 
-    // findAll(): Observable<OrderStatus[]> {
-    //     return of([
-    //         {
-    //             orderStatusId: 1,
-    //             statusName: 'Handling',
-    //             statusDescription: 'The order are handling'
-    //         },
-    //         {
-    //             orderStatusId: 2,
-    //             statusName: 'Delivering',
-    //             statusDescription: 'The products of order are Delivering'
-    //         },
-    //         {
-    //             orderStatusId: 3,
-    //             statusName: 'Paid',
-    //             statusDescription: 'The order are paid'
-    //         },
-    //         {
-    //             orderStatusId: 4,
-    //             statusName: 'Completed',
-    //             statusDescription: 'The order are paid and Delivered'
-    //         }
-    //     ])
-    // }
-
     findById(id: number): Observable<OrderStatus> {
         let os: OrderStatus
         this.findAll().subscribe(
             data => {
-                if("result" in data) {
-                    console.log(data.message)
-                } else {
-                    os = data.find(status => status.orderStatusId == id)
-                }
+                os = data.find(status => status.orderStatusId == id)
             }
         )
         return of(os)
     }
 
-
-    findAll(): Observable<OrderStatus[] | ModelResponse> {
-        const url: string = `${this.baseUrlService.baseURL}/order-status`
+    findAll(): Observable<OrderStatus[]> {
+        const url: string = `${this.baseUrlService.baseURL}/findAllStatus`
         return this.httpClient.get<OrderStatus[]>(url)
     }
 

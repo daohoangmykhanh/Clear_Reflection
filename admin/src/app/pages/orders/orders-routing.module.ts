@@ -4,7 +4,6 @@ import { OrderListComponent } from "./order-list/order-list.component";
 import { OrdersComponent } from "./orders.component";
 import { OrderDetailComponent } from "./order-detail/order-detail.component";
 import { OrderAddComponent } from "./order-add/order-add.component";
-import { OrderEditComponent } from "./order-edit/order-edit.component";
 
 const routes: Routes = [
     {
@@ -18,10 +17,6 @@ const routes: Routes = [
             {
                 path: "add",
                 component: OrderAddComponent
-            },
-            {
-                path: "edit/:id",
-                component: OrderEditComponent
             },
             {
                 path: "detail/:id",

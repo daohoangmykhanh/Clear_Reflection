@@ -61,11 +61,12 @@ VALUES ('Hanling', 'Order are paid, and admin are handling for shipping'),
 
 
 INSERT INTO `Account`(`password`, full_name, email, phone_number, image_id, role_id)
-VALUES ('123,', 'Nguyễn Mạnh Phú 1', 'nguyenphu1147@gmail.com', '0783562372', 1, 1),
-('123,', 'Đào Hoàng Mỹ Khánh 2', 'daohoangmykhanh@gmail.com', '4812341234', 2, 1),
-('123,', 'Nguyễn Phi Hùng', 'hungn12333@gmail.com', '2341234', 3, 1),
-('123,', 'Nguyễn Mạnh Phú', 'nguyenphu11147@gmail.com', '0783562372', 4, 1),
-('123,', 'Nguyễn Mạnh Phú', 'nguyenphu1114237@gmail.com', '0783562372', 5, 1);
+VALUES ('123,', 'Nguyễn Mạnh Phú 1', 'nguyenphu1147@gmail.com', '0783562372', 1, 2),
+('123,', 'Đào Hoàng Mỹ Khánh 2', 'daohoangmykhanh@gmail.com', '4812341234', 2, 2),
+('123,', 'Nguyễn Phi Hùng', 'hungn12333@gmail.com', '2341234', 3, 2),
+('123,', 'Nguyễn Mạnh Phú', 'nguyenphu11147@gmail.com', '0783562372', 4, 2),
+('123,', 'Nguyễn Mạnh Phú', 'nguyenphu1114237@gmail.com', '0783562372', 5, 2);
+
 
 
 

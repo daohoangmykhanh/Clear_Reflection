@@ -38,9 +38,9 @@ export class PaymentMethodService {
     //     return of(pm)
     // }
 
-    findAll(): Observable<PaymentMethod[] | ModelResponse> {
-        const url: string = `${this.baseUrlService.baseURL}/payment-method`
-        return this.httpClient.get<PaymentMethod[] | ModelResponse>(url)
+    findAll(): Observable<PaymentMethod[]> {
+        const url: string = `${this.baseUrlService.baseURL}/findAllPayment`
+        return this.httpClient.get<PaymentMethod[]>(url)
     }
 
     insert(paymentMethod: PaymentMethod): Observable<PaymentMethod> {

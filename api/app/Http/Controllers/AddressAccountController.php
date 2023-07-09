@@ -10,23 +10,25 @@ class AddressAccountController extends Controller
     public function index()
     {
         $addressAccounts = AddressAccount::all();
+        if($addressAccounts -> isEmpty())
+            return response()->json('No result found!');
         foreach ($addressAccounts as $addressAccount) {
             $address = $addressAccount->address;
             $account = $addressAccount->account;
             $addressData[] = [
                 'id' => $addressAccount->id,
                 'account' => [
-                    'account_id' => $account->account_id,
-                    'full_name' => $account->full_name,
+                    'accountId' => $account->id,
+                    'fullName' => $account->full_name,
                     'email' => $account->email,
-                    'phone_number' => $account->phone_number,
-                    'image_id' => $account->image_id,
+                    'phoneNumber' => $account->phone_number,
+                    'imageId' => $account->image_id,
                     'address' => $account->address,
                 ],
                 'address' => [
-                    "address_id" => $address->address_id,
-                    "house_number" => $address->house_number,
-                    "road_name" => $address->road_name,
+                    "addressId" => $address->address_id,
+                    "roadName" => $address->road_name,
+                    "ward" => $address->ward->full_name,
                     "district" => $address->district->full_name,
                     "province" => $address->province->full_name,
                 ]
@@ -38,8 +40,8 @@ class AddressAccountController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'address_id' => 'required',
-            'account_id' => 'required',
+            'addressId' => 'required',
+            'accountId' => 'required',
         ]);
 
         $addressAccount = AddressAccount::create($validatedData);
@@ -57,17 +59,17 @@ class AddressAccountController extends Controller
         $addressData = [
             'id' => $addressAccount->id,
             'account' => [
-                'account_id' => $account->account_id,
-                'full_name' => $account->full_name,
+                'accountId' => $account->id,
+                'fullName' => $account->full_name,
                 'email' => $account->email,
-                'phone_number' => $account->phone_number,
-                'image_id' => $account->image_id,
+                'phoneNumber' => $account->phone_number,
+                'imageId' => $account->image_id,
                 'address' => $account->address,
             ],
             'address' => [
-                "address_id" => $address->address_id,
-                "house_number" => $address->house_number,
-                "road_name" => $address->road_name,
+                "addressId" => $address->address_id,
+                "roadName" => $address->road_name,
+                "ward" => $address->ward->full_name,
                 "district" => $address->district->full_name,
                 "province" => $address->province->full_name,
             ]

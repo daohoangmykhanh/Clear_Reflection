@@ -58,15 +58,8 @@ class DistrictController extends Controller
             $districtData[] = [
                 'code' => $district->code,
                 'name' => $district->name,
-                'name_en' => $district->name_en,
-                'full_name' => $district->full_name,
-                'full_name_en' => $district->full_name_en,
-                'code_name' => $district->code_name,
-                'province_code' => $district->province_code,
-                'administrative_unit_id' => $district->administrative_unit_id,
             ];
         }
-
 
         return response()->json([
             'districts' => $districtData

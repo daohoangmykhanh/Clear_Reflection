@@ -6,7 +6,6 @@ use App\Models\Account;
 use App\Models\Product;
 use App\Models\Address;
 use App\Models\Order;
-use App\Models\OrderAddress;
 use App\Models\OrderDetail;
 use App\Models\OrderStatus;
 use App\Models\PaymentMethod;
@@ -18,24 +17,27 @@ class BEOrderController extends Controller
     public function index(){
         $orders = Order::all();
         if($orders -> isEmpty()){
-            return response()->json('No results found!');
+            return response()->json([
+                'result' => true,
+                'message' => 'No results found!'
+            ]);
         }
         foreach($orders as $order){
 
             $orderData[] = [
-                'order_id' => $order->order_id,
-                'order_tracking_number' => $order->order_tracking_number,
-                'total_price' => $order->total_price,
-                'total_quantity' => $order->total_quantity,
-                'order_status' => [
-                    'order_status_id' => $order->status -> order_status_id,
-                    'status_name' => $order->status ->status_name
+                'orderId' => $order->order_id,
+                'orderTrackingNumber' => $order->order_tracking_number,
+                'totalPrice' => $order->total_price,
+                'totalQuantity' => $order->total_quantity,
+                'orderStatus' => [
+                    'orderStatusId' => $order->status -> order_status_id,
+                    'statusName' => $order->status ->status_name
                 ],
-                'payment_method' => [
-                    'payment_method_id' => $order->payment-> payment_method_id,
-                    'payment_method_name' => $order->payment->payment_method_name,
+                'paymentMethod' => [
+                    'paymentMethodId' => $order->payment-> payment_method_id,
+                    'paymentMethodName' => $order->payment->payment_method_name,
                 ],
-                'created_at' => $order->created_at,
+                'createdAt' => $order->created_at,
             ];
         }
         return response()->json($orderData);
@@ -64,18 +66,16 @@ class BEOrderController extends Controller
             ];
 
         }
-        $address = OrderAddress::where('order_id',$id) -> first();
-        $road = $address -> address -> road_name;
-        $house = $address -> address -> house_name;
-        $ward = $address -> address -> ward -> full_name_en;
-        $district = $address -> address -> district -> full_name_en;
-        $province = $address -> address -> province -> full_name_en;
-        $shippingAddress = $house.", " . $road .", " . $ward .", " .  $district .", " .  $province;
+        $road = $order -> address -> road_name;
+        $ward = $order -> address -> ward -> full_name_en;
+        $district = $order -> address -> district -> full_name_en;
+        $province = $order -> address -> province -> full_name_en;
+        $shippingAddress = $road .", " . $ward .", " .  $district .", " .  $province;
         $orderData[] = [
             'orderId' => $order->order_id,
             'orderTrackingNumber' => $order->order_tracking_number,
             'account' => [
-                'accountId' => $order-> account -> account_id,
+                'accountId' => $order-> account -> id,
                 'accountEmail' => $order -> account -> email
             ],
             'products' => $productData,
@@ -125,7 +125,7 @@ class BEOrderController extends Controller
     public function findSize($id){
         $products = ProductVariant::where('product_id', $id) -> get();
         foreach ($products as $product){
-            $size = $product -> height . 'cm x ' . $product -> width . 'cm';
+            $size = $product -> height . 'cmx' . $product -> width . 'cm';
             $sizeData[] = $size;
         }
         return response() -> json($sizeData);
@@ -165,16 +165,16 @@ class BEOrderController extends Controller
         $validatedData = $request->validate([
             'customerEmail' => 'required|email',
             'couponId' => 'nullable|integer',
-            'totalPrice' => 'required|numeric',
-            'totalQuantity' => 'required|numeric',
             'orderStatusId' => 'required|integer',
             'paymentMethodId' => 'required|integer',
-            'addressId' => 'nullable',
-            'houseNumber' => 'required',
             'roadName' => 'required',
             'wardCode' => 'required',
             'districtCode'=> 'required',
             'provinceCode' => 'required',
+            'addressId' => 'nullable',
+            'totalPrice' => 'required|numeric',
+            'totalQuantity' => 'required|numeric',
+
             'products' => 'required|array',
             'products.*.productId' => 'required|integer',
             'products.*.size' => 'required',
@@ -184,7 +184,7 @@ class BEOrderController extends Controller
         ]);
         $order = new Order();
         $account = Account::where('email', $validatedData['customerEmail']) -> first();
-        $order -> account_id = $account -> account_id;
+        $order -> account_id = $account -> id;
         $order -> coupon_id = $validatedData['couponId'] ?? null;
         $order -> total_price = $validatedData['totalPrice'];
         $order -> total_quantity = $validatedData['totalQuantity'];
@@ -206,26 +206,23 @@ class BEOrderController extends Controller
                 $address -> address_id = 1;
             }
         }
-        $address -> house_number = $validatedData['houseNumber'];
         $address -> road_name = $validatedData['roadName'];
         $address -> wards_code = $validatedData['wardCode'];
         $address -> district_code = $validatedData['districtCode'];
         $address -> province_code = $validatedData['provinceCode'];
         $address -> save();
 
-        $shipping = new OrderAddress();
         if(isset($validatedData['addressId'])){
-            $shipping -> address_id = $validatedData['addressId'];
+            $order -> address_id = $validatedData['addressId'];
         } else {
             $check = Address::all() -> count();
             if($check > 0){
-                $shipping -> address_id = $lastAddress ->address_id + 1;
+                $order -> address_id = $lastAddress ->address_id + 1;
             } else {
-                $shipping -> address_id = 1;
+                $order -> address_id = 1;
             }
         }
-        $shipping -> order_id = $order -> order_id;
-        $shipping -> save();
+        $order -> save();
 
         foreach($validatedData['products'] as $productData){
             $split = array_map('trim', explode('x', $productData['size']));
@@ -247,16 +244,28 @@ class BEOrderController extends Controller
         ]);
     }
 
-    public function customerByEmail($keyword){
-        $accounts = Account::where('email', 'LIKE', "%{$keyword}%")->where('role_id', 2) -> get();
+    public function customerByEmail($keyword = null){
+        if($keyword != null) {
+            $accounts = Account::where('email', 'LIKE', '%' . $keyword . '%')->where('role_id', 1)->get();
+        } else {
+            $accounts = Account::all();
+        }
         if($accounts -> isEmpty())
-            return response()->json('No results found!');
+            return response()->json([]);
         foreach($accounts as $account){
             $image = null;
-            if($account -> image_id != null){
-                $image = $account -> image -> image_url;
+            if ($account->image_id !== null) {
+                $storagePath = public_path('images/account/');
+                $filename = $account->image->image_url;
+                $data = file_get_contents($storagePath. $filename);
+                $base64Image = base64_encode($data);
+                $image = [
+                    'imageId' => $account->image->image_id,
+                    'imageUrl' => $base64Image,
+                ];
             }
             $accountData[] = [
+                'accountId' => $account -> id,
                 'fullName' => $account -> full_name,
                 'email' => $account -> email,
                 'phoneNumber' => $account -> phone_number,
@@ -267,38 +276,79 @@ class BEOrderController extends Controller
 
     }
 
-    public function productByIdOrName($keyword){
-        $products = Product::where('product_id', 'LIKE', "%{$keyword}%")
-                            -> orWhere('product_name', 'LIKE', "%{$keyword}%")
-                            -> where('is_hide', true)
-                            -> get();
+    public function productByIdOrName($keyword = null){
+        if($keyword != null) {
+            $products = Product::where('product_id', 'LIKE', "%{$keyword}%")
+            -> orWhere('product_name', 'LIKE', "%{$keyword}%")
+            -> where('is_hide', true)
+            -> get();
+        } else {
+            $products = Product::all();
+        }
         if($products -> isEmpty())
-            return response()->json('No results found!');
+            return response()->json([]);
         foreach($products as $product){
-            $image = null;
-            if($product -> image_id != null){
-                $image = $product -> image -> image_url;
+            $imageData = null;
+            if ($product->images !== null) {
+                foreach ($product->images as $image) {
+                    if ($image->image_id !== null) {
+                        $storagePath = public_path('images/product/');
+                        $filename = $image -> image_url;
+                        $data = file_get_contents($storagePath. $filename);
+                        $base64Image = base64_encode($data);
+                        $imageData[] = [
+                            'imageId' => $image->image_id,
+                            'imageUrl' => $base64Image,
+                        ];
+                    }
+                }
             }
             $productData[] = [
                 'productId' => $product -> product_id,
                 'productName' => $product -> product_name,
-                'image' => $image
+                'images' => $imageData
             ];
         }
         return response()->json($productData);
     }
 
     public function findAllPayment(){
-        $payment = PaymentMethod::all();
-        if($payment -> isEmpty())
-            return response()->json('No result found!');
-        return response()->json($payment);
+        $payments = PaymentMethod::all();
+        foreach($payments as $payment){
+            $paymentData[] = [
+                'paymentMethodId' => $payment -> payment_method_id,
+                'paymentMethodName' => $payment -> payment_method_name,
+            ];
+        }
+        return response()->json($paymentData);
     }
 
     public function findAllStatus(){
-        $status = OrderStatus::all();
-        if($status -> isEmpty())
-            return response()->json('No result found!');
-        return response()->json($status);
+        $statuses = OrderStatus::all();
+        foreach($statuses as $status){
+            $statusData[] = [
+                'orderStatusId' =>  $status -> order_status_id,
+                'statusName' => $status -> status_name,
+                'statusDescription' => $status -> status_description,
+            ];
+        }
+        return response()->json($statusData);
+    }
+
+    public function isEmailExists($email) {
+        $exists = Account::where('email', $email)->exists();
+        return ($exists);
+    }
+
+    public function findOrderStatusByOrderId($id) {
+        $order = Order::find($id);
+        $orderStatus = $order -> status -> first();
+
+        $orderStatusData = [
+            'orderStatusId' => $orderStatus -> order_status_id,
+            'statusName' => $orderStatus -> status_name
+        ];
+
+        return response()->json($orderStatusData);
     }
 }

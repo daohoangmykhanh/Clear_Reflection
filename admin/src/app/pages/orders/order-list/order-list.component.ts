@@ -1,4 +1,5 @@
-import { forkJoin } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { forkJoin, Subject } from 'rxjs';
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Router } from '@angular/router';
@@ -22,6 +23,7 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
   // Setting for List layout
   paymentMethods: PaymentMethod[];
   orderStatuses: OrderStatus[];
+  private unsubscribe = new Subject<void>();
 
   settings = {
     actions: {
@@ -50,17 +52,8 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
 
     forkJoin([paymentObservable, orderStatusObservable ]).subscribe(
       ([paymentData, orderStatusDate]) => {
-        if ("result" in paymentData) {
-          console.error(paymentData.message);
-        } else {
-          this.paymentMethods = paymentData;
-        }
-
-        if ("result" in orderStatusDate) {
-          console.error(orderStatusDate.message);
-        } else {
-          this.orderStatuses = orderStatusDate;
-        }
+        this.paymentMethods = paymentData;
+        this.orderStatuses = orderStatusDate;
 
         this.settings = {
           actions: {
@@ -75,10 +68,6 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
               title: 'ID',
               type: 'number',
               width: '3%'
-            },
-            orderTrackingNumber: {
-              title: 'Tracking Number',
-              type: 'string',
             },
             totalPrice: {
               title: 'Total Price',
@@ -136,24 +125,35 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
         }
       }
     )
-    
+
+    this.orderService.orderChange$
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(() => {
+        this.loadOrders();
+      });
+    this.loadOrders()
   }
 
   loadOrders() {
     this.orderService.findAll().subscribe(
       data => {
-        const mappedOrders: any[] = data.map(order => {
-          return {
-            orderId: order.orderId,
-            orderTrackingNumber: order.orderTrackingNumber,
-            totalPrice: order.totalPrice,
-            totalQuantity: order.totalQuantity,
-            paymentMethod: order.paymentMethod.paymentMethodName,
-            orderStatus: order.orderStatus.statusName,
-            createdAt: new DatePipe('en-US').transform(order.createdAt, 'dd/MM/yyyy').toString()
-          }
-        })
-        this.source.load(mappedOrders)
+        if("result" in data) {
+          console.log(data.message)
+        } else {
+          console.log(data);
+          
+          const mappedOrders: any[] = data.map(order => {
+            return {
+              orderId: order.orderId,
+              totalPrice: order.totalPrice,
+              totalQuantity: order.totalQuantity,
+              paymentMethod: order.paymentMethod.paymentMethodName,
+              orderStatus: order.orderStatus.statusName,
+              createdAt: new DatePipe('en-US').transform(order.createdAt, 'dd/MM/yyyy').toString()
+            }
+          })
+          this.source.load(mappedOrders)
+        }
       }
     )
   }

@@ -10,7 +10,7 @@ class OrderStatus extends Model
     use HasFactory;
     protected $table = 'order_status';
     protected $primaryKey = 'order_status_id';
-    protected $fillable = ['coupon_type_name','status_name','status_description'];
+    protected $fillable = ['status_name','status_description'];
 
     public static function store( $status_name,$status_description)
     {
@@ -19,7 +19,7 @@ class OrderStatus extends Model
             'status_description' => $status_description
         ]);
     }
-    
+
     public static function destroy($id){
         return DB::table('order_status')->where('order_status_id', '=', $id)->delete();
     }
@@ -31,5 +31,5 @@ class OrderStatus extends Model
         ]);
     }
 
-    
+
 }
