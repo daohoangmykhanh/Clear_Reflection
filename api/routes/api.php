@@ -166,6 +166,9 @@ Route::prefix('/admin')->group(function () {
     Route::post('/order/update/{id}', [BEOrderController::class, 'update']);
     Route::get('/findAllPayment', [BEOrderController::class, 'findAllPayment']);
     Route::get('/findAllStatus', [BEOrderController::class, 'findAllStatus']);
+    Route::get('/findSize/{id}', [BEOrderController::class, 'findSize']);
+    Route::get('/findColor/{id}/{size}', [BEOrderController::class, 'findColor']);
+    Route::get('/findPrice/{id}/{size}/{color}/', [BEOrderController::class, 'findPrice']);
     Route::get('/customerByEmail/{keyword}', [BEOrderController::class, 'customerByEmail']);
     Route::get('/productByIdOrName/{keyword}', [BEOrderController::class, 'productByIdOrName']);
 });
@@ -183,4 +186,4 @@ Route::post('/checkUsername', [FEAccountController::class, 'checkUsername']);
 
 // Home Controller
 Route::post('/checkout', [HomeController::class, 'checkout']);
-
+Route::get('/vnpay', [HomeController::class, 'vnpay']);

@@ -13,7 +13,6 @@ class Address extends Model
     public $timestamps = false;
     protected $fillable = [
         'address_id',
-        'house_number',
         'road_name',
         'wards_code',
         'district_code',
