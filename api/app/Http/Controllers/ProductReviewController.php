@@ -32,8 +32,8 @@ class ProductReviewController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'account_id' => 'required',
-            'product_id' => 'required',
+            'accountId' => 'required',
+            'productId' => 'required',
             'content' => 'required|string',
             'rating' => 'required|integer',
         ]);
@@ -75,8 +75,8 @@ class ProductReviewController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'account_id' => 'required',
-            'product_id' => 'required',
+            'accountId' => 'required',
+            'productId' => 'required',
             'content' => 'required|string',
             'rating' => 'required|integer',
         ]);
@@ -114,5 +114,5 @@ class ProductReviewController extends Controller
             ]);
         }
     }
-    
+
 }

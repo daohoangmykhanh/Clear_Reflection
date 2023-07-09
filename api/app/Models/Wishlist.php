@@ -17,7 +17,7 @@ class Wishlist extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class, 'account_id');
+        return $this->belongsTo(Account::class, 'account_id', 'id');
     }
 
     public function product()

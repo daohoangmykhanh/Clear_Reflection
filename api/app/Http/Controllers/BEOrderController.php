@@ -26,7 +26,6 @@ class BEOrderController extends Controller
 
             $orderData[] = [
                 'orderId' => $order->order_id,
-                'orderTrackingNumber' => $order->order_tracking_number,
                 'totalPrice' => $order->total_price,
                 'totalQuantity' => $order->total_quantity,
                 'orderStatus' => [
@@ -73,7 +72,6 @@ class BEOrderController extends Controller
         $shippingAddress = $road .", " . $ward .", " .  $district .", " .  $province;
         $orderData[] = [
             'orderId' => $order->order_id,
-            'orderTrackingNumber' => $order->order_tracking_number,
             'account' => [
                 'accountId' => $order-> account -> id,
                 'accountEmail' => $order -> account -> email

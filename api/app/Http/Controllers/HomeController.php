@@ -38,7 +38,6 @@ class HomeController extends Controller
         $order -> payment_method_id = $validatedData['paymentMethodId'];
         $order -> created_at = now();
         $order -> save();
-        $order -> order_tracking_number = "ML10".$order -> order_id."TY";
         $order -> save();
 
         $address = new Address();

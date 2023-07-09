@@ -191,7 +191,6 @@ class BEAccountController extends Controller
                 }
 
                 $orderData[] = [
-                    'orderTrackingNumber' => $order -> order_tracking_number,
                     'couponCode' => $coupon,
                     'totalPrice' => $order -> total_price,
                     'totalQuantity' => $order -> total_quantity,
@@ -203,7 +202,7 @@ class BEAccountController extends Controller
         }
 
         $accountData = [
-            'accountId' => $account->account_id,
+            'accountId' => $account->id,
             'password' => $account->password,
             'fullName' => $account->full_name,
             'email' => $account->email,
