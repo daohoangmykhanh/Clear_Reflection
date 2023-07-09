@@ -1,4 +1,4 @@
-<!-- <nb-card>
+<nb-card>
     <nb-card-header>
         <div class="d-flex justify-content-between align-items-center">
             <h6>
@@ -19,16 +19,15 @@
             <nb-card-body>
                 <div class="row">
                     <div class="col-lg-6">
-                        <h6>Track Number - {{order.orderTrackingNumber}}</h6>
-                        <p><span class="font-weight-bold">Id: </span>{{order.orderId}}</p>
-                        <p><span class="font-weight-bold">Customer Email: </span>{{order.accountEmail}}</p>
-                        <p><span class="font-weight-bold">Total Quantity: </span>{{order.totalQuantity}}</p>
-                        <p><span class="font-weight-bold">Total Price: </span>{{order.totalPrice}}</p>
-                        <p><span class="font-weight-bold">Coupon Applied: </span>{{ order?.coupon ? order.coupon.code : 'NONE' }}</p>
-                        <p><span class="font-weight-bold">Order Status: </span>{{order?.orderStatus ? order.orderStatus.statusName : 'NONE'}}</p>
-                        <p><span class="font-weight-bold">Payment method: </span>{{order.paymentMethod.paymentMethodName}} </p>
-                        <p><span class="font-weight-bold">Shipping Address: </span>{{order.shippingAddress}}</p>
-                        <p><span class="font-weight-bold">Created At: </span>{{order.createdAt | date: 'short'}}</p>
+                        <p><span class="font-weight-bold">Id: </span>{{data?.orderId}}</p>
+                        <p><span class="font-weight-bold">Customer Email: </span>{{data?.account.accountEmail}}</p>
+                        <p><span class="font-weight-bold">Total Quantity: </span>{{data?.totalQuantity}}</p>
+                        <p><span class="font-weight-bold">Total Price: </span>{{data?.totalPrice}}</p>
+                        <p><span class="font-weight-bold">Coupon Applied: </span>{{ data?.couponApplied }}</p>
+                        <p><span class="font-weight-bold">Order Status: </span>{{data?.orderStatus.statusName}}</p>
+                        <p><span class="font-weight-bold">Payment method: </span>{{data?.paymentMethod.paymentMethodName}} </p>
+                        <p><span class="font-weight-bold">Shipping Address: </span>{{data?.shippingAddress}}</p>
+                        <p><span class="font-weight-bold">Created At: </span>{{data?.createdAt | date: 'short'}}</p>
                     </div>
                 </div>
             </nb-card-body>
@@ -46,11 +45,12 @@
             </nb-card-header>
             <nb-card-body>
                 <nb-accordion multi>
-                    <nb-accordion-item *ngFor="let detail of order.orderDetails; let i = index">
+                    <nb-accordion-item *ngFor="let detail of data?.products; let i = index">
                         <nb-accordion-item-header class="d-flex justify-content-between align-items-center">
                             <p class="font-weight-bold">Product #{{i + 1}}</p>
                             <p>
-                                h:{{detail.product.height}}cm -
+                                id: {{detail.productId}}
+                                h:{{detail.height}}cm -
                                 w:{{detail.width}}cm -
                                 {{detail.price | currency: 'USD'}}*{{detail.quantity}}
                             </p>    
@@ -58,23 +58,13 @@
                         </nb-accordion-item-header>
                         <nb-accordion-item-body>
                             <div class="row">
-                                <ng-container *ngIf="detail.imageUrl !== null">
-                                    <div class="col-lg-4 col-md-12 d-flex justify-content-between align-items-center">
-                                        <img [src]="detail.imageUrl" alt="Order Detail Image" class="d-block w-100">
-                                    </div>
-                                </ng-container>
-                                <ng-container *ngIf="detail.imageUrl === null">
-                                    <div class="col-lg-4 col-md-12 border border-primary rounded d-flex align-items-center" #noImage>
-                                        <p class="mx-auto text-center">No Image</p>
-                                </div>
-                                </ng-container>
                                 <div class="col-lg-1"></div>
                                 <div class="col-lg-7 col-md-12">
                                     <p><span class="font-weight-bold">Height:</span> {{detail.height}}cm</p>
                                     <p><span class="font-weight-bold">Width:</span> {{detail.width}}cm</p>
                                     <p><span class="font-weight-bold">Price:</span> {{detail.price | currency: 'USD'}}</p>
                                     <p><span class="font-weight-bold">Quantity:</span> {{detail.quantity}}</p>
-                                    <p><span class="font-weight-bold">Color:</span> {{detail.color.colorName}}</p>
+                                    <p><span class="font-weight-bold">Color:</span> {{detail.color}}</p>
                                 </div>
                             </div>
                         </nb-accordion-item-body>
@@ -84,4 +74,4 @@
         </nb-card>
     </div>
 
-</div> -->
+</div>

@@ -24,6 +24,7 @@ import {
 import { PagesModule } from './pages/pages.module';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localeVi from '@angular/common/locales/vi';
+import { NbAuthModule, NbPasswordAuthStrategy } from '@nebular/auth';
 
 @NgModule({
   declarations: [AppComponent],
@@ -47,7 +48,21 @@ import localeVi from '@angular/common/locales/vi';
     NbToastrModule.forRoot(),
     PagesModule,
     NbWindowModule.forRoot(),
-    NbThemeModule.forRoot(),
+    NbAuthModule.forRoot({
+      strategies: [
+        NbPasswordAuthStrategy.setup({
+          name: 'email',
+          baseEndpoint: '',
+              login: {
+                endpoint: '/api/login',
+              },
+              logout: {
+                endpoint: '/api/logout',
+              },
+        }),
+      ],
+      forms: {},
+    }),
 
   ],
   bootstrap: [AppComponent],

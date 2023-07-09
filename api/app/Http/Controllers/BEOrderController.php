@@ -33,6 +33,10 @@ class BEOrderController extends Controller
                     'orderStatusId' => $order->status -> order_status_id,
                     'statusName' => $order->status ->status_name
                 ],
+                'account' => [
+                    'accountId' => $order-> account -> id,
+                    'accountEmail' => $order -> account -> email
+                ],
                 'paymentMethod' => [
                     'paymentMethodId' => $order->payment-> payment_method_id,
                     'paymentMethodName' => $order->payment->payment_method_name,
