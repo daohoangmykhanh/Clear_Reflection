@@ -174,7 +174,6 @@ class BEOrderController extends Controller
             'addressId' => 'nullable',
             'totalPrice' => 'required|numeric',
             'totalQuantity' => 'required|numeric',
-
             'products' => 'required|array',
             'products.*.productId' => 'required|integer',
             'products.*.size' => 'required',
@@ -191,7 +190,6 @@ class BEOrderController extends Controller
         $order -> order_status_id = $validatedData['orderStatusId'];
         $order -> payment_method_id = $validatedData['paymentMethodId'];
         $order -> created_at = now();
-        $order -> save();
 
         if(isset($validatedData['addressId'])){
             $address = Address::find($validatedData['addressId']);
@@ -231,6 +229,8 @@ class BEOrderController extends Controller
             $detail = new OrderDetail();
             $detail -> order_id = $order -> order_id;
             $detail -> product_id = $productData['productId'];
+            $product = Product::Find($productData['productId']);
+            $detail -> product_name = $product -> product_name;
             $detail -> quantity = $productData['quantity'];
             $detail->height = $height;
             $detail->width = $width;
