@@ -194,4 +194,4 @@ Route::post('/checkUsername', [FEAccountController::class, 'checkUsername']);
 
 // Home Controller
 Route::post('/checkout', [HomeController::class, 'checkout']);
-
+Route::get('/vnpay', [HomeController::class, 'vnpay']);
