@@ -16,7 +16,7 @@ export class OrderDetailComponent {
   @ViewChildren(NbAccordionItemComponent) accordions: QueryList<NbAccordionItemComponent>;
 
   orderId: string;
-  order: Order;
+  data: any;
   constructor(
     private activatedRoute: ActivatedRoute,
     private productService: ProductService,
@@ -28,7 +28,8 @@ export class OrderDetailComponent {
         this.orderId = params['id']
         this.orderService.findById(+params['id']).subscribe(
           data => {
-            console.log(data);
+            this.data = data[0]
+            console.log(this.data);
           }
         )
       }

@@ -62,12 +62,6 @@ export class ProductListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.productService.productChange$
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(() => {
-        this.loadProducts();
-      });
-
     // Initial load of the product list
     const shapeObservable = this.shapeService.findAll();
     const categoryObservable = this.categoryService.findAll();
@@ -196,6 +190,12 @@ export class ProductListComponent implements OnInit, AfterViewInit {
         console.error("Error:", error);
       }
     );
+
+    this.productService.productChange$
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(() => {
+        this.loadProducts();
+      });
     this.loadProducts();
   }
 

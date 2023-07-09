@@ -134,7 +134,7 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
   
   selectCustomer(account: Account) {
     this.chosenAccount = account;
-    this.accountService.findById(this.chosenAccount.accountId).subscribe(
+    this.accountService.findById(this.chosenAccount.id).subscribe(
       data => {
         this.accountDetail = data
         this.setUpAccountAddress()

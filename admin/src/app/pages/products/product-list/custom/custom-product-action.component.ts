@@ -95,9 +95,9 @@ export class CustomProductActionComponent implements ViewCell, OnInit {
         this.productService.delete(this.productId).subscribe(
             data => {
                 if (data.result) {
-                    this.hideWindowRef.close()
-                    this.productService.notifyProductChange();
                     this.utilsService.updateToastState(new ToastState('delete', 'product', 'success'))
+                    this.deleteWindowRef.close()
+                    this.productService.notifyProductChange();
                 } else {
                     this.utilsService.updateToastState(new ToastState('delete', 'product', 'danger'))
                 }

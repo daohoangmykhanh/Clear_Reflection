@@ -6,7 +6,7 @@ import { Order } from "../order/order.model";
 import { Image } from "../Image";
 
 export class Account {
-    accountId: number
+    id: number
     password?: string;   
     fullName: string;
     email: string;

@@ -34,7 +34,7 @@ class BEAccountController extends Controller
             $totalOrders = Order::where('account_id', $account -> id) -> get() -> count();
             $role = $account->role;
             $accountData[] = [
-                'accountId' => $account->id,
+                'id' => $account->id,
                 'password' => $account->password,
                 'fullName' => $account->full_name,
                 'email' => $account->email,
@@ -202,7 +202,7 @@ class BEAccountController extends Controller
         }
 
         $accountData = [
-            'accountId' => $account->id,
+            'id' => $account->id,
             'password' => $account->password,
             'fullName' => $account->full_name,
             'email' => $account->email,
@@ -210,12 +210,12 @@ class BEAccountController extends Controller
             'image' => $image,
             'createdAt' => $account->created_at,
             'updatedAt' => $account->updated_at,
-            'orders' => $orders
+            'orders' => $orderData
         ];
 
         return response()->json([
             'account' => $accountData,
-            'orders' => $orderData
+            // 'orders' => $orderData
         ]);
 
     }
