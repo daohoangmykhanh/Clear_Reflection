@@ -6,7 +6,6 @@ use App\Models\Account;
 use App\Models\Product;
 use App\Models\Address;
 use App\Models\Order;
-use App\Models\OrderAddress;
 use App\Models\OrderDetail;
 use App\Models\OrderStatus;
 use App\Models\PaymentMethod;
@@ -67,11 +66,10 @@ class BEOrderController extends Controller
             ];
 
         }
-        $address = OrderAddress::where('order_id',$id) -> first();
-        $road = $address -> address -> road_name;
-        $ward = $address -> address -> ward -> full_name_en;
-        $district = $address -> address -> district -> full_name_en;
-        $province = $address -> address -> province -> full_name_en;
+        $road = $order -> address -> road_name;
+        $ward = $order -> address -> ward -> full_name_en;
+        $district = $order -> address -> district -> full_name_en;
+        $province = $order -> address -> province -> full_name_en;
         $shippingAddress = $road .", " . $ward .", " .  $district .", " .  $province;
         $orderData[] = [
             'orderId' => $order->order_id,
@@ -214,19 +212,17 @@ class BEOrderController extends Controller
         $address -> province_code = $validatedData['provinceCode'];
         $address -> save();
 
-        $shipping = new OrderAddress();
         if(isset($validatedData['addressId'])){
-            $shipping -> address_id = $validatedData['addressId'];
+            $order -> address_id = $validatedData['addressId'];
         } else {
             $check = Address::all() -> count();
             if($check > 0){
-                $shipping -> address_id = $lastAddress ->address_id + 1;
+                $order -> address_id = $lastAddress ->address_id + 1;
             } else {
-                $shipping -> address_id = 1;
+                $order -> address_id = 1;
             }
         }
-        $shipping -> order_id = $order -> order_id;
-        $shipping -> save();
+        $order -> save();
 
         foreach($validatedData['products'] as $productData){
             $split = array_map('trim', explode('x', $productData['size']));

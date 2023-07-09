@@ -56,14 +56,12 @@ class HomeController extends Controller
         $address -> province_code = $validatedData['provinceCode'];
         $address -> save();
 
-        $shipping = new OrderAddress();
         if($check > 0){
-            $shipping -> address_id = $lastAddress ->address_id + 1;
+            $order -> address_id = $lastAddress ->address_id + 1;
         } else {
-            $shipping -> address_id = 1;
+            $order -> address_id = 1;
         }
-        $shipping -> order_id = $order -> order_id;
-        $shipping -> save();
+        $order -> save();
 
         $cart = Cart::where('account_id', $validatedData['accountId']) -> first();
         $cartDetails = CartDetail::where('cart_id', $cart->cart_id) -> get();
