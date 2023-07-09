@@ -189,8 +189,8 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-lg-6 font-weight-bold">Total Quantity: {{45}}</div>
-                    <div class="col-lg-6 font-weight-bold">Total Price: {{ 45 | currency:'USD'}}</div>
+                    <div class="col-lg-6 font-weight-bold">Total Quantity: {{ addOrderFormGroup.get('totalQuantity').value }}</div>
+                    <div class="col-lg-6 font-weight-bold">Total Price: {{ addOrderFormGroup.get('totalPrice').value | currency:'USD'}}</div>
                 </div>
             </nb-card-body>
         </nb-card>
@@ -209,7 +209,7 @@
                                 {{ productForm.get('size').value === null ? '' : '- s:' + productForm.get('size').value}}
                                 {{ productForm.get('price').value === null ? '' : ' - ' + (productForm.get('price').value | currency: 'USD')}}
                                 {{ productForm.get('quantity').value === null ? '' : '*' + productForm.get('quantity').value }}
-                                {{ productForm.get('color').value === null ? '' : 'c' + productForm.get('color').value }}
+                                {{ productForm.get('color').value === null ? '' : ' - ' + productForm.get('color').value }}
                             </p>
                             <ng-container *ngIf="i !== 0">
                                 <button nbButton [size]="'small'" [status]="'danger'" 
@@ -254,8 +254,9 @@
                                 <nb-select-label>
                                     Size: {{ productForm.get('size').value }}
                                 </nb-select-label>
-                                <nb-option value="1">1</nb-option>
-                                <nb-option value="2">2</nb-option>
+                                <nb-option *ngFor="let siz of productForm.get('sizes').value" [value]="siz">
+                                    {{siz}}
+                                </nb-option>
                             </nb-select>
                             <div class="alert alert-danger mt-1" 
                                 *ngIf="productForm.get('size').invalid && (productForm.get('size').dirty || productForm.get('size').touched)">
@@ -268,8 +269,9 @@
                                 <nb-select-label>
                                     Color: {{ productForm.get('color').value }}
                                 </nb-select-label>
-                                <nb-option value="1">1</nb-option>
-                                <nb-option value="2">2</nb-option>
+                                <nb-option *ngFor="let color of productForm.get('colors').value" [value]="color">
+                                    {{color}}
+                                </nb-option>
                             </nb-select>
                             <div class="alert alert-danger mt-1" 
                                 *ngIf="productForm.get('color').invalid && (productForm.get('color').dirty || productForm.get('color').touched)">
@@ -279,7 +281,7 @@
                             </div> 
 
                             <input  type="number" placeholder="Price" nbInput fullWidth
-                                class="inputs-group" formControlName="price"/>
+                                class="inputs-group" formControlName="price" disabled/>
                             <input  type="number" placeholder="Quantity" nbInput fullWidth 
                                 class="inputs-group" formControlName="quantity"/>
                             <div class="alert alert-danger mt-1" 

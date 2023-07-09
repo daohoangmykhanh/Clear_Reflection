@@ -24,6 +24,7 @@ import { Order } from '../../../@core/models/order/order.model';
 import { ModelResponse } from '../../../@core/models/response/ModelResponse';
 import { AddressService } from '../../../@core/services/account/address.service';
 import { ProductCouponService } from '../../../@core/services/product/product-coupon.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ngx-order-add',
@@ -63,7 +64,8 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     private productService: ProductService,
     public utilsService: UtilsService,
     private addressService: AddressService,
-    private couponService: ProductCouponService
+    private couponService: ProductCouponService,
+    private router: Router
   ) {
       this.orderStatusService.findAll().subscribe(data => this.orderStatuses = data)
       this.paymentMethodService.findAll().subscribe(data => this.paymentMethods = data)
@@ -74,8 +76,8 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     this.addOrderFormGroup = this.formBuilder.group({
       email: ['', CustomValidator.notBlank, isEmailNotExisting(this.accountService)],
       coupon: [''],
-      totalPrice: [, Validators.required],
-      totalQuantity: [, Validators.required],
+      totalPrice: [0, Validators.required],
+      totalQuantity: [0, Validators.required],
       orderStatus: ['', Validators.required],
       paymentMethod: ['', Validators.required],
       addressOption: ['', Validators.required],
@@ -155,9 +157,7 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     }
   }
 
-  selectProduct(product: Product, productFormIndex: number) {
-    this.products.controls[productFormIndex].get('id').setValue(product.productId)
-  }
+
 
   onSubmit() {
     if(this.addOrderFormGroup.invalid) {
@@ -169,6 +169,22 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     let order: any = this.mapFormValue()
     console.log(order)
 
+    this.orderService.insert(order).subscribe(
+      data => {
+        if(data) {
+          this.utilsService.updateToastState(new ToastState('add', 'order', 'success'))
+          this.router.navigate(['/admin/orders/list'])
+        }
+      },  
+      error => {
+        this.utilsService.updateToastState(new ToastState('add', 'order', 'danger'))
+        console.log(error);
+        
+      }
+    
+    )
+
+
   }
 
   mapFormValue(): any {
@@ -179,11 +195,25 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
         .subscribe(data => order.couponId = data)
     }
     order.roadName = this.addOrderFormGroup.get('address').value
-    order.ward = this.addOrderFormGroup.get('ward').value['code']
-    order.district = this.addOrderFormGroup.get('district').value['code']
-    order.province = this.addOrderFormGroup.get('province').value['code']
+    order.wardCode = this.addOrderFormGroup.get('ward').value['code']
+    order.districtCode = this.addOrderFormGroup.get('district').value['code']
+    order.provinceCode = this.addOrderFormGroup.get('province').value['code']
     order.orderStatusId = this.addOrderFormGroup.get('orderStatus').value['orderStatusId']
     order.paymentMethodId = this.addOrderFormGroup.get('paymentMethod').value['paymentMethodId']
+    order.totalQuantity = this.addOrderFormGroup.get('totalQuantity').value
+    order.totalPrice = this.addOrderFormGroup.get('totalPrice').value;
+    order.products = [];
+
+    for(let i = 0; i < this.products.length; i++) {
+      const productForm: FormGroup = this.products.at(i) as FormGroup;
+      let product: any = {}
+      product.productId = productForm.get('id').value
+      product.size = productForm.get('size').value
+      product.color = productForm.get('color').value
+      product.quantity = productForm.get('quantity').value
+      product.price = parseFloat(productForm.get('price').value)
+      order.products.push(product)
+    }
     return order;
   }
 
@@ -256,12 +286,67 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     const productForm = this.formBuilder.group({
       id: [,  CustomValidator.notBlank, isProductidNotExisting(this.productService)],
       size: [, [Validators.required]] ,
-      price: [{value: null, disabled: true}],
-      quantity: [, [Validators.required, Validators.min(1), Validators.max(100000)]],
+      sizes: [],
       color: [, [Validators.required]],
+      colors: [],
+      price: [],
+      quantity: [, [Validators.required, Validators.min(1), Validators.max(100000)]],
     })
     this.products.push(productForm)
     this.productCompleter(this.products.controls.length - 1)
   }
+
   removeProduct(productFormIndex: number): void { this.products.removeAt(productFormIndex) }
+
+  selectProduct(product: Product, productFormIndex: number) {
+    let productForm = this.products.controls[productFormIndex];
+    productForm.get('id').setValue(product.productId)
+
+    // load sizes
+    this.orderService.findSizesFromProductId(product.productId).subscribe(
+      data => {productForm.get('sizes').setValue(data)}
+    )
+
+    // load color from size 
+    const sizeControl = productForm.get('size')
+    sizeControl.valueChanges.subscribe(
+      () => {
+        this.orderService.findColorFromSize(product.productId, sizeControl.value).subscribe(
+          data => {productForm.get('colors').setValue(data)}
+        )
+
+      }
+    )
+
+    // load price
+    const colorControl = productForm.get('color')
+    colorControl.valueChanges.subscribe(
+      () => {
+        this.orderService.findPrice(product.productId, sizeControl.value, colorControl.value).subscribe(
+          data => {productForm.get('price').setValue(data)}
+        )
+      }
+    )
+
+    const quantityControl = productForm.get('quantity')
+    quantityControl.valueChanges.subscribe(
+      () => {
+        this.countTotalPriceAndTotalQuantity()
+      }
+    )
+  }
+
+  countTotalPriceAndTotalQuantity() {
+    let totalQuantity: number = 0;
+    let totalPrice: number = 0;
+    
+    for(let i = 0; i < this.products.length; i++) {
+      const productForm: FormGroup = this.products.at(i) as FormGroup;
+      totalQuantity += parseInt(productForm.get('quantity').value, 10);
+      totalPrice += parseFloat(productForm.get('price').value) * totalQuantity;
+    }
+    this.addOrderFormGroup.get('totalQuantity').setValue(totalQuantity);
+    this.addOrderFormGroup.get('totalPrice').setValue(totalPrice);
+    
+  }
 }

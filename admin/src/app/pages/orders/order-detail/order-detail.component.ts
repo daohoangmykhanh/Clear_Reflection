@@ -26,7 +26,11 @@ export class OrderDetailComponent {
     this.activatedRoute.params.subscribe(
       params => {
         this.orderId = params['id']
-        this.orderService.findById(+params['id']).subscribe(data => this.order = data)
+        this.orderService.findById(+params['id']).subscribe(
+          data => {
+            console.log(data);
+          }
+        )
       }
     )
   }

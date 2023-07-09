@@ -95,7 +95,6 @@ class WardController extends Controller
             ]);
         }
     }
-
     public function getAllWardsByDistrict($districtCode)
     {
         $wards = Ward::where('district_Code', $districtCode)->get();

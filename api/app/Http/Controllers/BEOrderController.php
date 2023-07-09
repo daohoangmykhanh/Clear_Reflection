@@ -10,6 +10,7 @@ use App\Models\OrderAddress;
 use App\Models\OrderDetail;
 use App\Models\OrderStatus;
 use App\Models\PaymentMethod;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 
 class BEOrderController extends Controller
@@ -25,19 +26,19 @@ class BEOrderController extends Controller
         foreach($orders as $order){
 
             $orderData[] = [
-                'order_id' => $order->order_id,
-                'order_tracking_number' => $order->order_tracking_number,
-                'total_price' => $order->total_price,
-                'total_quantity' => $order->total_quantity,
-                'order_status' => [
-                    'order_status_id' => $order->status -> order_status_id,
-                    'status_name' => $order->status ->status_name
+                'orderId' => $order->order_id,
+                'orderTrackingNumber' => $order->order_tracking_number,
+                'totalPrice' => $order->total_price,
+                'totalQuantity' => $order->total_quantity,
+                'orderStatus' => [
+                    'orderStatusId' => $order->status -> order_status_id,
+                    'statusName' => $order->status ->status_name
                 ],
-                'payment_method' => [
-                    'payment_method_id' => $order->payment-> payment_method_id,
-                    'payment_method_name' => $order->payment->payment_method_name,
+                'paymentMethod' => [
+                    'paymentMethodId' => $order->payment-> payment_method_id,
+                    'paymentMethodName' => $order->payment->payment_method_name,
                 ],
-                'created_at' => $order->created_at,
+                'createdAt' => $order->created_at,
             ];
         }
         return response()->json($orderData);
@@ -68,16 +69,15 @@ class BEOrderController extends Controller
         }
         $address = OrderAddress::where('order_id',$id) -> first();
         $road = $address -> address -> road_name;
-        $house = $address -> address -> house_name;
         $ward = $address -> address -> ward -> full_name_en;
         $district = $address -> address -> district -> full_name_en;
         $province = $address -> address -> province -> full_name_en;
-        $shippingAddress = $house.", " . $road .", " . $ward .", " .  $district .", " .  $province;
+        $shippingAddress = $road .", " . $ward .", " .  $district .", " .  $province;
         $orderData[] = [
             'orderId' => $order->order_id,
             'orderTrackingNumber' => $order->order_tracking_number,
             'account' => [
-                'accountId' => $order-> account -> account_id,
+                'accountId' => $order-> account -> id,
                 'accountEmail' => $order -> account -> email
             ],
             'products' => $productData,
@@ -124,6 +124,45 @@ class BEOrderController extends Controller
         ]);
     }
 
+    public function findSize($id){
+        $products = ProductVariant::where('product_id', $id) -> get();
+        foreach ($products as $product){
+            $size = $product -> height . 'cmx' . $product -> width . 'cm';
+            $sizeData[] = $size;
+        }
+        return response() -> json($sizeData);
+    }
+
+    public function findColor($id, $size){
+        $split = array_map('trim', explode('x', $size));
+        $height = (int)$split[0];
+        $width = (int)$split[1];
+        $products = ProductVariant::where('product_id', $id)
+                                -> where('height', $height)
+                                -> where('width', $width)
+                                -> get();
+        foreach($products as $product){
+            $colorData[] = $product -> color -> color_name;
+        }
+        return response() -> json($colorData);
+    }
+
+    public function findPrice($id, $size, $color){
+        $split = array_map('trim', explode('x', $size));
+        $height = (int)$split[0];
+        $width = (int)$split[1];
+        $products = ProductVariant::where('product_id', $id)
+                                -> where('height', $height)
+                                -> where('width', $width)
+                                -> get();
+        $price = 0;
+        foreach($products as $product){
+            if($product -> color -> color_name == $color){
+                $price = $product -> price;
+            }
+        }
+        return response() -> json($price);
+    }
     public function create(Request $request){
         $validatedData = $request->validate([
             'customerEmail' => 'required|email',
@@ -134,21 +173,20 @@ class BEOrderController extends Controller
             'wardCode' => 'required',
             'districtCode'=> 'required',
             'provinceCode' => 'required',
-
+            'addressId' => 'nullable',
             'totalPrice' => 'required|numeric',
             'totalQuantity' => 'required|numeric',
 
             'products' => 'required|array',
             'products.*.productId' => 'required|integer',
-            'products.*.height' => 'required|numeric',
-            'products.*.width' => 'required|numeric',
-            'products.*.color' => 'nullable|integer',
+            'products.*.size' => 'required',
+            'products.*.color' => 'required',
             'products.*.quantity' => 'required|integer',
             'products.*.price' => 'required|numeric'
         ]);
         $order = new Order();
         $account = Account::where('email', $validatedData['customerEmail']) -> first();
-        $order -> account_id = $account -> account_id;
+        $order -> account_id = $account -> id;
         $order -> coupon_id = $validatedData['couponId'] ?? null;
         $order -> total_price = $validatedData['totalPrice'];
         $order -> total_quantity = $validatedData['totalQuantity'];
@@ -157,10 +195,19 @@ class BEOrderController extends Controller
         $order -> created_at = now();
         $order -> save();
 
-        $lastAddress = Address::latest()->first();
-        $address = new Address();
-        $address -> address_id = $lastAddress->address_id + 1;
-        $address -> house_number = $validatedData['houseNumber'];
+        if(isset($validatedData['addressId'])){
+            $address = Address::find($validatedData['addressId']);
+        } else {
+            $address = new Address();
+            $check = Address::all() -> count();
+            $lastAddress = null;
+            if($check > 0){
+                $lastAddress = Address::orderBy('address_id', 'desc')->first();
+                $address -> address_id = $lastAddress ->address_id + 1;
+            } else {
+                $address -> address_id = 1;
+            }
+        }
         $address -> road_name = $validatedData['roadName'];
         $address -> wards_code = $validatedData['wardCode'];
         $address -> district_code = $validatedData['districtCode'];
@@ -168,18 +215,30 @@ class BEOrderController extends Controller
         $address -> save();
 
         $shipping = new OrderAddress();
-        $shipping -> address_id = $address -> address_id;
-        $shipping -> account_id = $account -> account_id;
+        if(isset($validatedData['addressId'])){
+            $shipping -> address_id = $validatedData['addressId'];
+        } else {
+            $check = Address::all() -> count();
+            if($check > 0){
+                $shipping -> address_id = $lastAddress ->address_id + 1;
+            } else {
+                $shipping -> address_id = 1;
+            }
+        }
+        $shipping -> order_id = $order -> order_id;
         $shipping -> save();
 
         foreach($validatedData['products'] as $productData){
+            $split = array_map('trim', explode('x', $productData['size']));
+            $height = (int)$split[0];
+            $width = (int)$split[1];
             $detail = new OrderDetail();
             $detail -> order_id = $order -> order_id;
             $detail -> product_id = $productData['productId'];
             $detail -> quantity = $productData['quantity'];
-            $detail->height = $productData['height'] ?? null;
-            $detail->width = $productData['width'] ?? null;
-            $detail->color = $productData['color'] ?? null;
+            $detail->height = $height;
+            $detail->width = $width;
+            $detail->color = $productData['color'];
             $detail -> price = $productData['price'];
             $detail -> save();
         }
@@ -210,7 +269,7 @@ class BEOrderController extends Controller
                 ];
             }
             $accountData[] = [
-                'accountId' => $account -> account_id,
+                'accountId' => $account -> id,
                 'fullName' => $account -> full_name,
                 'email' => $account -> email,
                 'phoneNumber' => $account -> phone_number,
@@ -283,5 +342,17 @@ class BEOrderController extends Controller
     public function isEmailExists($email) {
         $exists = Account::where('email', $email)->exists();
         return ($exists);
+    }
+
+    public function findOrderStatusByOrderId($id) {
+        $order = Order::find($id);
+        $orderStatus = $order -> status -> first();
+
+        $orderStatusData = [
+            'orderStatusId' => $orderStatus -> order_status_id,
+            'statusName' => $orderStatus -> status_name
+        ];
+
+        return response()->json($orderStatusData);
     }
 }

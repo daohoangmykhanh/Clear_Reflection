@@ -1,4 +1,5 @@
-import { forkJoin } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { forkJoin, Subject } from 'rxjs';
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Router } from '@angular/router';
@@ -22,6 +23,7 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
   // Setting for List layout
   paymentMethods: PaymentMethod[];
   orderStatuses: OrderStatus[];
+  private unsubscribe = new Subject<void>();
 
   settings = {
     actions: {
@@ -66,10 +68,6 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
               title: 'ID',
               type: 'number',
               width: '3%'
-            },
-            orderTrackingNumber: {
-              title: 'Tracking Number',
-              type: 'string',
             },
             totalPrice: {
               title: 'Total Price',
@@ -128,8 +126,12 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
       }
     )
 
-    this.loadOrders();
-    
+    this.orderService.orderChange$
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(() => {
+        this.loadOrders();
+      });
+    this.loadOrders()
   }
 
   loadOrders() {
@@ -138,10 +140,11 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
         if("result" in data) {
           console.log(data.message)
         } else {
+          console.log(data);
+          
           const mappedOrders: any[] = data.map(order => {
             return {
               orderId: order.orderId,
-              orderTrackingNumber: order.orderTrackingNumber,
               totalPrice: order.totalPrice,
               totalQuantity: order.totalQuantity,
               paymentMethod: order.paymentMethod.paymentMethodName,

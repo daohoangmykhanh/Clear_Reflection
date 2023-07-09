@@ -164,6 +164,7 @@ Route::prefix('/admin')->group(function () {
     Route::get('/order/{id}', [BEOrderController::class, 'detail']);
     Route::post('/order/create', [BEOrderController::class, 'create']);
     Route::post('/order/update/{id}', [BEOrderController::class, 'update']);
+    Route::get('/order/{id}/order-status', [BEOrderController::class, 'findOrderStatusByOrderId']);
 
     Route::get('/findAllPayment', [BEOrderController::class, 'findAllPayment']);
     Route::get('/findAllStatus', [BEOrderController::class, 'findAllStatus']);
@@ -171,6 +172,9 @@ Route::prefix('/admin')->group(function () {
     Route::get('/productByIdOrName/{keyword?}', [BEOrderController::class, 'productByIdOrName']);
     Route::get('/isEmailExists/{email}', [BEOrderController::class, 'isEmailExists']);
 
+    Route::get('/findSize/{id}', [BEOrderController::class, 'findSize']);
+    Route::get('/findColor/{id}/{size}', [BEOrderController::class, 'findColor']);
+    Route::get('/findPrice/{id}/{size}/{color}/', [BEOrderController::class, 'findPrice']);
     Route::get('/isCouponExists/{couponCode}', [BECouponController::class, 'isCouponExists']);
     Route::get('/findIdByCode/{couponCode}', [BECouponController::class, 'findIdByCode']);
 

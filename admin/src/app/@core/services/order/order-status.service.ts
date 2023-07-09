@@ -15,31 +15,6 @@ export class OrderStatusService {
     ) { }
 
 
-    // findAll(): Observable<OrderStatus[]> {
-    //     return of([
-    //         {
-    //             orderStatusId: 1,
-    //             statusName: 'Handling',
-    //             statusDescription: 'The order are handling'
-    //         },
-    //         {
-    //             orderStatusId: 2,
-    //             statusName: 'Delivering',
-    //             statusDescription: 'The products of order are Delivering'
-    //         },
-    //         {
-    //             orderStatusId: 3,
-    //             statusName: 'Paid',
-    //             statusDescription: 'The order are paid'
-    //         },
-    //         {
-    //             orderStatusId: 4,
-    //             statusName: 'Completed',
-    //             statusDescription: 'The order are paid and Delivered'
-    //         }
-    //     ])
-    // }
-
     findById(id: number): Observable<OrderStatus> {
         let os: OrderStatus
         this.findAll().subscribe(
@@ -49,7 +24,6 @@ export class OrderStatusService {
         )
         return of(os)
     }
-
 
     findAll(): Observable<OrderStatus[]> {
         const url: string = `${this.baseUrlService.baseURL}/findAllStatus`

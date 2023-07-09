@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { Order } from '../../models/order/order.model';
 import { BaseURLService } from '../base-url.service';
 import { HttpClient } from '@angular/common/http';
@@ -12,6 +12,17 @@ import { ModelResponse } from '../../models/response/ModelResponse';
   providedIn: 'root'
 })
 export class OrderService {
+
+  private orderChangeSubject = new Subject<void>();
+
+  get orderChange$(): Observable<void> {
+    return this.orderChangeSubject.asObservable();
+  }
+
+  notifyOrderChange(): void {
+    this.orderChangeSubject.next();
+  }
+
   constructor(
     private baseUrlService: BaseURLService,
     private httpClient: HttpClient,
@@ -19,42 +30,12 @@ export class OrderService {
     private paymentMethodService: PaymentMethodService
   ) { }
 
+
   findById(id: number): Observable<Order> {
-    if(id >= 1 && id <= 10) {
-      return of(
-        {
-          orderId: 1,
-          orderTrackingNumber: 'abcxyz',
-          accountEmail: 'account1@gmail.com',
-          totalPrice: 111,
-          totalQuantity: 111,
-          orderStatus: {
-            orderStatusId: 1,
-            statusName: 'Handling',
-            statusDescription: 'The order are handling'
-          },
-          shippingAddress: {
-            id: 1,
-            houseNumber: '7A/95C',
-            roadName: 'Ao Doi street',
-          },
-          paymentMethod: {
-            paymentMethodId: 1,
-            paymentMethodName: 'Paypal',
-          },
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          orderDetails: [
-            {orderDetailId: 1, productId: 1, height: 10, width: 10, color: {productColorId: 1, colorName: 'white'}, quantity: 10, price: 10, imageUrl: 'assets/images/camera1.jpg' },
-            {orderDetailId: 2, productId: 2, height: 20, width: 20, color: {productColorId: 2, colorName: 'white'}, quantity: 20, price: 20, imageUrl: 'assets/images/camera2.jpg' },
-            {orderDetailId: 3, productId: 3, height: 30, width: 30, color: {productColorId: 3, colorName: 'white'}, quantity: 30, price: 30, imageUrl: 'assets/images/camera3.jpg' },
-            {orderDetailId: 4, productId: 4, height: 40, width: 40, color: {productColorId: 4, colorName: 'white'}, quantity: 40, price: 40, imageUrl: 'assets/images/camera4.jpg' },
-          ]
-        },
-      )
-    }
-    return of(null)
+    const url: string = `${this.baseUrlService.baseURL}/order/${id}`
+    return this.httpClient.get<Order>(url)
   }
+  
 
   findAll(): Observable<Order[] | ModelResponse> {
     const url: string = `${this.baseUrlService.baseURL}/order`
@@ -66,13 +47,33 @@ export class OrderService {
     return this.httpClient.post<Order>(url, order);
   }
 
-  update(order: Order): Observable<boolean> {
-    const url: string = `${this.baseUrlService.baseURL}/order/update`
-    return this.httpClient.post<boolean>(url, order);
+  updateOrderStatus(orderId: number, orderStatus: OrderStatus): Observable<ModelResponse> {
+    const url: string = `${this.baseUrlService.baseURL}/order/update/${orderId}`
+    return this.httpClient.post<ModelResponse>(url, orderStatus);
   }
 
-  delete(orderId: number): Observable<boolean> {    
+  delete(orderId: number): Observable<ModelResponse> {    
     const url: string = `${this.baseUrlService.baseURL}/order/delete/${orderId}`
-    return this.httpClient.delete<boolean>(url); 
+    return this.httpClient.delete<ModelResponse>(url); 
+  }
+
+  findSizesFromProductId(id: number): Observable<string[]> {
+    const url: string = `${this.baseUrlService.baseURL}/findSize/${id}`
+    return this.httpClient.get<string[]>(url); 
+  }
+
+  findColorFromSize(id: number, size: string): Observable<string[]> {
+    const url: string = `${this.baseUrlService.baseURL}/findColor/${id}/${size}`
+    return this.httpClient.get<string[]>(url); 
+  }
+
+  findPrice(id: number, size: string, color: string): Observable<string> {
+    const url: string = `${this.baseUrlService.baseURL}/findPrice/${id}/${size}/${color}/`
+    return this.httpClient.get<string>(url); 
+  }
+
+  findOrderStatusById(orderId: number): Observable<OrderStatus> {
+    const url: string = `${this.baseUrlService.baseURL}/order/${orderId}/order-status`
+    return this.httpClient.get<OrderStatus>(url); 
   }
 }
