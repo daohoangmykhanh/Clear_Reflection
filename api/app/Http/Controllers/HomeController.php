@@ -23,6 +23,7 @@ class HomeController extends Controller
             'totalQuantity' => 'required|numeric',
             'orderStatusId' => 'required|integer',
             'paymentMethodId' => 'required|integer',
+            'addressId' => 'nullable',
             'roadName' => 'required',
             'wardCode' => 'required',
             'districtCode'=> 'required',
@@ -37,29 +38,36 @@ class HomeController extends Controller
         $order -> order_status_id = $validatedData['orderStatusId'];
         $order -> payment_method_id = $validatedData['paymentMethodId'];
         $order -> created_at = now();
-        $order -> save();
-        $order -> order_tracking_number = "ML10".$order -> order_id."TY";
-        $order -> save();
 
-        $address = new Address();
-        $check = Address::all() -> count();
-        $lastAddress = null;
-        if($check > 0){
-            $lastAddress = Address::orderBy('address_id', 'desc')->first();
-            $address -> address_id = $lastAddress ->address_id + 1;
+        if(isset($validatedData['addressId'])){
+            $address = Address::find($validatedData['addressId']);
         } else {
-            $address -> address_id = 1;
+            $address = new Address();
+            $check = Address::all() -> count();
+            $lastAddress = null;
+            if($check > 0){
+                $lastAddress = Address::orderBy('address_id', 'desc')->first();
+                $address -> address_id = $lastAddress ->address_id + 1;
+            } else {
+                $address -> address_id = 1;
+            }
         }
+
         $address -> road_name = $validatedData['roadName'];
         $address -> wards_code = $validatedData['wardCode'];
         $address -> district_code = $validatedData['districtCode'];
         $address -> province_code = $validatedData['provinceCode'];
         $address -> save();
 
-        if($check > 0){
-            $order -> address_id = $lastAddress ->address_id + 1;
+        if(isset($validatedData['addressId'])){
+            $order -> address_id = $validatedData['addressId'];
         } else {
-            $order -> address_id = 1;
+            $check = Address::all() -> count();
+            if($check > 0){
+                $order -> address_id = $lastAddress ->address_id + 1;
+            } else {
+                $order -> address_id = 1;
+            }
         }
         $order -> save();
 

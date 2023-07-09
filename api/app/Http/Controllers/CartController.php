@@ -41,7 +41,7 @@ class CartController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'account_id' => 'required|integer',
+            'accountId' => 'required|integer',
         ]);
 
         $cart = Cart::create($validatedData);
@@ -58,7 +58,7 @@ class CartController extends Controller
     public function update(Request $request, $cartId)
     {
         $validatedData = $request->validate([
-            'account_id' => 'required|integer',
+            'accountId' => 'required|integer',
         ]);
 
         $cart = Cart::findOrFail($cartId);

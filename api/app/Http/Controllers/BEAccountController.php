@@ -170,6 +170,7 @@ class BEAccountController extends Controller
                 'imageUrl' => $base64Image,
             ];
         }
+        $orderData = null;
         $orders = Order::where('account_id',$id) -> get();
         $orderData = null;
         if($orders -> isNotEmpty()) {
@@ -190,9 +191,7 @@ class BEAccountController extends Controller
                         'code' => $order -> coupon -> code
                     ];
                 }
-
                 $orderData[] = [
-                    'orderTrackingNumber' => $order -> order_tracking_number,
                     'couponCode' => $coupon,
                     'totalPrice' => $order -> total_price,
                     'totalQuantity' => $order -> total_quantity,
