@@ -170,6 +170,7 @@ class BEAccountController extends Controller
                 'imageUrl' => $base64Image,
             ];
         }
+        $orderData = null;
         $orders = Order::where('account_id',$id) -> get();
         if($orders -> isNotEmpty()) {
             foreach($orders as $order){
@@ -189,7 +190,6 @@ class BEAccountController extends Controller
                         'code' => $order -> coupon -> code
                     ];
                 }
-
                 $orderData[] = [
                     'couponCode' => $coupon,
                     'totalPrice' => $order -> total_price,
