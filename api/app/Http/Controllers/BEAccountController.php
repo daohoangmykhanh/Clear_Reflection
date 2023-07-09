@@ -156,7 +156,7 @@ class BEAccountController extends Controller
         if($orders -> isNotEmpty()) {
             foreach($orders as $order){
                 $shippingAddress = null;
-                $address = OrderAddress::where('order_id', $order->order_id) -> first();
+                $address = Order::find($order->order_id);
                 if($address){
                     $road = $address -> address -> road_name;
                     $ward = $address -> address -> ward -> full_name_en;
@@ -196,7 +196,10 @@ class BEAccountController extends Controller
             'orders' => $orders
         ];
 
-        return response()->json($accountData);
+        return response()->json([
+            'account' => $accountData,
+            'orders' => $orderData
+        ]);
 
     }
 }
