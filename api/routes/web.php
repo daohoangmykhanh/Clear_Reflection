@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LoginController;
 use App\Models\Address;
 use App\Models\Role;
 use App\Models\Ward;
@@ -18,19 +19,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    $addresses = Address::all();
-    // foreach($addresses as $address){
-    //     $addressData[] = [
-    //         'address_id' => $address->address_id,
-    //         'house_number' => $address->house_number,
-    //         'road_name' => $address->road_name,
-    //         'wards_code' => $address->wards_code,
-    //         'district_code' => $address->district_code,
-    //         'province_code' => $address->province_code,
-    //         "ward" => $address ->ward,
-    //     ];
-    // }
-    $ward = Ward::where('code', 6)->firstOrFail();
-    return $ward;
+Route::post('/login', [LoginController::class, 'index']);
+
+
+Route::post('/register', [LoginController::class, 'register']);
+
+
+Route::middleware('checkApiAccess')->group(function () {
 });
+Route::post('/logout', [LoginController::class, 'logout']);
+// Các route API yêu cầu xác thực và kiểm tra quyền truy cập
+Route::post('/test', [LoginController::class, 'userProfile']);
