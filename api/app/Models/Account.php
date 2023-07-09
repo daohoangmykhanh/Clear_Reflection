@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Tymon\JWTAuth\Facades\JWTFactory;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Account extends Authenticatable implements JWTSubject
+class Account extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
     use Notifiable;
     use HasApiTokens;
