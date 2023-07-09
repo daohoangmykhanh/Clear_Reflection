@@ -17,6 +17,7 @@ import {
   NbDialogModule,
   NbMenuModule,
   NbSidebarModule,
+  NbThemeModule,
   NbToastrModule,
   NbWindowModule,
 } from '@nebular/theme';
@@ -46,6 +47,8 @@ import localeVi from '@angular/common/locales/vi';
     NbToastrModule.forRoot(),
     PagesModule,
     NbWindowModule.forRoot(),
+    NbThemeModule.forRoot(),
+
   ],
   bootstrap: [AppComponent],
 })

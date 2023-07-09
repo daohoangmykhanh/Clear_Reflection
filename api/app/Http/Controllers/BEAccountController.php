@@ -193,12 +193,12 @@ class BEAccountController extends Controller
             'image' => $image,
             'createdAt' => $account->created_at,
             'updatedAt' => $account->updated_at,
-            'orders' => $orders
+            'orders' => $orderData
         ];
 
         return response()->json([
             'account' => $accountData,
-            'orders' => $orderData
+            // 'orders' => $orderData
         ]);
 
     }

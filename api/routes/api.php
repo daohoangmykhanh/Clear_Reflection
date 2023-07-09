@@ -185,7 +185,7 @@ Route::prefix('/admin')->group(function () {
 // Auth Controller
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
-Route::get('/logout', [AuthController::class, 'logout']);
+Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/test', [AuthController::class, 'test']);
 // FEAccount Controller
 Route::post('/register', [FEAccountController::class, 'register']);
