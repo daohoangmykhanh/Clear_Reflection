@@ -31,10 +31,10 @@ class BEAccountController extends Controller
                 ];
             }
             $role = $account->role;
-            $totalOrders = Order::where('account_id', $account -> account_id) -> get() -> count();
+            $totalOrders = Order::where('account_id', $account -> id) -> get() -> count();
             $role = $account->role;
             $accountData[] = [
-                'accountId' => $account->account_id,
+                'id' => $account->id,
                 'password' => $account->password,
                 'fullName' => $account->full_name,
                 'email' => $account->email,
@@ -185,7 +185,7 @@ class BEAccountController extends Controller
         }
 
         $accountData = [
-            'accountId' => $account->account_id,
+            'id' => $account->id,
             'password' => $account->password,
             'fullName' => $account->full_name,
             'email' => $account->email,

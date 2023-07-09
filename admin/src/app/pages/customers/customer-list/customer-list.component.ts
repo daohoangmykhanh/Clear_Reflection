@@ -53,7 +53,7 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
           sort: false,
           filter: false
         },
-        accountId: {
+        id: {
           title: 'ID',
           type: 'number',
           width: '3%'
@@ -111,7 +111,7 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
         } else {
           const mappedAccounts: any[] = data.map(account => {
             return {
-              accountId: account.accountId,
+              id: account.id,
               imageUrl: this.utilsService.getImageFromBase64(account.image.imageUrl),
               fullName: account.fullName,
               email: account.email,

@@ -50,12 +50,12 @@ export class AccountService {
   }
 
   update(account: Account): Observable<ModelResponse> {
-    const url: string = `${this.baseUrlService.baseURL}/account/update/${account.accountId}`
+    const url: string = `${this.baseUrlService.baseURL}/account/update/${account.id}`
     return this.httpClient.post<ModelResponse>(url, account);
   }
 
-  delete(accountId: number): Observable<ModelResponse> {
-    const url: string = `${this.baseUrlService.baseURL}/account/delete/${accountId}`
+  delete(id: number): Observable<ModelResponse> {
+    const url: string = `${this.baseUrlService.baseURL}/account/delete/${id}`
     return this.httpClient.get<ModelResponse>(url);
   }
   

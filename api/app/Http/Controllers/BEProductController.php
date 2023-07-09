@@ -434,7 +434,6 @@ class BEProductController extends Controller
             ]);
             $product-> product_name = $validatedData['productName'];
             $product -> description = $validatedData['description'];
-            $product -> is_hide = $validatedData['isHide'];
             $product -> category_id = $validatedData['categoryId'];
             $product -> product_shape_id = $validatedData['productShapeId'];
             $product -> product_style_id = $validatedData['productStyleId'];
