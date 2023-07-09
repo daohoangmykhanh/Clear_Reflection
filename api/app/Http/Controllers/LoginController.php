@@ -9,13 +9,16 @@ use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use HTTP_OK;
 use Illuminate\Support\Facades\Hash;
+use App\Mail\VerifyEmail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Auth\Events\Registered;
 
 class LoginController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['index', 'register']]);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api', ['except' => ['index', 'register']]);
+    // }
     public function register(Request $request)
     {
         // dd(123);
@@ -31,6 +34,11 @@ class LoginController extends Controller
             'phone_number' => ($request->phone_number),
             'full_name' => ($request->full_name),
         ]);
+
+        // $name = "ádsđá"; 
+        // Mail::send("email", compact('name'), function ($email) {
+        //     $email->to($request->email);
+        // });
         return response()->json([
             'message' => 'User created successfully',
             'user' => $user
@@ -48,7 +56,10 @@ class LoginController extends Controller
             ]);
         }
 
-        return response()->json(['token' => $token]);
+        return response()->json([
+            'token' => $token,
+            'account' => auth()->user(),
+        ]);
     }
     public function logout()
     {

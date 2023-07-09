@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '7a16ad51c21fcc79cac94e8aae693d2200420301',
+        'reference' => 'a22aa59ae49df66b6bfdd4a2a67ac084ee3fca0d',
         'name' => 'laravel/laravel',
         'dev' => true,
     ),
@@ -376,7 +376,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '7a16ad51c21fcc79cac94e8aae693d2200420301',
+            'reference' => 'a22aa59ae49df66b6bfdd4a2a67ac084ee3fca0d',
             'dev_requirement' => false,
         ),
         'laravel/pint' => array(
@@ -422,6 +422,15 @@
             'install_path' => __DIR__ . '/../laravel/tinker',
             'aliases' => array(),
             'reference' => '04a2d3bd0d650c0764f70bf49d1ee39393e4eb10',
+            'dev_requirement' => false,
+        ),
+        'laravel/ui' => array(
+            'pretty_version' => 'v4.2.2',
+            'version' => '4.2.2.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laravel/ui',
+            'aliases' => array(),
+            'reference' => 'a58ec468db4a340b33f3426c778784717a2c144b',
             'dev_requirement' => false,
         ),
         'lcobucci/clock' => array(
