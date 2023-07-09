@@ -44,19 +44,15 @@ export class OrderStatusService {
         let os: OrderStatus
         this.findAll().subscribe(
             data => {
-                if("result" in data) {
-                    console.log(data.message)
-                } else {
-                    os = data.find(status => status.orderStatusId == id)
-                }
+                os = data.find(status => status.orderStatusId == id)
             }
         )
         return of(os)
     }
 
 
-    findAll(): Observable<OrderStatus[] | ModelResponse> {
-        const url: string = `${this.baseUrlService.baseURL}/order-status`
+    findAll(): Observable<OrderStatus[]> {
+        const url: string = `${this.baseUrlService.baseURL}/findAllStatus`
         return this.httpClient.get<OrderStatus[]>(url)
     }
 

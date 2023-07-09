@@ -33,48 +33,8 @@ export class ProductService {
   ) { }
 
   findByNameKeyword(productName: string): Observable<Product[]>  {
-    return of(null)
-    // return of([
-    //   {
-    //     productId: 1,
-    //     productName: 'Product Name 1',
-    //     description: 'Description 1',
-    //     isHide: false,
-    //     category: {categoryId: 1, categoryName: 'Category 1', imageUrl: 'assets/images/alan.png'},
-    //     productShape: {productShapeId: 1, shapeName: 'Shape 1'},
-    //     tyle: {productStyleId: 1, styleName: 'Style 1'},
-    //     createdAt: new Date(),
-    //     updatedAt: new Date(),
-    //     imageUrls: [
-    //       'assets/images/camera1.jpg',
-    //       'assets/images/camera2.jpg',
-    //       'assets/images/camera3.jpg',
-    //       'assets/images/camera4.jpg',
-    //     ],
-    //     quantitySold: 100,
-    //     rating: 1,
-    //     totalLikes: 100
-    //   },
-    //   {
-    //     productId: 2,
-    //     productName: 'Product Name 2',
-    //     description: 'Description 2',
-    //     isHide: true,
-    //     category: {categoryId: 2, categoryName: 'Category 2', imageUrl: 'assets/images/alan.png'},
-    //     shape: {productShapeId: 2, shapeName: 'Shape 2'},
-    //     style: {productStyleId: 2, styleName: 'Style 2'},
-    //     createdAt: new Date(),
-    //     updatedAt: new Date(),
-    //     imageUrls: [
-    //       'assets/images/camera1.jpg',
-    //       'assets/images/camera2.jpg',
-    //       'assets/images/camera3.jpg',
-    //       'assets/images/camera4.jpg',
-    //     ],
-    //     quantitySold: 200,
-    //     rating: 2,
-    //     totalLikes: 200
-    //   }])
+    const url: string = `${this.baseUrlService.baseURL}/productByIdOrName/${productName}`
+    return this.httpClient.get<Product[]>(url);
   }
 
   findAll(): Observable<Product[] | ModelResponse> {

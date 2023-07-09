@@ -15,9 +15,9 @@
         <nb-card [formGroup]="addOrderFormGroup">
             <nb-card-header>Basic Information</nb-card-header>
             <nb-card-body>
-                <input type="text" placeholder="Customer Email" nbInput fullWidth 
-                    [nbAutocomplete]="account" formControlName="email" class="mb-3"/>
-                <div class="alert alert-danger mt-1" 
+                <input type="text" placeholder="Customer Email" nbInput fullWidth [nbAutocomplete]="account"
+                    formControlName="email" class="mb-3" />
+                <div class="alert alert-danger mt-1"
                     *ngIf="addOrderFormGroup.get('email').invalid && (addOrderFormGroup.get('email').dirty || addOrderFormGroup.get('email').touched)">
                     <div *ngIf="addOrderFormGroup.get('email').errors['notblank']">
                         Customer Email is required
@@ -25,13 +25,14 @@
                     <div *ngIf="addOrderFormGroup.get('email').errors['emailNotExisting']">
                         Customer Email does not exist
                     </div>
-                </div>    
+                </div>
                 <nb-autocomplete #account>
-                    <nb-option *ngFor="let account of accountCompleter$ | async" 
-                        [(value)]="chosenAccount" (click)="selectCustomer(account)">
+                    <nb-option *ngFor="let account of accountCompleter$ | async" [(value)]="chosenAccount"
+                        (click)="selectCustomer(account)" style="display: block !important">
                         <div class="row">
                             <div class="col-3">
-                                <img [src]="account.image.imageUrl" class="d-block w-100">
+                                <img [src]="utilsService.getImageFromBase64(account.image.imageUrl)"
+                                    class="d-block w-100 " style="width: 100%; height: auto">
                             </div>
                             <div class="col-9 my-auto">
                                 <p class="font-weight-bold">{{ account.email }}</p>
@@ -44,45 +45,46 @@
 
 
                 <nb-radio-group status="success" formControlName="addressOption">
-                    <nb-radio *ngFor="let option of addressOptions" 
-                        [value]="option.value" [disabled]="option.disabled">
+                    <nb-radio *ngFor="let option of addressOptions" [value]="option.value" [disabled]="option.disabled">
                         {{ option.label }}
                     </nb-radio>
                 </nb-radio-group>
-                <div class="alert alert-danger mt-1" 
+                <div class="alert alert-danger mt-1"
                     *ngIf="addOrderFormGroup.get('addressOption').invalid && (addOrderFormGroup.get('addressOption').dirty || addOrderFormGroup.get('addressOption').touched)">
                     <div *ngIf="addOrderFormGroup.get('addressOption').errors['required']">
                         Shipping Address is required
                     </div>
-                </div> 
+                </div>
 
                 <ng-container *ngIf="addOrderFormGroup.get('addressOption').value === 'new' && 
                         !addOrderFormGroup.get('email').errors?.emailNotExisting">
                     <div class="row">
                         <div class="col-lg-6">
-                            <nb-select fullWidth placeholder="Province" formControlName="province">
+                            <nb-select fullWidth placeholder="Province" formControlName="province"
+                                (selectedChange)="loadDistricts($event)">
                                 <nb-select-label>
-                                    Province: {{ addOrderFormGroup.get('province').value }}
+                                    Province: {{ addOrderFormGroup.get('province').value['name'] }}
                                 </nb-select-label>
-                                <nb-option *ngFor="let method of paymentMethods"
-                                    [value]="method.paymentMethodName">{{method.paymentMethodName}}</nb-option>
+                                <nb-option *ngFor="let province of provinces"
+                                    [value]="province">{{province.name}}</nb-option>
                             </nb-select>
-                            <div class="alert alert-danger mt-1" 
+                            <div class="alert alert-danger mt-1"
                                 *ngIf="addOrderFormGroup.get('province').invalid && (addOrderFormGroup.get('province').dirty || addOrderFormGroup.get('province').touched)">
                                 <div *ngIf="addOrderFormGroup.get('province').errors['required']">
                                     Province is required
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         <div class="col-lg-6">
-                            <nb-select fullWidth placeholder="District" formControlName="district">
+                            <nb-select fullWidth placeholder="District" formControlName="district"
+                                (selectedChange)="loadWards($event)">
                                 <nb-select-label>
-                                    District: {{ addOrderFormGroup.get('district').value }}
+                                    District: {{ addOrderFormGroup.get('district').value['name'] }}
                                 </nb-select-label>
-                                <nb-option *ngFor="let method of paymentMethods"
-                                    [value]="method.paymentMethodName">{{method.paymentMethodName}}</nb-option>
+                                <nb-option *ngFor="let district of districts"
+                                    [value]="district">{{district.name}}</nb-option>
                             </nb-select>
-                            <div class="alert alert-danger mt-1" 
+                            <div class="alert alert-danger mt-1"
                                 *ngIf="addOrderFormGroup.get('district').invalid && (addOrderFormGroup.get('district').dirty || addOrderFormGroup.get('district').touched)">
                                 <div *ngIf="addOrderFormGroup.get('district').errors['required']">
                                     District is required
@@ -92,12 +94,11 @@
                         <div class="col-lg-6 mt-3">
                             <nb-select fullWidth placeholder="Ward" formControlName="ward">
                                 <nb-select-label>
-                                    Ward: {{ addOrderFormGroup.get('ward').value }}
+                                    Ward: {{ addOrderFormGroup.get('ward').value['name'] }}
                                 </nb-select-label>
-                                <nb-option *ngFor="let method of paymentMethods"
-                                    [value]="method.paymentMethodName">{{method.paymentMethodName}}</nb-option>
+                                <nb-option *ngFor="let ward of wards" [value]="ward">{{ward.name}}</nb-option>
                             </nb-select>
-                            <div class="alert alert-danger mt-1" 
+                            <div class="alert alert-danger mt-1"
                                 *ngIf="addOrderFormGroup.get('ward').invalid && (addOrderFormGroup.get('ward').dirty || addOrderFormGroup.get('ward').touched)">
                                 <div *ngIf="addOrderFormGroup.get('ward').errors['required']">
                                     Ward is required
@@ -106,15 +107,23 @@
                         </div>
                         <div class="col-lg-6 mt-3">
                             <input type="text" placeholder="Address" nbInput fullWidth formControlName="address" />
-                            <div class="alert alert-danger mt-1" 
+                            <div class="alert alert-danger mt-1"
                                 *ngIf="addOrderFormGroup.get('address').invalid && (addOrderFormGroup.get('address').dirty || addOrderFormGroup.get('address').touched)">
-                                <div *ngIf="addOrderFormGroup.get('address').errors['notblank']">
+                                <div *ngIf="addOrderFormGroup.get('address').errors['required']">
                                     Address is required
                                 </div>
                             </div>
+
+                            <div class="alert alert-danger mt-1"
+                                *ngIf="addOrderFormGroup.get('address').invalid && (addOrderFormGroup.get('address').dirty || addOrderFormGroup.get('address').touched)">
+                                <div *ngIf="addOrderFormGroup.get('address').errors['maxlength']">
+                                    Address must be under 50 characters
+                                </div>
+                            </div>
                         </div>
-                    </div>  
+                    </div>
                 </ng-container>
+
                 <ng-container *ngIf="addOrderFormGroup.get('addressOption').value === 'existing'">
                     <nb-select fullWidth placeholder="Payment Method" formControlName="paymentMethod">
                         <nb-select-label>
@@ -123,38 +132,38 @@
                         <nb-option *ngFor="let method of paymentMethods"
                             [value]="method.paymentMethodName">{{method.paymentMethodName}}</nb-option>
                     </nb-select>
-                    <div class="alert alert-danger mt-1" 
+                    <div class="alert alert-danger mt-1"
                         *ngIf="addOrderFormGroup.get('ward').invalid && (addOrderFormGroup.get('ward').dirty || addOrderFormGroup.get('ward').touched)">
                         <div *ngIf="addOrderFormGroup.get('ward').errors['required']">
                             Ward is required
                         </div>
                     </div>
                 </ng-container>
-                
+
 
                 <nb-select fullWidth placeholder="Payment Method" formControlName="paymentMethod">
                     <nb-select-label>
-                        Payment Method: {{ addOrderFormGroup.get('paymentMethod').value }}
+                        Payment Method: {{ addOrderFormGroup.get('paymentMethod').value['paymentMethodName'] }}
                     </nb-select-label>
                     <nb-option *ngFor="let method of paymentMethods"
-                        [value]="method.paymentMethodName">{{method.paymentMethodName}}</nb-option>
+                        [value]="method">{{method.paymentMethodName}}</nb-option>
                 </nb-select>
-                <div class="alert alert-danger mt-1" 
+                <div class="alert alert-danger mt-1"
                     *ngIf="addOrderFormGroup.get('paymentMethod').invalid && (addOrderFormGroup.get('paymentMethod').dirty || addOrderFormGroup.get('paymentMethod').touched)">
                     <div *ngIf="addOrderFormGroup.get('paymentMethod').errors['required']">
                         Payment Method is required
                     </div>
                 </div>
 
-                
+
                 <nb-select fullWidth placeholder="Order Status" formControlName="orderStatus">
                     <nb-select-label>
-                        Order Status: {{ addOrderFormGroup.get('orderStatus').value }}
+                        Order Status: {{ addOrderFormGroup.get('orderStatus').value['statusName'] }}
                     </nb-select-label>
                     <nb-option *ngFor="let status of orderStatuses"
-                        [value]="status.statusName">{{status.statusName}}</nb-option>
+                        [value]="status">{{status.statusName}}</nb-option>
                 </nb-select>
-                <div class="alert alert-danger mt-1" 
+                <div class="alert alert-danger mt-1"
                     *ngIf="addOrderFormGroup.get('orderStatus').invalid && (addOrderFormGroup.get('orderStatus').dirty || addOrderFormGroup.get('orderStatus').touched)">
                     <div *ngIf="addOrderFormGroup.get('orderStatus').errors['required']">
                         Order Status is required
@@ -167,11 +176,17 @@
                     </div>
                     <ng-container *ngIf="applyCoupon">
                         <div class="col-lg-9">
-                            <input type="text" placeholder="Coupon" nbInput fullWidth formControlName="coupon"/>
+                            <input type="text" placeholder="Coupon" nbInput fullWidth formControlName="coupon" />
+                            
+                            <div class="alert alert-danger mt-1"
+                                *ngIf="addOrderFormGroup.get('coupon').invalid && (addOrderFormGroup.get('coupon').dirty || addOrderFormGroup.get('coupon').touched)">
+                                <div *ngIf="addOrderFormGroup.get('coupon').errors['couponNotExists']">
+                                    Coupon Code does not exist
+                                </div>
+                            </div>
                         </div>
                     </ng-container>
                 </div>
-
 
                 <div class="row">
                     <div class="col-lg-6 font-weight-bold">Total Quantity: {{45}}</div>
@@ -210,10 +225,8 @@
                             </ng-container>
                         </nb-accordion-item-header>
                         <nb-accordion-item-body [formGroup]="productForm">
-                            <input  type="text" placeholder="Product ID"
-                                formControlName="id"
-                                nbInput fullWidth [nbAutocomplete]="product"
-                                class="inputs-group"/>
+                            <input  type="text" placeholder="Product ID" formControlName="id"
+                                nbInput fullWidth [nbAutocomplete]="product" class="inputs-group"/>
                             <div class="alert alert-danger mt-1" 
                                 *ngIf="productForm.get('id').invalid && (productForm.get('id').dirty || productForm.get('id').touched)">
                                 <div *ngIf="productForm.get('id').errors['notblank']">
@@ -228,7 +241,7 @@
                                     (click)="selectProduct(product, i)">
                                     <div class="row">
                                         <div class="col-3">
-                                            <img [src]="product.imageUrls[0]" class="d-block w-100">
+                                            <img [src]="utilsService.getImageFromBase64(product.images[0].imageUrl)" class="d-block w-100">
                                         </div>
                                         <div class="col-9 my-auto">
                                             <p class="font-weight-bold">{{ product.productName }}</p>

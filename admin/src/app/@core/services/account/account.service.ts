@@ -28,35 +28,15 @@ export class AccountService {
     this.accountChangeSubject.next();
   }
 
-
-  orders: Order[]
   constructor(
     private baseUrlService: BaseURLService,
     private httpClient: HttpClient,
-    private orderService: OrderService
-  ) { 
-    this.orderService.findAll().subscribe(
-      data => this.orders = data
-    )
-  }
-
-  findByEmailKeyword(emailKeyword: string): Observable<Account[] | ModelResponse> {
-    return of([
-      {
-        accountId: 1,
-        fullName: 'Đào Hoàng Mỹ Khánh',
-        email: 'daohoangmykhanh@gmail.com',
-        phoneNumber: '0123456789',
-        image: {imageId: 1, imageUrl: 'assets/images/eva.png'},
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-    ])
+  ) {
   }
 
   findAll(): Observable<Account[] | ModelResponse> {
     const url: string = `${this.baseUrlService.baseURL}/account`
-    return this.httpClient.get<Account[]  | ModelResponse>(url)
+    return this.httpClient.get<Account[] | ModelResponse>(url)
   }
 
   findById(id: number): Observable<Account> {
@@ -74,16 +54,19 @@ export class AccountService {
     return this.httpClient.post<ModelResponse>(url, account);
   }
 
-  delete(accountId: number): Observable<ModelResponse> {    
-    const url: string = `${this.baseUrlService.baseURL}/aroduct/delete/${accountId}`
-    return this.httpClient.get<ModelResponse>(url); 
+  delete(accountId: number): Observable<ModelResponse> {
+    const url: string = `${this.baseUrlService.baseURL}/account/delete/${accountId}`
+    return this.httpClient.get<ModelResponse>(url);
+  }
+  
+  findByEmailKeyword(emailKeyword: string): Observable<Account[]> {
+    const url: string = `${this.baseUrlService.baseURL}/customerByEmail/${emailKeyword}`
+    return this.httpClient.get<Account[]>(url);
   }
 
-  findByEmail(email: string): Observable<Account | null> {
-    if(email == 'daohoangmykhanh@gmail.com') {
-      return of(new Account());
-    }
-    return of(null)
+  isEmailExists(email: string): Observable<boolean> {
+    const url: string = `${this.baseUrlService.baseURL}/isEmailExists/${email}`
+    return this.httpClient.get<boolean>(url);
   }
 
   findAllAddress(): Observable<Address[]> {
@@ -91,19 +74,4 @@ export class AccountService {
     return this.httpClient.get<Address[]>(url)
   }
 
-  findAllDistrictByProvince(province: Province): Observable<District[]> {
-    const url: string = `${this.baseUrlService.baseURL}/account/findAllDistrict/${province.code}`
-    return this.httpClient.get<District[]>(url);
-  }
-
-  
-  findAllWardByDistrict(ward: Ward): Observable<Ward[]> {
-    const url: string = `${this.baseUrlService.baseURL}/account/findAllWard/${ward.code}`
-    return this.httpClient.get<Ward[]>(url);
-  }
-
-  insertAddress(address: Address): Observable<Address> {
-    const url: string = `${this.baseUrlService.baseURL}/account/insertAddress`
-    return this.httpClient.post<Address>(url, address);
-  }
 }

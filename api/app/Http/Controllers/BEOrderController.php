@@ -17,7 +17,10 @@ class BEOrderController extends Controller
     public function index(){
         $orders = Order::all();
         if($orders -> isEmpty()){
-            return response()->json('No results found!');
+            return response()->json([
+                'result' => true,
+                'message' => 'No results found!'
+            ]);
         }
         foreach($orders as $order){
 
@@ -125,15 +128,16 @@ class BEOrderController extends Controller
         $validatedData = $request->validate([
             'customerEmail' => 'required|email',
             'couponId' => 'nullable|integer',
-            'totalPrice' => 'required|numeric',
-            'totalQuantity' => 'required|numeric',
             'orderStatusId' => 'required|integer',
             'paymentMethodId' => 'required|integer',
-            'houseNumber' => 'required',
             'roadName' => 'required',
             'wardCode' => 'required',
             'districtCode'=> 'required',
             'provinceCode' => 'required',
+
+            'totalPrice' => 'required|numeric',
+            'totalQuantity' => 'required|numeric',
+
             'products' => 'required|array',
             'products.*.productId' => 'required|integer',
             'products.*.height' => 'required|numeric',
@@ -185,16 +189,28 @@ class BEOrderController extends Controller
         ]);
     }
 
-    public function customerByEmail($keyword){
-        $accounts = Account::where('email', 'LIKE', "%{$keyword}%")->where('role_id', 2) -> get();
+    public function customerByEmail($keyword = null){
+        if($keyword != null) {
+            $accounts = Account::where('email', 'LIKE', '%' . $keyword . '%')->where('role_id', 1)->get();
+        } else {
+            $accounts = Account::all();
+        }
         if($accounts -> isEmpty())
-            return response()->json('No results found!');
+            return response()->json([]);
         foreach($accounts as $account){
             $image = null;
-            if($account -> image_id != null){
-                $image = $account -> image -> image_url;
+            if ($account->image_id !== null) {
+                $storagePath = public_path('images/account/');
+                $filename = $account->image->image_url;
+                $data = file_get_contents($storagePath. $filename);
+                $base64Image = base64_encode($data);
+                $image = [
+                    'imageId' => $account->image->image_id,
+                    'imageUrl' => $base64Image,
+                ];
             }
             $accountData[] = [
+                'accountId' => $account -> account_id,
                 'fullName' => $account -> full_name,
                 'email' => $account -> email,
                 'phoneNumber' => $account -> phone_number,
@@ -205,38 +221,67 @@ class BEOrderController extends Controller
 
     }
 
-    public function productByIdOrName($keyword){
-        $products = Product::where('product_id', 'LIKE', "%{$keyword}%")
-                            -> orWhere('product_name', 'LIKE', "%{$keyword}%")
-                            -> where('is_hide', true)
-                            -> get();
+    public function productByIdOrName($keyword = null){
+        if($keyword != null) {
+            $products = Product::where('product_id', 'LIKE', "%{$keyword}%")
+            -> orWhere('product_name', 'LIKE', "%{$keyword}%")
+            -> where('is_hide', true)
+            -> get();
+        } else {
+            $products = Product::all();
+        }
         if($products -> isEmpty())
-            return response()->json('No results found!');
+            return response()->json([]);
         foreach($products as $product){
-            $image = null;
-            if($product -> image_id != null){
-                $image = $product -> image -> image_url;
+            $imageData = null;
+            if ($product->images !== null) {
+                foreach ($product->images as $image) {
+                    if ($image->image_id !== null) {
+                        $storagePath = public_path('images/product/');
+                        $filename = $image -> image_url;
+                        $data = file_get_contents($storagePath. $filename);
+                        $base64Image = base64_encode($data);
+                        $imageData[] = [
+                            'imageId' => $image->image_id,
+                            'imageUrl' => $base64Image,
+                        ];
+                    }
+                }
             }
             $productData[] = [
                 'productId' => $product -> product_id,
                 'productName' => $product -> product_name,
-                'image' => $image
+                'images' => $imageData
             ];
         }
         return response()->json($productData);
     }
 
     public function findAllPayment(){
-        $payment = PaymentMethod::all();
-        if($payment -> isEmpty())
-            return response()->json('No result found!');
-        return response()->json($payment);
+        $payments = PaymentMethod::all();
+        foreach($payments as $payment){
+            $paymentData[] = [
+                'paymentMethodId' => $payment -> payment_method_id,
+                'paymentMethodName' => $payment -> payment_method_name,
+            ];
+        }
+        return response()->json($paymentData);
     }
 
     public function findAllStatus(){
-        $status = OrderStatus::all();
-        if($status -> isEmpty())
-            return response()->json('No result found!');
-        return response()->json($status);
+        $statuses = OrderStatus::all();
+        foreach($statuses as $status){
+            $statusData[] = [
+                'orderStatusId' =>  $status -> order_status_id,
+                'statusName' => $status -> status_name,
+                'statusDescription' => $status -> status_description,
+            ];
+        }
+        return response()->json($statusData);
+    }
+
+    public function isEmailExists($email) {
+        $exists = Account::where('email', $email)->exists();
+        return ($exists);
     }
 }

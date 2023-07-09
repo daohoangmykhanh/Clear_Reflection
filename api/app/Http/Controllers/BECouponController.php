@@ -108,4 +108,20 @@ class BECouponController extends Controller
             'message' => 'Deleted unsuccessfully.',
         ]);
     }
+
+    public function isCouponExists($couponCode) {
+        $exists = Coupon::where('code', $couponCode)->exists();
+        return ($exists);
+    }
+
+    function findIdByCode($couponCode)
+    {
+        $coupon = Coupon::where('code', $couponCode)->first();
+
+        if ($coupon) {
+            return $coupon->coupon_id;
+        } else {
+            return null;
+        }
+    }
 }

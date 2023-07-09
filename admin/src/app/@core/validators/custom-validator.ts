@@ -3,6 +3,7 @@ import { AbstractControl, FormControl, ValidationErrors } from "@angular/forms";
 import { map } from 'rxjs/operators'
 import { Observable } from 'rxjs';
 import { ProductService } from '../services/product/product.service';
+import { ProductCouponService } from '../services/product/product-coupon.service';
 export class CustomValidator {
 
     static accountService: AccountService;
@@ -41,18 +42,29 @@ export class CustomValidator {
 export function isEmailNotExisting(accountService: AccountService) {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
         // Use the AccountService to check if the email exists
-        return accountService.findByEmail(control.value).pipe(
-            map(account => account == null ? { emailNotExisting: true } : null)
+        return accountService.isEmailExists(control.value).pipe(
+            map((exists: boolean) => (!exists ? { emailNotExisting: true } : null))
+        );
+    };
+}
+
+export function isCouponExisting(couponService: ProductCouponService) {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+        // Use the AccountService to check if the email exists
+        return couponService.isCouponExists(control.value).pipe(
+            map((exists: boolean) => {
+                return !exists ? { couponNotExist: true } : null
+            })
         );
     };
 }
 
 export function isProductidNotExisting(productService: ProductService) {
     // return (control: AbstractControl): Observable<ValidationErrors | null> => {
-        // Use the AccountService to check if the email exists
-        // return productService.findById(+control.value).pipe(
-        //     map(product => product == null ? { productNotExisting: true } : null)
-        // );
+    // Use the AccountService to check if the email exists
+    // return productService.findById(+control.value).pipe(
+    //     map(product => product == null ? { productNotExisting: true } : null)
+    // );
     // };
     return;
 }

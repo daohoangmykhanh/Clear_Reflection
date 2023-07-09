@@ -50,17 +50,8 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
 
     forkJoin([paymentObservable, orderStatusObservable ]).subscribe(
       ([paymentData, orderStatusDate]) => {
-        if ("result" in paymentData) {
-          console.error(paymentData.message);
-        } else {
-          this.paymentMethods = paymentData;
-        }
-
-        if ("result" in orderStatusDate) {
-          console.error(orderStatusDate.message);
-        } else {
-          this.orderStatuses = orderStatusDate;
-        }
+        this.paymentMethods = paymentData;
+        this.orderStatuses = orderStatusDate;
 
         this.settings = {
           actions: {
@@ -136,24 +127,30 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
         }
       }
     )
+
+    this.loadOrders();
     
   }
 
   loadOrders() {
     this.orderService.findAll().subscribe(
       data => {
-        const mappedOrders: any[] = data.map(order => {
-          return {
-            orderId: order.orderId,
-            orderTrackingNumber: order.orderTrackingNumber,
-            totalPrice: order.totalPrice,
-            totalQuantity: order.totalQuantity,
-            paymentMethod: order.paymentMethod.paymentMethodName,
-            orderStatus: order.orderStatus.statusName,
-            createdAt: new DatePipe('en-US').transform(order.createdAt, 'dd/MM/yyyy').toString()
-          }
-        })
-        this.source.load(mappedOrders)
+        if("result" in data) {
+          console.log(data.message)
+        } else {
+          const mappedOrders: any[] = data.map(order => {
+            return {
+              orderId: order.orderId,
+              orderTrackingNumber: order.orderTrackingNumber,
+              totalPrice: order.totalPrice,
+              totalQuantity: order.totalQuantity,
+              paymentMethod: order.paymentMethod.paymentMethodName,
+              orderStatus: order.orderStatus.statusName,
+              createdAt: new DatePipe('en-US').transform(order.createdAt, 'dd/MM/yyyy').toString()
+            }
+          })
+          this.source.load(mappedOrders)
+        }
       }
     )
   }

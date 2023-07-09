@@ -16,11 +16,6 @@ class ProvinceController extends Controller
             $provinceData[] = [
                 'code' => $province->code,
                 'name' => $province->name,
-                'nameEn' => $province->name_en,
-                'fullName' => $province->full_name,
-                'fullNameEn' => $province->full_name_en,
-                'codeName' => $province->code_name,
-                'administrativeUnitId' => $province->administrative_unit_id,
             ];
         }
 

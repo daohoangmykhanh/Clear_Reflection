@@ -38,65 +38,13 @@ export class ProductCouponService {
     this.couponChangeSubject.next();
   }
 
+  baseUrl = "http://127.0.0.1:8000/api/";
   
   constructor(
     private baseUrlService: BaseURLService,
     private httpClient: HttpClient
   ) { 
   }
-
-  // findAll(): Observable<Coupon[]> {
-  //   // const url: string = `${this.categoryUrl}/category/findAll`
-  //   // return this.httpClient.get<ProductCategory[]>(url)
-  //   const coupons: Coupon[] = [
-  //     {
-  //       couponId: 1,
-  //       code: 'CouponXX1',
-  //       discount: 50,
-  //       couponType: this.findCouponTypeById(1),
-  //       description: 'Description 1',
-  //       createdAt: new Date(),
-  //       expiredAt: new Date()
-  //     },
-  //     {
-  //       couponId: 2,
-  //       code: 'CouponXX2',
-  //       discount: 20,
-  //       couponType: this.findCouponTypeById(2),
-  //       description: 'Description 2',
-  //       createdAt: new Date(),
-  //       expiredAt: new Date()
-  //     },
-  //     {
-  //       couponId: 3,
-  //       code: 'CouponXX3',
-  //       discount: 30,
-  //       couponType: this.findCouponTypeById(1),
-  //       description: 'Description 1',
-  //       createdAt: new Date(),
-  //       expiredAt: new Date()
-  //     },
-  //     {
-  //       couponId: 4,
-  //       code: 'CouponXX4',
-  //       discount: 4,
-  //       couponType: this.findCouponTypeById(2),
-  //       description: 'Description 4',
-  //       createdAt: new Date(),
-  //       expiredAt: new Date()
-  //     },
-  //     {
-  //       couponId: 5,
-  //       code: 'CouponXX5',
-  //       discount: 50,
-  //       couponType: this.findCouponTypeById(1),
-  //       description: 'Description 1',
-  //       createdAt: new Date(),
-  //       expiredAt: new Date()
-  //     },
-  //   ]
-  //   return of(coupons);
-  // }
 
   findAll(): Observable<Coupon[] | ModelResponse> {
     const url: string = `${this.baseUrlService.baseURL}/coupon`
@@ -130,5 +78,15 @@ export class ProductCouponService {
   findAllCouponType(): Observable<CouponType[]> {
     const url: string = `${this.baseUrlService.baseURL}/coupon-detail`
     return this.httpClient.get<CouponType[]>(url)
+  }
+
+  isCouponExists(couponCode: string): Observable<boolean> {
+    const url: string = `${this.baseUrlService.baseURL}/isCouponExists/${couponCode}`
+    return this.httpClient.get<boolean>(url);
+  }
+
+  findIdByCode(couponCode: string): Observable<string> {
+    const url: string = `${this.baseUrlService.baseURL}/findIdByCode/${couponCode}`
+    return this.httpClient.get<string>(url);
   }
 }

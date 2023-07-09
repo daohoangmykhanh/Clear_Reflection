@@ -52,18 +52,17 @@ class DistrictController extends Controller
     public function getAllDistrictsByProvince($provinceCode)
     {
         $districts = District::where('province_code', $provinceCode)->get();
+        $districtData = [];
+
+        foreach ($districts as $district) {
+            $districtData[] = [
+                'code' => $district->code,
+                'name' => $district->name,
+            ];
+        }
 
         return response()->json([
-            'districts' => [
-                'code' => $districts->code,
-                'name' => $districts->name,
-                'name_en' => $districts->name_en,
-                'full_name' => $districts->full_name,
-                'full_name_en' => $districts->full_name_en,
-                'code_name' => $districts->code_name,
-                'province_code' => $districts->province_code,
-                'administrative_unit_id' => $districts->administrative_unit_id,
-            ]
+            'districts' => $districtData
         ]);
     }
 }

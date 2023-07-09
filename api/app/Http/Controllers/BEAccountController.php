@@ -133,6 +133,7 @@ class BEAccountController extends Controller
                 'message' => 'Updated successfully'
             ]);
     }
+
     public function detail($id){
         $account = Account::Find($id);
         if($account == null ) {

@@ -19,9 +19,11 @@ import { Province } from '../../../@core/models/address/provinces.model';
 import { District } from '../../../@core/models/address/districts.model';
 import { Address } from '../../../@core/models/address/address.model';
 import { Product } from '../../../@core/models/product/product.model';
-import { CustomValidator, isEmailNotExisting, isProductidNotExisting } from '../../../@core/validators/custom-validator';
+import { CustomValidator, isCouponExisting, isEmailNotExisting, isProductidNotExisting } from '../../../@core/validators/custom-validator';
 import { Order } from '../../../@core/models/order/order.model';
 import { ModelResponse } from '../../../@core/models/response/ModelResponse';
+import { AddressService } from '../../../@core/services/account/address.service';
+import { ProductCouponService } from '../../../@core/services/product/product-coupon.service';
 
 @Component({
   selector: 'ngx-order-add',
@@ -34,13 +36,16 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
   
   addOrderFormGroup: FormGroup
   // basic information
-  chosenAccount: Account
+  chosenAccount: Account;
+  accountDetail: Account;
+
   paymentMethods: PaymentMethod[]
   orderStatuses: OrderStatus[]
   provinces: Province[]
-  district: District[]
-  existingAddress: Address[]
+  districts: District[]
   wards: Ward[]
+  existingAddress: Address[]
+
   addressOptions = [
     { value: 'existing', label: 'Use Existing Address', disabled: true },
     { value: 'new', label: 'New Address', disabled: true },
@@ -56,17 +61,19 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     private accountService: AccountService,
     private formBuilder: FormBuilder,
     private productService: ProductService,
-    private utilsService: UtilsService
+    public utilsService: UtilsService,
+    private addressService: AddressService,
+    private couponService: ProductCouponService
   ) {
-      // this.orderStatusService.findAll().subscribe(data => this.orderStatuses = data)
-      // this.paymentMethodService.findAll().subscribe(data => this.paymentMethods = data)
+      this.orderStatusService.findAll().subscribe(data => this.orderStatuses = data)
+      this.paymentMethodService.findAll().subscribe(data => this.paymentMethods = data)
   }
   
-  get products() { return this.addOrderFormGroup.controls["products"] as FormArray }
+
   settingFormGroup() {
     this.addOrderFormGroup = this.formBuilder.group({
       email: ['', CustomValidator.notBlank, isEmailNotExisting(this.accountService)],
-      coupon: [],
+      coupon: [''],
       totalPrice: [, Validators.required],
       totalQuantity: [, Validators.required],
       orderStatus: ['', Validators.required],
@@ -75,9 +82,11 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
       province: ['', Validators.required],
       district: ['', Validators.required],
       ward: ['', Validators.required],
-      address: ['', CustomValidator.notBlank, Validators.maxLength(50)],
+      address: ['', Validators.required, Validators.maxLength(50)],
       products: this.formBuilder.array([])
     })
+
+    this.checkCouponExists()
   }
 
   ngOnInit() {
@@ -87,47 +96,18 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     this.onAddressChange()
   }
   
-  productCompleter$: Observable<Product[] | ModelResponse>
-  productCompleter(productFormIndex: number) {
-    this.productCompleter$ = this.products.at(productFormIndex).get('id').valueChanges.pipe(
-      startWith(''),
-      switchMap(enteredProductName => {
-        if(this.products.at(productFormIndex).get('id').value == '' ||
-          this.products.at(productFormIndex).get('id').value == null
-        ) {
-          return this.productService.findAll()
-        }
-        return this.productService.findByNameKeyword(enteredProductName)
-      })
-    );
-  }
-
-  accountCompleter$: Observable<Account[] | ModelResponse>;
+  accountCompleter$: Observable<Account[]>;
   accountCompleter() {
     this.accountCompleter$ = this.addOrderFormGroup.get('email').valueChanges.pipe(
       startWith(''),
       switchMap(enteredEmail => {
         if(this.addOrderFormGroup.get('email').value == '') {
-          return this.accountService.findAll()
+          return this.accountService.findByEmailKeyword('')
         }
         return this.accountService.findByEmailKeyword(enteredEmail)
       })
     );
   }
-
-
-  addProduct(): void {
-    const productForm = this.formBuilder.group({
-      id: [,  CustomValidator.notBlank, isProductidNotExisting(this.productService)],
-      size: [, [Validators.required]] ,
-      price: [{value: null, disabled: true}],
-      quantity: [, [Validators.required, Validators.min(1), Validators.max(100000)]],
-      color: [, [Validators.required]],
-    })
-    this.products.push(productForm)
-    this.productCompleter(this.products.controls.length - 1)
-  }
-  removeProduct(productFormIndex: number): void { this.products.removeAt(productFormIndex) }
 
   onAddressChange() {
     this.addOrderFormGroup.get('province').valueChanges.subscribe(data => {
@@ -146,20 +126,32 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
   }
   
   ngAfterViewInit(): void {
-    this.accordions.first.toggle()
+    // this.accordions.first.toggle()
+    1
   }
   
   selectCustomer(account: Account) {
     this.chosenAccount = account;
-    this.addOrderFormGroup.get('email').setValue(account.email)
-    if(account.address == null || account.address.length == 0) {
+    this.accountService.findById(this.chosenAccount.accountId).subscribe(
+      data => {
+        this.accountDetail = data
+        this.setUpAccountAddress()
+      }
+    )
+  }
+
+  setUpAccountAddress() {
+    this.addOrderFormGroup.get('email').setValue(this.chosenAccount.email)
+    
+    if(this.accountDetail.address == undefined) {
       this.addressOptions[1].disabled = false
       this.addOrderFormGroup.get('addressOption').setValue('new')
+      this.loadProvinces()
     } else {
       this.addressOptions[0].disabled = true
       this.addressOptions[1].disabled = true
 
-      this.existingAddress = account.address
+      this.existingAddress = this.chosenAccount.address
     }
   }
 
@@ -168,13 +160,108 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit() {
-    console.log(this.addOrderFormGroup.value);
     if(this.addOrderFormGroup.invalid) {
       this.addOrderFormGroup.markAllAsTouched();
       this.utilsService.updateToastState(new ToastState('add', 'order', 'danger'))
       return;
     }
 
-    let order: Order = new Order();
+    let order: any = this.mapFormValue()
+    console.log(order)
+
   }
+
+  mapFormValue(): any {
+    let order:any  = new Order()
+    order.customerEmail = this.addOrderFormGroup.get('email').value
+    if(this.applyCoupon) {
+      this.couponService.findIdByCode(this.addOrderFormGroup.get('coupon').value)
+        .subscribe(data => order.couponId = data)
+    }
+    order.roadName = this.addOrderFormGroup.get('address').value
+    order.ward = this.addOrderFormGroup.get('ward').value['code']
+    order.district = this.addOrderFormGroup.get('district').value['code']
+    order.province = this.addOrderFormGroup.get('province').value['code']
+    order.orderStatusId = this.addOrderFormGroup.get('orderStatus').value['orderStatusId']
+    order.paymentMethodId = this.addOrderFormGroup.get('paymentMethod').value['paymentMethodId']
+    return order;
+  }
+
+  loadProvinces() {
+    this.addressService.findAllProvinces().subscribe(
+      data => {
+        this.provinces = data.provinces
+        this.addOrderFormGroup.get('district').setValue({})
+        this.addOrderFormGroup.get('ward').setValue({})
+      }
+    )
+  }
+
+  loadDistricts(event: any) {
+    const selectedProvince: Province = this.addOrderFormGroup.get('province').value
+    this.addressService.findAllDistrictByProvince(selectedProvince.code).subscribe(
+      data => {
+        this.districts = data.districts
+      }
+    );
+  }
+
+  loadWards(event: any) {
+    const selectedDistrict: District = this.addOrderFormGroup.get('district').value
+    this.addressService.findAllWardByDistrict(selectedDistrict.code).subscribe(
+      data => {
+        this.wards = data.wards
+        this.addOrderFormGroup.get('ward').setValue({})
+      }
+    );
+  }
+
+  checkCouponExists() {
+    this.addOrderFormGroup.get('coupon').valueChanges.subscribe(
+      () => {
+        const couponValue = this.addOrderFormGroup.get('coupon').value
+        console.log(couponValue);
+        if(this.applyCoupon && couponValue == '') {
+          this.addOrderFormGroup.get('coupon').setErrors({couponNotExists : true})
+          return;
+        }
+        this.couponService.isCouponExists(couponValue).subscribe(
+          result => {
+            if(!result) {
+              this.addOrderFormGroup.get('coupon').setErrors({couponNotExists : true})
+            }
+          }
+        )
+      }
+    )
+  }
+
+
+  productCompleter$: Observable<Product[] | ModelResponse>
+  productCompleter(productFormIndex: number) {
+    this.productCompleter$ = this.products.at(productFormIndex).get('id').valueChanges.pipe(
+      startWith(''),
+      switchMap(enteredProductName => {
+        if(this.products.at(productFormIndex).get('id').value == '') {
+          return this.productService.findByNameKeyword('')
+        }
+        return this.productService.findByNameKeyword(enteredProductName)
+      })
+    );
+  }
+
+  get products() { return this.addOrderFormGroup.controls["products"] as FormArray }
+
+  addProduct(): void {
+    const productForm = this.formBuilder.group({
+      id: [,  CustomValidator.notBlank, isProductidNotExisting(this.productService)],
+      size: [, [Validators.required]] ,
+      price: [{value: null, disabled: true}],
+      quantity: [, [Validators.required, Validators.min(1), Validators.max(100000)]],
+      color: [, [Validators.required]],
+    })
+    this.products.push(productForm)
+    this.productCompleter(this.products.controls.length - 1)
+  }
+  removeProduct(productFormIndex: number): void { this.products.removeAt(productFormIndex) }
 }

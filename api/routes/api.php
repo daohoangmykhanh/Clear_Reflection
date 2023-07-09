@@ -164,10 +164,17 @@ Route::prefix('/admin')->group(function () {
     Route::get('/order/{id}', [BEOrderController::class, 'detail']);
     Route::post('/order/create', [BEOrderController::class, 'create']);
     Route::post('/order/update/{id}', [BEOrderController::class, 'update']);
+
     Route::get('/findAllPayment', [BEOrderController::class, 'findAllPayment']);
     Route::get('/findAllStatus', [BEOrderController::class, 'findAllStatus']);
-    Route::get('/customerByEmail/{keyword}', [BEOrderController::class, 'customerByEmail']);
-    Route::get('/productByIdOrName/{keyword}', [BEOrderController::class, 'productByIdOrName']);
+    Route::get('/customerByEmail/{keyword?}', [BEOrderController::class, 'customerByEmail']);
+    Route::get('/productByIdOrName/{keyword?}', [BEOrderController::class, 'productByIdOrName']);
+    Route::get('/isEmailExists/{email}', [BEOrderController::class, 'isEmailExists']);
+
+    Route::get('/isCouponExists/{couponCode}', [BECouponController::class, 'isCouponExists']);
+    Route::get('/findIdByCode/{couponCode}', [BECouponController::class, 'findIdByCode']);
+
+
 });
 
 
