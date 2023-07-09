@@ -12,12 +12,14 @@ class BECouponController extends Controller
     public function index(){
         $coupons = Coupon::all();
         if($coupons -> isEmpty()){
-            return response()->json('No results found!');
+            return response()->json([
+                'result' => false,
+                'message' => "No results found!",
+            ]);
         }
         foreach($coupons as $coupon){
-            
             $couponData[] = [
-                'coupon_id' => $coupon->coupon_id,
+                'couponId' => $coupon->coupon_id,
                 'code' => $coupon->code,
                 'discount' => $coupon->discount,
                 'description' => $coupon->description,
@@ -43,12 +45,12 @@ class BECouponController extends Controller
         $coupon -> discount = $validatedData['discount'];
         $coupon -> description = $validatedData['description'];
         $coupon -> coupon_type_id = $validatedData['couponTypeId'];
-        $coupon -> created_at = $validatedData['createdAt'];
-        $coupon -> expired_at = $validatedData['expiredAt'];
+        $coupon -> created_at = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $validatedData['createdAt'])));
+        $coupon -> expired_at = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $validatedData['expiredAt'])));
         $result = $coupon -> save();
         if(!$result)
             return response()->json('Created unsuccessfully !');
-        
+
         return response()->json('Created successfully !', 201);
     }
 
@@ -56,25 +58,30 @@ class BECouponController extends Controller
         $validatedData = $request->validate([
             'code' => 'required|unique:coupon,code,'. $id . ',coupon_id',
             'discount' => 'required',
-            'description' => 'nullable',
+            'description' => 'required',
             'couponTypeId' => 'required',
             'createdAt' => 'required',
             'expiredAt' => 'required',
         ]);
+
         $coupon = Coupon::find($id);
-        $coupon -> code = $validatedData['code'];
-        $coupon -> discount = $validatedData['discount'];
-        $coupon -> description = $validatedData['description'];
-        $coupon -> coupon_type_id = $validatedData['couponTypeId'];
-        $coupon -> created_at = $validatedData['createdAt'];
-        $coupon -> expired_at = $validatedData['expiredAt'];
-        $result = $coupon -> save();
+        $coupon->code = $validatedData['code'];
+        $coupon->discount = $validatedData['discount'];
+        $coupon->description = $validatedData['description'];
+        $coupon->coupon_type_id = $validatedData['couponTypeId'];
+        $coupon->created_at = date('Y-m-d H:i:s', strtotime($request->input('createdAt')));
+        $coupon->expired_at = date('Y-m-d H:i:s', strtotime($request->input('expiredAt')));
+        $result = $coupon->save();
+
         if(!$result)
-            return response()->json('Updated unsuccessfully !');
-    
+            return response()->json([
+                'result' => false,
+                'message' => 'Updated unsuccessfully.',
+            ]);
+
         return response()->json([
+            'result' => true,
             'message' => 'Updated successfully.',
-            'coupon' => $coupon
         ]);
     }
 
@@ -83,12 +90,22 @@ class BECouponController extends Controller
             return response()->json('Id doesn`t exist !');
         $accounts = AccountCoupon::where('coupon_id',$id) -> get();
         if($accounts -> isNotEmpty()){
-            return response()->json('Coupon was used, cannot delete!');
+            return response()->json([
+                'result' => false,
+                'message' => 'Coupon was used, cannot delete!',
+            ]);
+
         }
         $result = Coupon::destroy($id);
         if(!$result)
-            return response()->json('Deleted unsuccessfully !');
-    
-        return response()->json('Deleted successfully !', 201);
+            return response()->json([
+                'result' => false,
+                'message' => 'Deleted unsuccessfully.',
+            ]);
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Deleted unsuccessfully.',
+        ]);
     }
 }

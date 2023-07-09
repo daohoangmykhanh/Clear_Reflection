@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from '../../../@core/models/product/product.model';
 import { ProductService } from '../../../@core/services/product/product.service';
 import { NbAccordionItemComponent } from '@nebular/theme';
+import { UtilsService } from '../../../@core/services/utils.service';
 
 @Component({
   selector: 'ngx-product-detail',
@@ -14,16 +15,26 @@ export class ProductDetailComponent {
 
   productId: string;
   product: Product;
-
+  imagesUrls: string[]
   constructor(
     private activatedRoute: ActivatedRoute,
     private productService: ProductService,
-    private router: Router
+    private router: Router,
+    private utilsService: UtilsService
   ) {
     this.activatedRoute.params.subscribe(
       params => {
         this.productId = params['id']
-        // this.productService.findById(params['id']).subscribe(data => this.product = data)
+        this.productService.findDetailById(params['id'])
+          .subscribe(data => {
+            if("result" in data) {
+              console.error(data.message)
+            } else {
+              this.product = data[0] as Product
+              this.imagesUrls = this.product.images.map(
+                image => this.utilsService.getImageFromBase64(image.imageUrl))
+            }
+          })
       }
     )
   }

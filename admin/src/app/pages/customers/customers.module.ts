@@ -7,8 +7,10 @@ import { CustomersRoutingModule } from './customers-routing.module';
 import { RouterModule } from '@angular/router';
 import { NbAccordionModule, NbActionsModule, NbButtonModule, NbCardModule, NbCheckboxModule, NbDatepickerModule, NbIconModule, NbInputModule, NbRadioModule, NbSelectModule } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { CustomCustomerActionComponent } from './customer-list/custom/custom-customer-action.component';
+import { CustomCustomerActionComponent } from './customer-list/custom/custom-customer-action/custom-customer-action.component';
 import { CustomCustomerImageComponent } from './customer-list/custom/custom-customer-image.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CustomCustomerFilterActionsComponent } from './customer-list/custom/custom-customer-filter-actions/custom-customer-filter-actions.component';
 
 
 
@@ -18,7 +20,8 @@ import { CustomCustomerImageComponent } from './customer-list/custom/custom-cust
     CustomerListComponent,
     CustomerDetailComponent,
     CustomCustomerActionComponent,
-    CustomCustomerImageComponent
+    CustomCustomerImageComponent,
+    CustomCustomerFilterActionsComponent,
   ],
   imports: [
     CustomersRoutingModule,
@@ -34,7 +37,9 @@ import { CustomCustomerImageComponent } from './customer-list/custom/custom-cust
     NbDatepickerModule,
     NbSelectModule,
     NbAccordionModule,
-    NbIconModule
+    NbIconModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class CustomersModule { }

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { BaseURLService } from "../base-url.service";
 import { OrderStatus } from '../../models/order/order-status.model';
+import { ModelResponse } from '../../models/response/ModelResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -43,14 +44,18 @@ export class OrderStatusService {
         let os: OrderStatus
         this.findAll().subscribe(
             data => {
-                os = data.find(status => status.orderStatusId == id)
+                if("result" in data) {
+                    console.log(data.message)
+                } else {
+                    os = data.find(status => status.orderStatusId == id)
+                }
             }
         )
         return of(os)
     }
 
 
-    findAll(): Observable<OrderStatus[]> {
+    findAll(): Observable<OrderStatus[] | ModelResponse> {
         const url: string = `${this.baseUrlService.baseURL}/order-status`
         return this.httpClient.get<OrderStatus[]>(url)
     }
@@ -60,13 +65,13 @@ export class OrderStatusService {
         return this.httpClient.post<OrderStatus>(url, orderStatus);
     }
 
-    update(orderStatus: OrderStatus): Observable<boolean> {
+    update(orderStatus: OrderStatus): Observable<ModelResponse> {
         const url: string = `${this.baseUrlService.baseURL}/order-status/update`
-        return this.httpClient.post<boolean>(url, orderStatus);
+        return this.httpClient.post<ModelResponse>(url, orderStatus);
     }
 
-    delete(orderStatusId: number): Observable<boolean> {
+    delete(orderStatusId: number): Observable<ModelResponse> {
         const url: string = `${this.baseUrlService.baseURL}/order-status/delete/${orderStatusId}`
-        return this.httpClient.delete<boolean>(url);
+        return this.httpClient.get<ModelResponse>(url);
     }
 }

@@ -8,6 +8,9 @@ use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderAddress;
 use App\Models\OrderDetail;
+use App\Models\OrderStatus;
+use App\Models\PaymentMethod;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 
 class BEOrderController extends Controller
@@ -63,10 +66,11 @@ class BEOrderController extends Controller
         }
         $address = OrderAddress::where('order_id',$id) -> first();
         $road = $address -> address -> road_name;
+        $house = $address -> address -> house_name;
         $ward = $address -> address -> ward -> full_name_en;
         $district = $address -> address -> district -> full_name_en;
         $province = $address -> address -> province -> full_name_en;
-        $shippingAddress = $road .", " . $ward .", " .  $district .", " .  $province;
+        $shippingAddress = $house.", " . $road .", " . $ward .", " .  $district .", " .  $province;
         $orderData[] = [
             'orderId' => $order->order_id,
             'orderTrackingNumber' => $order->order_tracking_number,
@@ -118,6 +122,45 @@ class BEOrderController extends Controller
         ]);
     }
 
+    public function findSize($id){
+        $products = ProductVariant::where('product_id', $id) -> get();
+        foreach ($products as $product){
+            $size = $product -> height . 'cm x ' . $product -> width . 'cm';
+            $sizeData[] = $size;
+        }
+        return response() -> json($sizeData);
+    }
+
+    public function findColor($id, $size){
+        $split = array_map('trim', explode('x', $size));
+        $height = (int)$split[0];
+        $width = (int)$split[1];
+        $products = ProductVariant::where('product_id', $id)
+                                -> where('height', $height)
+                                -> where('width', $width)
+                                -> get();
+        foreach($products as $product){
+            $colorData[] = $product -> color -> color_name;
+        }
+        return response() -> json($colorData);
+    }
+
+    public function findPrice($id, $size, $color){
+        $split = array_map('trim', explode('x', $size));
+        $height = (int)$split[0];
+        $width = (int)$split[1];
+        $products = ProductVariant::where('product_id', $id)
+                                -> where('height', $height)
+                                -> where('width', $width)
+                                -> get();
+        $price = 0;
+        foreach($products as $product){
+            if($product -> color -> color_name == $color){
+                $price = $product -> price;
+            }
+        }
+        return response() -> json($price);
+    }
     public function create(Request $request){
         $validatedData = $request->validate([
             'customerEmail' => 'required|email',
@@ -126,15 +169,16 @@ class BEOrderController extends Controller
             'totalQuantity' => 'required|numeric',
             'orderStatusId' => 'required|integer',
             'paymentMethodId' => 'required|integer',
-            'province' => 'nullable',
-            'district' => 'nullable',
-            'ward'=> 'nullable',
-            'address' => 'nullable',
+            'addressId' => 'nullable',
+            'houseNumber' => 'required',
+            'roadName' => 'required',
+            'wardCode' => 'required',
+            'districtCode'=> 'required',
+            'provinceCode' => 'required',
             'products' => 'required|array',
             'products.*.productId' => 'required|integer',
-            'products.*.height' => 'required|numeric',
-            'products.*.width' => 'required|numeric',
-            'products.*.color' => 'nullable|integer',
+            'products.*.size' => 'required',
+            'products.*.color' => 'required',
             'products.*.quantity' => 'required|integer',
             'products.*.price' => 'required|numeric'
         ]);
@@ -149,29 +193,51 @@ class BEOrderController extends Controller
         $order -> created_at = now();
         $order -> save();
 
-        $address = new Address();
-        $address -> road_name = $validatedData['address'];
-        if(isset($validatedData['ward']))
-            $address -> wards_code = $validatedData['ward'];
-        if(isset($validatedData['district']))
-            $address -> district_code = $validatedData['district'];
-        if(isset($validatedData['province']))
-            $address -> province_code = $validatedData['province'];
+        if(isset($validatedData['addressId'])){
+            $address = Address::find($validatedData['addressId']);
+        } else {
+            $address = new Address();
+            $check = Address::all() -> count();
+            $lastAddress = null;
+            if($check > 0){
+                $lastAddress = Address::orderBy('address_id', 'desc')->first();
+                $address -> address_id = $lastAddress ->address_id + 1;
+            } else {
+                $address -> address_id = 1;
+            }
+        }
+        $address -> house_number = $validatedData['houseNumber'];
+        $address -> road_name = $validatedData['roadName'];
+        $address -> wards_code = $validatedData['wardCode'];
+        $address -> district_code = $validatedData['districtCode'];
+        $address -> province_code = $validatedData['provinceCode'];
         $address -> save();
 
         $shipping = new OrderAddress();
-        $shipping -> address_id = $address -> address_id;
-        $shipping -> account_id = $account -> account_id;
+        if(isset($validatedData['addressId'])){
+            $shipping -> address_id = $validatedData['addressId'];
+        } else {
+            $check = Address::all() -> count();
+            if($check > 0){
+                $shipping -> address_id = $lastAddress ->address_id + 1;
+            } else {
+                $shipping -> address_id = 1;
+            }
+        }
+        $shipping -> order_id = $order -> order_id;
         $shipping -> save();
 
         foreach($validatedData['products'] as $productData){
+            $split = array_map('trim', explode('x', $productData['size']));
+            $height = (int)$split[0];
+            $width = (int)$split[1];
             $detail = new OrderDetail();
             $detail -> order_id = $order -> order_id;
             $detail -> product_id = $productData['productId'];
             $detail -> quantity = $productData['quantity'];
-            $detail->height = $productData['height'] ?? null;
-            $detail->width = $productData['width'] ?? null;
-            $detail->color = $productData['color'] ?? null;
+            $detail->height = $height;
+            $detail->width = $width;
+            $detail->color = $productData['color'];
             $detail -> price = $productData['price'];
             $detail -> save();
         }
@@ -220,5 +286,19 @@ class BEOrderController extends Controller
             ];
         }
         return response()->json($productData);
+    }
+
+    public function findAllPayment(){
+        $payment = PaymentMethod::all();
+        if($payment -> isEmpty())
+            return response()->json('No result found!');
+        return response()->json($payment);
+    }
+
+    public function findAllStatus(){
+        $status = OrderStatus::all();
+        if($status -> isEmpty())
+            return response()->json('No result found!');
+        return response()->json($status);
     }
 }

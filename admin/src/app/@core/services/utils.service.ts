@@ -37,7 +37,11 @@ export class UtilsService {
         const day = parseInt(dateParts[0], 10);
         const month = parseInt(dateParts[1], 10) - 1; // Months are zero-based (0 - January, 1 - February, etc.)
         const year = parseInt(dateParts[2], 10);
-        
+      
         return new Date(year, month, day);
+      }
+
+    getImageFromBase64(image: string) {
+        return "data:image/png;base64," + image;
     }
 }

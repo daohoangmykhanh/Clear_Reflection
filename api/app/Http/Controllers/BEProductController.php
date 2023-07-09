@@ -218,25 +218,20 @@ class BEProductController extends Controller
     }
 
     public function hide($id){
-        $product = Product::Find($id);
+        $product = Product::find($id);
         if($product == null)
-            return response()-> json([
+            return response()->json([
                 'result' => false,
-                'message' => "Product doesnt exist!",
+                'message' => "Product doesn't exist!",
             ]);
-        if($product -> is_hide == true){
-            $product -> is_hide = false;
-            return response()-> json([
-                'result' => true,
-                'message' => "Product was hidden!",
-            ]);
-        } else {
-            $product -> is_hide = true;
-            return response()-> json([
-                'result' => true,
-                'message' => "Product was shown!",
-            ]);
-        }
+
+        $product->is_hide = !$product->is_hide;
+        $product->save();
+
+        return response()->json([
+            'result' => true,
+            'message' => ($product->is_hide) ? "Product was hidden!" : "Product was visible",
+        ]);
     }
     public function create(Request $request)
     {
@@ -530,6 +525,20 @@ class BEProductController extends Controller
             ]);
         }
         $images = ProductImage::where('product_id', $id) -> get();
+<<<<<<< HEAD
+        $images -> delete();
+        // if($images -> isNotEmpty()){
+        //     foreach($images as $imageSuper){
+        //         $img = Image::find($imageSuper->image_id);
+        //         $img -> delete();
+        //     }
+        // }
+        // $oldImageFilename = $img -> image_url;
+        // $oldImagePath = public_path('images/product/') . $oldImageFilename;
+        // if (file_exists($oldImagePath)) {
+        //     unlink($oldImagePath);
+        // };
+=======
         $imageData = null;
         foreach($images as $image){
             $img = Image::find($image->image_id);
@@ -545,6 +554,7 @@ class BEProductController extends Controller
             $imga = Image::find($data);
             $imga -> delete();
         }
+>>>>>>> 7a16ad51c21fcc79cac94e8aae693d2200420301
         $variants = ProductVariant::where('product_id', $id) -> get();
         foreach($variants as $variant){
             if($variant->image_id == null){

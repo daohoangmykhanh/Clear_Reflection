@@ -21,6 +21,7 @@ import { Address } from '../../../@core/models/address/address.model';
 import { Product } from '../../../@core/models/product/product.model';
 import { CustomValidator, isEmailNotExisting, isProductidNotExisting } from '../../../@core/validators/custom-validator';
 import { Order } from '../../../@core/models/order/order.model';
+import { ModelResponse } from '../../../@core/models/response/ModelResponse';
 
 @Component({
   selector: 'ngx-order-add',
@@ -57,8 +58,8 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     private productService: ProductService,
     private utilsService: UtilsService
   ) {
-      this.orderStatusService.findAll().subscribe(data => this.orderStatuses = data)
-      this.paymentMethodService.findAll().subscribe(data => this.paymentMethods = data)
+      // this.orderStatusService.findAll().subscribe(data => this.orderStatuses = data)
+      // this.paymentMethodService.findAll().subscribe(data => this.paymentMethods = data)
   }
   
   get products() { return this.addOrderFormGroup.controls["products"] as FormArray }
@@ -86,22 +87,22 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     this.onAddressChange()
   }
   
-  productCompleter$: Observable<Product[]>
+  productCompleter$: Observable<Product[] | ModelResponse>
   productCompleter(productFormIndex: number) {
-    // this.productCompleter$ = this.products.at(productFormIndex).get('id').valueChanges.pipe(
-    //   startWith(''),
-    //   switchMap(enteredProductName => {
-    //     if(this.products.at(productFormIndex).get('id').value == '' ||
-    //       this.products.at(productFormIndex).get('id').value == null
-    //     ) {
-    //       return this.productService.findAll()
-    //     }
-    //     return this.productService.findByNameKeyword(enteredProductName)
-    //   })
-    // );
+    this.productCompleter$ = this.products.at(productFormIndex).get('id').valueChanges.pipe(
+      startWith(''),
+      switchMap(enteredProductName => {
+        if(this.products.at(productFormIndex).get('id').value == '' ||
+          this.products.at(productFormIndex).get('id').value == null
+        ) {
+          return this.productService.findAll()
+        }
+        return this.productService.findByNameKeyword(enteredProductName)
+      })
+    );
   }
 
-  accountCompleter$: Observable<Account[]>;
+  accountCompleter$: Observable<Account[] | ModelResponse>;
   accountCompleter() {
     this.accountCompleter$ = this.addOrderFormGroup.get('email').valueChanges.pipe(
       startWith(''),

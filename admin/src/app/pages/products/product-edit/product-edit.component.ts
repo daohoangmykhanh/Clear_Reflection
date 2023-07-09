@@ -62,6 +62,7 @@ export class ProductEditComponent implements OnInit {
               console.error(data.message);
             } else {
               this.edittingProduct = data[0] as Product;
+              
             }
           }
         )
@@ -108,7 +109,6 @@ export class ProductEditComponent implements OnInit {
       },
       error => {
         console.error(error);
-        // Handle error if any of the observables fail
       }
     );
   }
@@ -124,7 +124,7 @@ export class ProductEditComponent implements OnInit {
     this.product.get('images').setValue(this.edittingProduct.images)
 
     let images: string[] = this.edittingProduct.images.map((img: Image) => {
-      return img.imageUrl;
+      return this.utilsService.getImageFromBase64(img.imageUrl);
     })
     this.carousel.show(images);
 
@@ -150,7 +150,11 @@ export class ProductEditComponent implements OnInit {
         variantForm.get('colorType').setValue('Custom Color')
         variantForm.get('customColorValue').setValue(variant.color.colorName)
       }
-      if(variant.image != undefined) variantForm.get('image').setValue(variant.image.imageUrl)
+      if(variant.image != undefined) { 
+        variantForm.get('image').setValue(
+          this.utilsService.getImageFromBase64(variant.image.imageUrl)
+        )
+      }
     }
 
   }
@@ -231,8 +235,6 @@ export class ProductEditComponent implements OnInit {
       this.utilsService.updateToastState(new ToastState('edit', 'product', 'danger'))
       return;
     }
-    console.log(this.product.value);
-    
 
     const editedProduct: Product = this.mapFormValue()
     console.log(editedProduct)

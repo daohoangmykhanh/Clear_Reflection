@@ -13,24 +13,38 @@ class BEAccountController extends Controller
     public function index(){
         $accounts = Account::all();
         if($accounts -> isEmpty()){
-            return response()->json('No results found!');
+            return response()->json([
+                'result' => false,
+                'message' => 'Delete successfully !'
+            ]);
         }
         foreach($accounts as $account){
-            $order = Order::where('account_id', $account -> account_id) -> get() -> count();
+            $image = null;
+            if ($account->image_id !== null) {
+                $storagePath = public_path('images/account/');
+                $filename = $account->image->image_url;
+                $data = file_get_contents($storagePath. $filename);
+                $base64Image = base64_encode($data);
+                $image = [
+                    'imageId' => $account->image->image_id,
+                    'imageUrl' => $base64Image,
+                ];
+            }
+            $role = $account->role;
+            $totalOrders = Order::where('account_id', $account -> account_id) -> get() -> count();
             $role = $account->role;
             $accountData[] = [
                 'accountId' => $account->account_id,
-                'username' => $account->username,
                 'password' => $account->password,
                 'fullName' => $account->full_name,
                 'email' => $account->email,
                 'phoneNumber' => $account->phone_number,
-                'imageId' => $account->image_id,
+                'image' => $image,
                 'role' => [
                     'roleId' => $role->role_id,
                     'name' => $role->name,
                 ],
-                'order' => $order,
+                'order' => $totalOrders,
                 'createdAt' => $account->created_at,
                 'updatedAt' => $account->updated_at,
             ];
@@ -40,38 +54,32 @@ class BEAccountController extends Controller
 
     public function create(Request $request){
         $validatedData = $request->validate([
-            'username' => 'required|unique:account,username',
             'password' => 'required',
             'fullName' => 'required',
             'email' => 'required|email',
             'phoneNumber' => 'required',
-            'image' => 'nullable',
+            'roleId' => 'required',
+            'image' => 'required|string',
         ]);
-        $account = new Account();
-        $account -> username = $validatedData['username'];
-        $account -> password = bcrypt($validatedData['password']);
-        $account -> full_name = $validatedData['fullName'];
-        $account -> email = $validatedData['email'];
-        $account -> phone_number = $validatedData['phoneNumber'];
-        $account -> role_id = 2;
-
-        $image = new Image();
-        $base64String = $validatedData['image'];
-        $base64Data = substr($base64String, strpos($base64String, ',') + 1);
-        $imageData = base64_decode($base64Data);
-        $filename = uniqid() . '.png';
-        $storagePath = public_path('images/account/');
-        file_put_contents($storagePath. $filename, $imageData);
-        $image->image_url = $filename;
-        $image->save();
-
-        $account -> image_id = $image -> image_id;
-        $result = $account -> save();
-
+        $result = Account::store($validatedData);
         if(!$result)
             return response()->json([
-                    'result' => false,
-                    'message' => 'Created unsuccessfully'
+                'result' => false,
+                'message' => 'Created unsuccessfully !'
+            ]);
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Created successfully !'
+        ]);
+    }
+
+    public function edit($id){
+        $account = Account::Find($id);
+        if($account == null )
+            return response()->json([
+                'result' => true,
+                'message' => 'Created successfully !'
             ]);
 
         return response()->json($account);
@@ -89,6 +97,7 @@ class BEAccountController extends Controller
         if(isset($validatedData['password'])){
             $account -> password = bcrypt($validatedData['password']);
         }
+        $account -> full_name = $validatedData['fullName'];
         $account -> email = $validatedData['email'];
         $account -> phone_number = $validatedData['phoneNumber'];
         if(isset($validatedData['image'])){
@@ -125,39 +134,68 @@ class BEAccountController extends Controller
             ]);
     }
     public function detail($id){
-        $orders = Order::where('account_id',$id) -> get();
-        if($orders -> isEmpty())
-            return response()->json('Customer doesnt have any order!');
-        foreach($orders as $order){
-            $shippingAddress = null;
-            $address = OrderAddress::where('order_id', $order->order_id) -> first();
-            if($address){
-                $road = $address -> address -> road_name;
-                $ward = $address -> address -> ward -> full_name_en;
-                $district = $address -> address -> district -> full_name_en;
-                $province = $address -> address -> province -> full_name_en;
-                $shippingAddress = $road .", " . $ward .", " .  $district .", " .  $province;
-            }
-            $coupon = null;
-            if($order -> coupon_id != null){
-                $coupon = [
-                    'coupon_id' => $order -> coupon -> coupon_id,
-                    'code' => $order -> coupon -> code
-                ];
-            }
-
-            $orderData[] = [
-                'orderTrackingNumber' => $order -> order_tracking_number,
-                'couponCode' => $coupon,
-                'totalPrice' => $order -> total_price,
-                'totalQuantity' => $order -> total_quantity,
-                'orderStatus' => $order -> status -> status_name,
-                'paymentMethod' => $order -> payment -> payment_method_name,
-                'shippingAddress' => $shippingAddress
+        $account = Account::Find($id);
+        if($account == null ) {
+            return response()->json([
+                'result' => true,
+                'message' => 'Not Found!'
+            ]);
+        }
+        if ($account->image_id !== null) {
+            $storagePath = public_path('images/account/');
+            $filename = $account->image->image_url;
+            $data = file_get_contents($storagePath. $filename);
+            $base64Image = base64_encode($data);
+            $image = [
+                'imageId' => $account->image->image_id,
+                'imageUrl' => $base64Image,
             ];
         }
+        $orders = Order::where('account_id',$id) -> get();
+        if($orders -> isNotEmpty()) {
+            foreach($orders as $order){
+                $shippingAddress = null;
+                $address = OrderAddress::where('order_id', $order->order_id) -> first();
+                if($address){
+                    $road = $address -> address -> road_name;
+                    $ward = $address -> address -> ward -> full_name_en;
+                    $district = $address -> address -> district -> full_name_en;
+                    $province = $address -> address -> province -> full_name_en;
+                    $shippingAddress = $road .", " . $ward .", " .  $district .", " .  $province;
+                }
+                $coupon = null;
+                if($order -> coupon_id != null){
+                    $coupon = [
+                        'coupon_id' => $order -> coupon -> coupon_id,
+                        'code' => $order -> coupon -> code
+                    ];
+                }
 
-        return response()->json($orderData);
+                $orderData[] = [
+                    'orderTrackingNumber' => $order -> order_tracking_number,
+                    'couponCode' => $coupon,
+                    'totalPrice' => $order -> total_price,
+                    'totalQuantity' => $order -> total_quantity,
+                    'orderStatus' => $order -> status -> status_name,
+                    'paymentMethod' => $order -> payment -> payment_method_name,
+                    'shippingAddress' => $shippingAddress
+                ];
+            }
+        }
+
+        $accountData = [
+            'accountId' => $account->account_id,
+            'password' => $account->password,
+            'fullName' => $account->full_name,
+            'email' => $account->email,
+            'phoneNumber' => $account->phone_number,
+            'image' => $image,
+            'createdAt' => $account->created_at,
+            'updatedAt' => $account->updated_at,
+            'orders' => $orders
+        ];
+
+        return response()->json($accountData);
 
     }
 }

@@ -3,14 +3,14 @@ import { BaseURLService } from '../base-url.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs-compat';
 import { ProductCategory } from '../../models/product/product-category.model';
-import { of, BehaviorSubject } from 'rxjs';
+import { of, BehaviorSubject, Subject } from 'rxjs';
 import { ModelResponse } from '../../models/response/ModelResponse';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductCategoryService {
-
+// change between add & edit form
   private stateSubject: BehaviorSubject<string> = new BehaviorSubject<string>('add');
   private rowDataSubject: BehaviorSubject<ProductCategory> = new BehaviorSubject<ProductCategory>(null);
 
@@ -22,6 +22,19 @@ export class ProductCategoryService {
     if(rowData != undefined) {
       this.rowDataSubject.next(rowData as ProductCategory); 
     }
+  }
+
+  // for changing when create, edit, delete => reload
+  private categoryChangeSubject = new Subject<void>();
+
+  // Getter for the subject as an observable
+  get categoryChange$(): Observable<void> {
+    return this.categoryChangeSubject.asObservable();
+  }
+
+  // Call this method whenever a change occurs in the product list
+  notifyCategoryChange(): void {
+    this.categoryChangeSubject.next();
   }
   
   constructor(
@@ -41,12 +54,12 @@ export class ProductCategoryService {
   }
 
   update(category: ProductCategory): Observable<boolean> {
-    const url: string = `${this.baseUrlService.baseURL}/category/update`
+    const url: string = `${this.baseUrlService.baseURL}/category/update/${category.categoryId}`
     return this.httpClient.post<boolean>(url, category);
   }
 
-  delete(categoryId: number): Observable<boolean> {    
+  delete(categoryId: number): Observable<ModelResponse> {    
     const url: string = `${this.baseUrlService.baseURL}/category/delete/${categoryId}`
-    return this.httpClient.delete<boolean>(url); 
+    return this.httpClient.get<ModelResponse>(url); 
   }
 }

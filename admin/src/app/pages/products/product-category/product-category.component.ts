@@ -1,3 +1,5 @@
+import { takeUntil } from 'rxjs/operators';
+import { Subject} from 'rxjs'
 import { Component, ViewChild, OnInit } from "@angular/core";
 import { LocalDataSource } from "ng2-smart-table";
 import { Router } from "@angular/router";
@@ -17,8 +19,8 @@ import { ToastState, UtilsService } from "../../../@core/services/utils.service"
 })
 export class ProductCategoryComponent implements OnInit {
   state: string = "add"; // default
+  private unsubscribe = new Subject<void>();
   
-  addCategoryFormGroup: FormGroup;
   editCategoryFormGroup: FormGroup;
   // Setting for List layout
   numberOfItem: number = localStorage.getItem('itemPerPage') != null ? +localStorage.getItem('itemPerPage') : 10; // default
@@ -32,7 +34,7 @@ export class ProductCategoryComponent implements OnInit {
     },
     mode: "external", // when add/edit -> navigate to another url
     columns: {
-      imageUrl: {
+      image: {
         title: "Image",
         type: "custom",
         renderComponent: CustomCategoryImageComponent,
@@ -70,50 +72,36 @@ export class ProductCategoryComponent implements OnInit {
     private utilsService: UtilsService,
     private router: Router
   ) {
+  }
+  
+  ngOnInit() {
+    this.categoryService.categoryChange$
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(() => {
+        this.loadCategories();
+      });
+    this.categoryService.state$.subscribe((state) => {
+      this.state = state;
+    })
+    this.loadCategories()
+  }
+
+  loadCategories() {
     this.categoryService.findAll().subscribe(
       data => {
         if ("result" in data) {
           console.error(data.message);
         } else {
-          this.source.load(data)
+          const mappedCategories: any[] = data.map(cate => {
+            return {
+              categoryId: cate.categoryId,
+              image: this.utilsService.getImageFromBase64(cate.image.imageUrl),
+              categoryName: cate.categoryName
+            }
+          })
+          this.source.load(mappedCategories )
         }
       })
-    this.addCategoryFormGroup = this.formBuilder.group({
-      name: ['', [CustomValidator.notBlank, Validators.maxLength(100)]],
-      imageUrl: [, [Validators.required]]
-    })
-    this.editCategoryFormGroup = this.formBuilder.group({
-      id: [],
-      name: ['', [CustomValidator.notBlank, Validators.maxLength(100)]],
-      imageUrl: [, [Validators.required]]
-    })
-    this.categoryService.state$.subscribe((state) => {
-      this.state = state;
-    });
-  }
-  
-  ngOnInit() {
-    this.categoryService.rowData$.subscribe((rowData) => {
-      if (rowData) {
-        this.editCategoryFormGroup.get('id').setValue(rowData.categoryId);
-        this.editCategoryFormGroup.get('name').setValue(rowData.categoryName);
-        this.editCategoryFormGroup.get('imageUrl').setValue(rowData.imageUrl);
-      }
-    });
-  }
-  
-  selectFile(event: any) {
-    if(event.target.files) {
-      const reader = new FileReader();
-        reader.onload = (event: any) => {
-          if(this.state == 'add') {
-            this.addCategoryFormGroup.get('imageUrl').setValue(event.target.result)
-          } else if (this.state == 'edit') {
-            this.editCategoryFormGroup.get('imageUrl').setValue(event.target.result)
-          }
-        };
-        reader.readAsDataURL(event.target.files[0]);
-    }
   }
 
   changeCursor(): void {
@@ -126,41 +114,5 @@ export class ProductCategoryComponent implements OnInit {
   numberOfItemsChange() {
     localStorage.setItem('itemPerPage', this.numberOfItem.toString())
     this.source.setPaging(1, this.numberOfItem)
-  }
-
-  createCategory() {
-    if(this.addCategoryFormGroup.invalid) {
-      this.addCategoryFormGroup.markAllAsTouched();
-      this.utilsService.updateToastState(new ToastState('add', 'category', 'danger'))
-      return;
-    }
-
-    let category: ProductCategory = new ProductCategory()
-    category.categoryName = this.addCategoryFormGroup.get('name').value
-    category.image = this.addCategoryFormGroup.get('imageUrl').value
-    if(this.categoryService.insert(category)) {
-      this.utilsService.updateToastState(new ToastState('add', 'category', 'success'))
-      this.addCategoryFormGroup.reset()
-      this.router.navigate(['/admin/products/category'])
-    }
-  }
-
-  editCategory() {
-    if(this.editCategoryFormGroup.invalid) {
-      this.editCategoryFormGroup.markAllAsTouched();
-      this.utilsService.updateToastState(new ToastState('edit', 'category', 'danger'))
-      return;
-    }
-
-    let category: ProductCategory = new ProductCategory()
-    category.categoryId = this.editCategoryFormGroup.get('id').value
-    category.categoryName = this.addCategoryFormGroup.get('name').value
-    category.image = this.addCategoryFormGroup.get('imageUrl').value
-
-    if(this.categoryService.update(category)) {
-      this.utilsService.updateToastState(new ToastState('edit', 'category', 'success'))
-      this.categoryService.updateHandleAndRowData('add');
-      this.router.navigate(['/admin/products/category'])
-    }
   }
 }

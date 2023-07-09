@@ -10,7 +10,10 @@ class BEProductStyleController extends Controller
     public function index(){
         $styles = ProductStyle::all();
         if($styles -> isEmpty()){
-            return response()->json('No results found!');
+            return response()->json([
+                'result' => false,
+                'message' => "No results found!",
+            ]);
         }
         foreach($styles as $style){
             $styleData[] = [

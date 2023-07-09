@@ -1,3 +1,4 @@
+import { takeUntil } from 'rxjs/operators';
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Router } from '@angular/router';
@@ -8,9 +9,12 @@ import { PaymentMethodService } from '../../../@core/services/order/payment-meth
 import { OrderStatusService } from '../../../@core/services/order/order-status.service';
 import { OrderService } from '../../../@core/services/order/order.service';
 import { DatePipe } from '@angular/common';
-import { CustomCustomerActionComponent } from './custom/custom-customer-action.component';
+import { CustomCustomerActionComponent } from './custom/custom-customer-action/custom-customer-action.component';
 import { CustomCustomerImageComponent } from './custom/custom-customer-image.component';
 import { AccountService } from '../../../@core/services/account/account.service';
+import { UtilsService } from '../../../@core/services/utils.service';
+import { CustomCustomerFilterActionsComponent } from './custom/custom-customer-filter-actions/custom-customer-filter-actions.component';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: "ngx-customer-list",
@@ -23,6 +27,7 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
   // Setting for List layout
   paymentMethods: PaymentMethod[];
   orderStatuses: OrderStatus[];
+  private unsubscribe = new Subject<void>();
 
   settings = {};
 
@@ -30,6 +35,7 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
   constructor(
     private accountService: AccountService,
     private router: Router,
+    private utilsService: UtilsService
   ) {
     this.settings = {
       actions: {
@@ -64,11 +70,6 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
           title: 'Phone Number',
           type: 'string',
         },
-        address: {
-          title: 'Address',
-          type: 'string',
-          width: '20%'
-        },
         totalOrder: {
           title: 'Total Orders',
           type: 'number',
@@ -82,7 +83,10 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
           title: 'Actions',
           type: 'custom',
           sort: false,
-          filter: false,
+          filter: {
+            type: 'custom',
+            component: CustomCustomerFilterActionsComponent,
+          },
           renderComponent: CustomCustomerActionComponent
         }
       },
@@ -91,27 +95,36 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
         perPage: this.numberOfItem
       },
     }
+    this.accountService.accountChange$
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(() => {
+        this.loadCustomers();
+      });
+    this.loadCustomers();
+  }
+
+  loadCustomers() {
     this.accountService.findAll().subscribe(
       data => {
-        const mappedAccounts: any[] = data.map(account => {
-          console.log(account);
-          
-          return {
-            accountId: account.accountId,
-            imageUrl: account.image,
-            fullName: account.fullName,
-            email: account.email,
-            phoneNumber: account.phoneNumber,
-            createdAt: new DatePipe('en-US').transform(account.createdAt, 'dd/MM/yyyy').toString(),
-            totalOrder: account.orders != undefined ? account.orders.length : 0
-          }
-        })
-        this.source.load(mappedAccounts)
+        if("result" in data) {
+          console.error(data)
+        } else {
+          const mappedAccounts: any[] = data.map(account => {
+            return {
+              accountId: account.accountId,
+              imageUrl: this.utilsService.getImageFromBase64(account.image.imageUrl),
+              fullName: account.fullName,
+              email: account.email,
+              phoneNumber: account.phoneNumber,
+              createdAt:  new DatePipe('en-US').transform(account.createdAt, 'dd-MM-yyyy'),
+              totalOrder: account.orders != undefined ? account.orders.length : 0
+            }
+          })
+          this.source.load(mappedAccounts)
+        }
       }
     )
   }
-
-  
   ngOnInit(): void {
     let x;
   }

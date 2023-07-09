@@ -20,7 +20,7 @@ import { ProductStyleService } from "../../../../@core/services/product/product-
                 </button>
             </div>
             <div class="col-lg-6  d-flex justify-content-center">
-                <button nbButton status="danger" (click)="onDelete($event)">
+                <button nbButton status="danger" (click)="onDelete()">
                     <nb-icon icon="trash-outline"></nb-icon>
                 </button>
             </div>
@@ -45,6 +45,19 @@ import { ProductStyleService } from "../../../../@core/services/product/product-
                 </button>
             </div>
         </ng-template>
+
+        <ng-template #onDeleteTemplate let-data>
+            <nb-card>
+                <nb-card-header>
+                        Are you sure you want to delete this style?
+                </nb-card-header>
+                <nb-card-body>
+                    <button nbButton status="success" class="mt-3" (click)="deleteStyle()">
+                        CONFIRM
+                    </button>
+                </nb-card-body>
+            </nb-card>
+        </ng-template>
     `,
 })
 
@@ -58,7 +71,9 @@ export class CustomStyleActionComponent implements ViewCell, OnInit {
     @ViewChild('editStyle') editStyle: TemplateRef<any>;
     editStyleFormGroup: FormGroup;
 
-
+    @ViewChild('onDeleteTemplate') deleteWindow: TemplateRef<any>;
+    deleteWindowRef: NbWindowRef;
+    
     constructor(
         private windowService: NbWindowService,
         private formBuilder: FormBuilder,
@@ -79,12 +94,9 @@ export class CustomStyleActionComponent implements ViewCell, OnInit {
         }
     }
 
-    onDelete(event: any) {
-        if (window.confirm('Are you sure you want to delete?')) {
-            event.confirm.resolve();
-        } else {
-            event.confirm.reject();
-        }
+    onDelete() {
+        this.deleteWindowRef = this.windowService
+            .open(this.deleteWindow, { title: `Delete Style` });
     }
 
     onEdit() {
@@ -96,15 +108,40 @@ export class CustomStyleActionComponent implements ViewCell, OnInit {
     ediStyle() {
         if (this.editStyleFormGroup.invalid) {
             this.editStyleFormGroup.markAllAsTouched();
-            this.utilsService.updateToastState(new ToastState('add', 'style', 'danger'))
+            this.utilsService.updateToastState(new ToastState('edit', 'style', 'danger'))
             return;
         }
         let style: ProductStyle = this.editStyleFormGroup.value as ProductStyle
         console.log(style);
-        if (this.styleService.insert(style)) {
-            this.utilsService.updateToastState(new ToastState('add', 'style', 'success'))
-            this.windowRef.close();
-            this.router.navigate(['/admin/products/style-n-shape'])
-        }
+        this.styleService.update(style).subscribe(
+            data => {
+                if(data.result) {
+                    this.utilsService.updateToastState(new ToastState('edit', 'style', 'success'))
+                    this.windowRef.close();
+                    this.styleService.notifyStyleChange()
+                }
+            }
+        )
     }
+
+    deleteStyle() {
+        this.styleService.delete(this.rowData.productStyleId).subscribe(
+            data => {
+                if (data.result) {
+                    this.deleteWindowRef.close()
+                    this.styleService.notifyStyleChange();
+                    this.utilsService.updateToastState(new ToastState('delete', 'style', 'success'))
+                } else {
+                    this.utilsService.updateToastState(new ToastState('delete', 'style', 'danger'))
+                }
+            },
+            error => {
+                this.utilsService.updateToastState(new ToastState('delete', 'style', 'danger'))
+                console.log(error);
+
+            }
+        )
+    }
+
+
 }

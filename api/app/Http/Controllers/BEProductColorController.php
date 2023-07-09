@@ -11,7 +11,10 @@ class BEProductColorController extends Controller
     public function index(){
         $colors = ProductColor::all();
         if($colors -> isEmpty()){
-            return response()->json('No results found!');
+            return response()->json([
+                'result' => false,
+                'message' => "No results found!",
+            ]);
         }
         foreach($colors as $color){
             $colorData[] = [
@@ -34,7 +37,7 @@ class BEProductColorController extends Controller
                 'result' => false,
                 'message' => "Created color unsuccessfully!",
             ]);
-        
+
         return response()->json($result);
     }
 
@@ -49,7 +52,7 @@ class BEProductColorController extends Controller
                 'result' => false,
                 'message' => "Color doesn't exist!",
             ]);
-        
+
         $result -> color_name = $validatedData['colorName'];
         $result -> save();
         return response()->json([
@@ -76,7 +79,7 @@ class BEProductColorController extends Controller
                 'result' => false,
                 'message' => "Deleted color unsuccessfully!",
             ]);
-    
+
         return response()->json([
             'result' => true,
             'message' => "Deleted color successfully!",

@@ -1,3 +1,4 @@
+import { forkJoin } from 'rxjs';
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Router } from '@angular/router';
@@ -22,7 +23,20 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
   paymentMethods: PaymentMethod[];
   orderStatuses: OrderStatus[];
 
-  settings = {};
+  settings = {
+    actions: {
+      position: 'right',
+      edit: false,
+      delete: false,
+      add: false,
+      columnTitle: ''
+    },
+    columns: {},
+    pager: {
+      display: true,
+      perPage: this.numberOfItem
+    },
+  };
 
 
   constructor(
@@ -31,81 +45,101 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
     private orderStatusService: OrderStatusService,
     private orderService: OrderService
   ) {
-    this.paymentMethodService.findAll().subscribe(data => this.paymentMethods = data)
-    this.orderStatusService.findAll().subscribe(data => this.orderStatuses = data)
+    const paymentObservable = this.paymentMethodService.findAll();
+    const orderStatusObservable = this.orderStatusService.findAll();
 
-    this.settings = {
-      actions: {
-        position: 'right',
-        edit: false,
-        delete: false,
-        add: false,
-        columnTitle: ''
-      },
-      columns: {
-        orderId: {
-          title: 'ID',
-          type: 'number',
-          width: '3%'
-        },
-        orderTrackingNumber: {
-          title: 'Tracking Number',
-          type: 'string',
-        },
-        totalPrice: {
-          title: 'Total Price',
-          type: 'string',
-        },
-        totalQuantity: {
-          title: 'Total Quantity',
-          type: 'string',
-        },
-        paymentMethod: {
-          title: 'Payment Method',
-          type: 'string',
-          filter: {
-            type: 'list',
-            config: {
-              selectText: 'Method...',
-              list: this.paymentMethods.map(pm => {
-                return { value: pm.paymentMethodName, title: pm.paymentMethodName}
-              }) ,
-            },
-          },
-        },
-        orderStatus: {
-          title: 'Order Status',
-          type: 'string',
-          filter: {
-            type: 'list',
-            config: {
-              selectText: 'Status...',
-              list: this.orderStatuses.map(status => {
-                return { value: status.statusName, title: status.statusName}
-              }) 
-            },
-          },
-        },
-        createdAt: {
-          title: 'Created Date',
-          type: 'string',
-        },
-        actions: {
-          title: 'Actions',
-          type: 'custom',
-          sort: false,
-          filter: {
-            type: 'custom',
-            component: CustomOrderFilterActionsComponent,
-          },
-          renderComponent: CustomOrderActionComponent
+    forkJoin([paymentObservable, orderStatusObservable ]).subscribe(
+      ([paymentData, orderStatusDate]) => {
+        if ("result" in paymentData) {
+          console.error(paymentData.message);
+        } else {
+          this.paymentMethods = paymentData;
         }
-      },
-      pager: {
-        display: true,
-        perPage: this.numberOfItem
-      },
-    }
+
+        if ("result" in orderStatusDate) {
+          console.error(orderStatusDate.message);
+        } else {
+          this.orderStatuses = orderStatusDate;
+        }
+
+        this.settings = {
+          actions: {
+            position: 'right',
+            edit: false,
+            delete: false,
+            add: false,
+            columnTitle: ''
+          },
+          columns: {
+            orderId: {
+              title: 'ID',
+              type: 'number',
+              width: '3%'
+            },
+            orderTrackingNumber: {
+              title: 'Tracking Number',
+              type: 'string',
+            },
+            totalPrice: {
+              title: 'Total Price',
+              type: 'string',
+            },
+            totalQuantity: {
+              title: 'Total Quantity',
+              type: 'string',
+            },
+            paymentMethod: {
+              title: 'Payment Method',
+              type: 'string',
+              filter: {
+                type: 'list',
+                config: {
+                  selectText: 'Method...',
+                  list: this.paymentMethods.map(pm => {
+                    return { value: pm.paymentMethodName, title: pm.paymentMethodName}
+                  }) ,
+                },
+              },
+            },
+            orderStatus: {
+              title: 'Order Status',
+              type: 'string',
+              filter: {
+                type: 'list',
+                config: {
+                  selectText: 'Status...',
+                  list: this.orderStatuses.map(status => {
+                    return { value: status.statusName, title: status.statusName}
+                  }) 
+                },
+              },
+            },
+            createdAt: {
+              title: 'Created Date',
+              type: 'string',
+            },
+            actions: {
+              title: 'Actions',
+              type: 'custom',
+              sort: false,
+              filter: {
+                type: 'custom',
+                component: CustomOrderFilterActionsComponent,
+              },
+              renderComponent: CustomOrderActionComponent
+            }
+          },
+          pager: {
+            display: true,
+            perPage: this.numberOfItem
+          },
+        }
+      }
+    )
+    
+  }
+
+  loadOrders() {
     this.orderService.findAll().subscribe(
       data => {
         const mappedOrders: any[] = data.map(order => {

@@ -1,3 +1,4 @@
+import { takeUntil } from 'rxjs/operators';
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Router } from '@angular/router';
@@ -13,9 +14,9 @@ import { ProductStyle } from '../../../@core/models/product/product-style.model'
 import { ProductCategory } from '../../../@core/models/product/product-category.model';
 import { CustomCategoryImageComponent } from '../product-category/custom/custom-category-image.component';
 import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
-import { ModelResponse } from '../../../@core/models/response/ModelResponse';
 import { Product } from '../../../@core/models/product/product.model';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
+import { UtilsService } from '../../../@core/services/utils.service';
 
 @Component({
   selector: 'ngx-product-list',
@@ -23,6 +24,7 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./product-list.component.scss']
 })
 export class ProductListComponent implements OnInit, AfterViewInit {
+  private unsubscribe = new Subject<void>();
   numberOfItem: number = localStorage.getItem('itemPerPage') != null ? +localStorage.getItem('itemPerPage') : 10; // default
   source: LocalDataSource = new LocalDataSource();
   // Setting for List layout
@@ -53,16 +55,25 @@ export class ProductListComponent implements OnInit, AfterViewInit {
     private shapeService: ProductShapeService,
     private styleService: ProductStyleService,
     private colorService: ProductColorService,
-    private toastService: NbToastrService
+    private toastService: NbToastrService,
+    private utilsService: UtilsService
   ) {
 
   }
 
   ngOnInit(): void {
-    const categoryObservable = this.categoryService.findAll();
+    this.productService.productChange$
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(() => {
+        this.loadProducts();
+      });
+
+    // Initial load of the product list
     const shapeObservable = this.shapeService.findAll();
+    const categoryObservable = this.categoryService.findAll();
     const styleObservable = this.styleService.findAll();
 
+    
     // Combine the observables using forkJoin
     forkJoin([categoryObservable, shapeObservable, styleObservable]).subscribe(
       ([categoryData, shapeData, styleData]) => {
@@ -185,7 +196,10 @@ export class ProductListComponent implements OnInit, AfterViewInit {
         console.error("Error:", error);
       }
     );
+    this.loadProducts();
+  }
 
+  loadProducts() {
     this.productService.findAll().subscribe(
       data => {
         if ("result" in data) {
@@ -199,7 +213,7 @@ export class ProductListComponent implements OnInit, AfterViewInit {
               category: pro.category.categoryName,
               shape: pro.productShape.shapeName,
               style: pro.productStyle.styleName,
-              // image: pro.images[0].imageUrl,
+              image: (pro.images != undefined) ? this.utilsService.getImageFromBase64(pro.images[0].imageUrl) : 'assets/images/default-product.png',
               quantitySold: pro.quantitySold,
               totalLikes: pro.totalLikes,
               rating: pro.rating
@@ -213,8 +227,6 @@ export class ProductListComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     const pager = document.querySelector('ng2-smart-table-pager');
     pager.classList.add('d-block')
-    setTimeout(() => {
-    }, 1000);
   }
 
   changeCursor(): void {

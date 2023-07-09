@@ -42,22 +42,23 @@ class BECategoryController extends Controller
         try {
             $validatedData = $request->validate([
                 'categoryName' => 'required|unique:category,category_name',
-                'imageUrl' => 'nullable',
+                'image' => 'required|string',
+
             ]);
             $cate = new Category();
             $cate -> category_name = $validatedData['categoryName'];
-            if(isset($validatedData['imageUrl'])){
-                $image = new Image();
-                $base64String = $validatedData['imageUrl'];
-                $base64Data = substr($base64String, strpos($base64String, ',') + 1);
-                $imageData = base64_decode($base64Data);
-                $filename = uniqid() . '.png';
-                $storagePath = public_path('images/category/');
-                file_put_contents($storagePath. $filename, $imageData);
-                $image->image_url = $filename;
-                $image->save();
-                $cate -> image_id = $image -> image_id;
-            }
+            // for storing image
+            $image = new Image();
+            $base64String = $validatedData['image'];
+            $base64Data = substr($base64String, strpos($base64String, ',') + 1);
+            $imageData = base64_decode($base64Data);
+            $filename = uniqid() . '.png';
+            $storagePath = public_path('images/category/');
+            file_put_contents($storagePath. $filename, $imageData);
+            $image->image_url = $filename;
+            $image->save();
+            $cate -> image_id = $image -> image_id;
+
             $result = $cate -> save();
             if(!$result)
                 return response()->json([
@@ -78,34 +79,35 @@ class BECategoryController extends Controller
         try {
             $validatedData = $request->validate([
                 'categoryName' => 'required|unique:category,category_name,'. $id . ',category_id',
-                'imageUrl' => 'nullable',
+                'image' => 'required|string',
             ]);
             $cate = Category::find($id);
             $cate -> category_name = $validatedData['categoryName'];
-            if(isset($validatedData['imageUrl'])){
-                if($cate -> image_id != null){
-                    $oldImageFilename = $cate -> image -> image_url;
-                    $oldImagePath = public_path('images/category/') . $oldImageFilename;
-                    if (file_exists($oldImagePath)) {
-                        unlink($oldImagePath);
-                    }
-                    $image = Image::find($cate->image_id);
-                } else {
-                    $image = new Image();
-                }
 
-                $base64String = $validatedData['imageUrl'];
-                $base64Data = substr($base64String, strpos($base64String, ',') + 1);
-                $imageData = base64_decode($base64Data);
-                $filename = uniqid() . '.png';
-                $storagePath = public_path('images/category/');
-                file_put_contents($storagePath. $filename, $imageData);
-                $image->image_url = $filename;
-                $image->save();
-                $cate -> image_id = $image -> image_id;
+            // updating image
+            if($cate -> image_id != null){
+                $oldImageFilename = $cate -> image -> image_url;
+                $oldImagePath = public_path('images/category/') . $oldImageFilename;
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+                $image = Image::find($cate->image_id);
+            } else {
+                $image = new Image();
             }
 
+            $base64String = $validatedData['image'];
+            $base64Data = substr($base64String, strpos($base64String, ',') + 1);
+            $imageData = base64_decode($base64Data);
+            $filename = uniqid() . '.png';
+            $storagePath = public_path('images/category/');
+            file_put_contents($storagePath. $filename, $imageData);
+            $image->image_url = $filename;
+            $image->save();
+            $cate -> image_id = $image -> image_id;
+
             $result = $cate -> save();
+
             if(!$result)
                 return response()->json([
                     'result' => false,

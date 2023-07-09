@@ -1,11 +1,7 @@
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { Component, ViewChild, OnInit } from "@angular/core";
 import { LocalDataSource } from "ng2-smart-table";
-import { Router } from "@angular/router";
-import { ProductCategory } from "../../../@core/models/product/product-category.model";
-import { ProductCategoryService } from "../../../@core/services/product/product-category.service";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { CustomValidator } from "../../../@core/validators/custom-validator";
-import { ToastState, UtilsService } from "../../../@core/services/utils.service";
 import { CustomStyleFilterActionsComponent } from "./custom/custom-style-filter-actions.component";
 import { CustomStyleActionComponent } from "./custom/custom-style-action.component";
 import { ProductStyleService } from "../../../@core/services/product/product-style.service";
@@ -20,6 +16,7 @@ import { CustomShapeActionComponent } from "./custom/custom-shape-action.compone
 })
 export class ProductStyleShapeComponent implements OnInit {
   state: string = "add"; // default
+  private unsubscribe = new Subject<void>();
 
   // Setting for List layout
   numberOfItem: number = localStorage.getItem('itemPerPage') != null ? +localStorage.getItem('itemPerPage') : 10; // default
@@ -96,13 +93,26 @@ export class ProductStyleShapeComponent implements OnInit {
   constructor(
     private styleService: ProductStyleService,
     private shapeService: ProductShapeService,
-    private formBuilder: FormBuilder,
-    private utilsService: UtilsService,
-    private router: Router
   ) {
   }
 
   ngOnInit() {
+    this.styleService.styleChange$
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(() => {
+        this.loadStyles();
+      });
+    this.loadStyles()
+    
+    this.shapeService.shapeChange$
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(() => {
+        this.loadShapes();
+      });
+    this.loadShapes()
+  }
+
+  loadStyles() {
     this.styleService.findAll().subscribe(
       data => {
         if ("result" in data) {
@@ -111,6 +121,9 @@ export class ProductStyleShapeComponent implements OnInit {
           this.sourceStyle.load(data);
         }
       })
+  }
+
+  loadShapes() {
     this.shapeService.findAll().subscribe(
       data => {
         if ("result" in data) {
@@ -122,7 +135,7 @@ export class ProductStyleShapeComponent implements OnInit {
   }
 
   changeCursor(): void {
-    const element = document.getElementById("product-table"); // Replace 'myElement' with the ID of your element
+    const element = document.getElementById("product-table");
     if (element) {
       element.style.cursor = "pointer";
     }

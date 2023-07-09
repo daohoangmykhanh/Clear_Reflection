@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { BaseURLService } from '../base-url.service';
 import { HttpClient } from '@angular/common/http';
@@ -10,6 +10,17 @@ import { ModelResponse } from '../../models/response/ModelResponse';
   providedIn: 'root'
 })
 export class ProductShapeService {
+
+  // for changing when create, edit, delete => reload
+  private shapeChangeSubject = new Subject<void>();
+
+  get shapeChange$(): Observable<void> {
+    return this.shapeChangeSubject.asObservable();
+  }
+
+  notifyShapeChange(): void {
+    this.shapeChangeSubject.next();
+  }
 
   constructor(
     private baseUrlService: BaseURLService,
@@ -26,13 +37,13 @@ export class ProductShapeService {
     return this.httpClient.post<ProductShape>(url, shape);
   }
 
-  update(shape: ProductShape): Observable<boolean> {
-    const url: string = `${this.baseUrlService.baseURL}/shape/update`
-    return this.httpClient.post<boolean>(url, shape);
+  update(shape: ProductShape): Observable<ModelResponse> {
+    const url: string = `${this.baseUrlService.baseURL}/shape/update/${shape.productShapeId}`
+    return this.httpClient.post<ModelResponse>(url, shape);
   }
 
-  delete(shapeId: number): Observable<boolean> {    
+  delete(shapeId: number): Observable<ModelResponse> {    
     const url: string = `${this.baseUrlService.baseURL}/shape/delete/${shapeId}`
-    return this.httpClient.delete<boolean>(url); 
+    return this.httpClient.get<ModelResponse>(url); 
   }
 }

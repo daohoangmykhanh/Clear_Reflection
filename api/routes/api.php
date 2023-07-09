@@ -28,7 +28,7 @@ use App\Http\Controllers\BECompanyController;
 use App\Http\Controllers\BEOrderController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\HomeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -86,11 +86,8 @@ Route::get('provinces/{provinceCode}/districts', [DistrictController::class, 'ge
 
 // ward
 Route::resource('wards', WardController::class);
-
 //account-ađress
 Route::resource('account-address', AddressAccountController::class);
-
-
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -99,10 +96,7 @@ Route::resource('/product', ProductController::class);
 Route::get('/product/sort/{value}', [ProductController::class, 'sortByRating']);
 
 
-
-
-
-
+// Admin Routes
 Route::prefix('/admin')->group(function () {
     // Product Routes
     Route::get('/product', [BEProductController::class, 'index']);
@@ -170,6 +164,8 @@ Route::prefix('/admin')->group(function () {
     Route::get('/order/{id}', [BEOrderController::class, 'detail']);
     Route::post('/order/create', [BEOrderController::class, 'create']);
     Route::post('/order/update/{id}', [BEOrderController::class, 'update']);
+    Route::get('/findAllPayment', [BEOrderController::class, 'findAllPayment']);
+    Route::get('/findAllStatus', [BEOrderController::class, 'findAllStatus']);
     Route::get('/customerByEmail/{keyword}', [BEOrderController::class, 'customerByEmail']);
     Route::get('/productByIdOrName/{keyword}', [BEOrderController::class, 'productByIdOrName']);
 });
@@ -184,3 +180,7 @@ Route::get('/test', [AuthController::class, 'test']);
 Route::post('/register', [FEAccountController::class, 'register']);
 Route::post('/signin', [FEAccountController::class, 'signin']);
 Route::post('/checkUsername', [FEAccountController::class, 'checkUsername']);
+
+// Home Controller
+Route::post('/checkout', [HomeController::class, 'checkout']);
+
