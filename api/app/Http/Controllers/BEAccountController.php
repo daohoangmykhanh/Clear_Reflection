@@ -15,7 +15,7 @@ class BEAccountController extends Controller
         if($accounts -> isEmpty()){
             return response()->json([
                 'result' => false,
-                'message' => 'Delete successfully !'
+                'message' => 'No result found!'
             ]);
         }
         foreach($accounts as $account){
@@ -31,10 +31,10 @@ class BEAccountController extends Controller
                 ];
             }
             $role = $account->role;
-            $totalOrders = Order::where('account_id', $account -> account_id) -> get() -> count();
+            $totalOrders = Order::where('account_id', $account -> id) -> get() -> count();
             $role = $account->role;
             $accountData[] = [
-                'accountId' => $account->account_id,
+                'accountId' => $account->id,
                 'password' => $account->password,
                 'fullName' => $account->full_name,
                 'email' => $account->email,
@@ -58,10 +58,28 @@ class BEAccountController extends Controller
             'fullName' => 'required',
             'email' => 'required|email',
             'phoneNumber' => 'required',
-            'roleId' => 'required',
-            'image' => 'required|string',
+            'image' => 'nullable|string',
         ]);
-        $result = Account::store($validatedData);
+
+        $cus = new Account();
+        $cus -> full_name = $validatedData['fullName'];
+        $cus -> email = $validatedData['email'];
+        $cus -> phone_number = $validatedData['phoneNumber'];
+        $cus -> role_id = 2;
+        $cus -> password = bcrypt($validatedData['password']);
+        if(isset($validatedData['image'])){
+            $image = new Image();
+            $base64String = $validatedData['image'];
+            $base64Data = substr($base64String, strpos($base64String, ',') + 1);
+            $imageData = base64_decode($base64Data);
+            $filename = uniqid() . '.png';
+            $storagePath = public_path('images/account/');
+            file_put_contents($storagePath. $filename, $imageData);
+            $image->image_url = $filename;
+            $image -> save();
+            $cus -> image_id = $image -> image_id;
+        }
+        $result = $cus -> save();
         if(!$result)
             return response()->json([
                 'result' => false,
