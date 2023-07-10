@@ -78,6 +78,7 @@ Route::resource('product-review', ProductReviewController::class);
 //wishlist
 Route::resource('wishlist', WishlistController::class);
 Route::delete('/wishlist/product/{product_id}', [WishlistController::class, 'removeFromWishList']);
+Route::get('/wishlist/product/{productId}/check', [WishlistController::class, 'isInWishlist']);
 
 //address
 Route::resource('address', AddressController::class);
@@ -97,6 +98,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::resource('/product', ProductController::class);
 Route::get('/product/sort/{value}', [ProductController::class, 'sortByRating']);
 
+Route::get('/products/latest', [ProductController::class, 'getLatestProducts']);
 
 // Admin Routes
 Route::prefix('/admin')->group(function () {

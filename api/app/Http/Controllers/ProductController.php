@@ -184,4 +184,14 @@ class ProductController extends Controller
             'products' => $productData,
         ]);
     }
+
+
+    public function getLatestProducts()
+    {
+        // Lấy 8 sản phẩm mới nhất dựa trên ngày tạo (hoặc trường khác tương ứng)
+        $latestProducts = Product::latest()->take(4)->get();
+
+        // Trả về danh sách sản phẩm mới nhất dưới dạng JSON
+        return response()->json($latestProducts);
+    }
 }
