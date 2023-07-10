@@ -16,8 +16,8 @@ class WishlistController extends Controller
         foreach ($wishlists as $wishlist) {
             $wishlistData[] = [
                 'wishlistId' => $wishlist->wishlist_id,
-                'accountId' => $wishlist->account_id,
-                'productId' => $wishlist->product_id,
+                'accountId' => $wishlist->account,
+                'productId' => $wishlist->product,
             ];
         }
 
@@ -33,7 +33,6 @@ class WishlistController extends Controller
 
         $wishlist = Wishlist::create($validatedData);
         $wishlistData[] = [
-            'wishlistId' => $wishlist->wishlist_id,
             'accountId' => $wishlist->account_id,
             'productId' => $wishlist->product_id,
         ];
@@ -90,16 +89,4 @@ class WishlistController extends Controller
             return response()->json(['message' => 'Failed to remove from wishlist']);
         }
     }
-    // public function isInWishlist($productId)
-    // {
-    //     // Kiểm tra xem sản phẩm có trong danh sách yêu thích của người dùng hay không
-    //     $wishlist = Wishlist::where('user_id', Auth::id())
-    //         ->where('product_id', $productId)
-    //         ->first();
-
-    //     // Trả về kết quả true hoặc false dựa trên sự tồn tại của sản phẩm trong danh sách yêu thích
-    //     return response()->json([
-    //         'is_in_wishlist' => $wishlist ? true : false
-    //     ]);
-    // }
 }

@@ -73,6 +73,8 @@ Route::get('districts/{districtCode}/wards', [WardController::class, 'getAllWard
 Route::resource('product-variant', ProductVariantController::class);
 //cart
 Route::resource('cart', CartController::class);
+Route::get('/cart/quantity/get', [CartController::class, 'getCartQuantity']);
+
 // product_reiew
 Route::resource('product-review', ProductReviewController::class);
 //wishlist
