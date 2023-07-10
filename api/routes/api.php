@@ -101,6 +101,7 @@ Route::resource('/product', ProductController::class);
 Route::get('/product/sort/{value}', [ProductController::class, 'sortByRating']);
 
 Route::get('/products/latest', [ProductController::class, 'getLatestProducts']);
+Route::get('/product/cate/{categoryId}', [ProductController::class, 'filterByCategory']);
 
 // Admin Routes
 Route::prefix('/admin')->group(function () {

@@ -194,4 +194,35 @@ class ProductController extends Controller
         // Trả về danh sách sản phẩm mới nhất dưới dạng JSON
         return response()->json($latestProducts);
     }
+    public function filterByCategory($categoryId)
+    {
+        $products = Product::with('category')
+            ->whereHas('category', function ($query) use ($categoryId) {
+                $query->where('category_id', $categoryId);
+            })
+            ->get();
+        $productData = [];
+
+        foreach ($products as $product) {
+            $imageData = [];
+            foreach ($product->images as $image) {
+                $imageData[] = [
+                    'imageId' => $image->image_id,
+                    'imageUrl' => $image->image->image_url
+                ];
+            }
+            $productData[] = [
+                'productId' => $product->product_id,
+                'productName' => $product->product_name,
+                'description' => $product->description,
+                'isHide' => $product->is_hide,
+                'imageUrls' => $imageData,
+                'category' => $product->category->category_name ?? null,
+                'productShapeName' => $product->product_shape->shape_name ?? null,
+                'productStyleName' => $product->product_style->style_name ?? null,
+            ];
+        }
+
+        return response()->json($productData);
+    }
 }
