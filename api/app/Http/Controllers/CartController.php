@@ -50,7 +50,6 @@ class CartController extends Controller
             'cart' => [
                 'cartId' => $cart->cart_id,
                 'accountId' => $cart->account_id,
-
             ]
         ], 201);
     }

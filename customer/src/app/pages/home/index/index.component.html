@@ -15,11 +15,11 @@
                                 </figure>
 
                                 <div class="intro-content">
-                                    <h3 class="intro-subtitle font-weight-normal" contentAnim aniName="fadeInUpShorter">{{"HOME.BANNER.TOPSALE" | translate}}</h3>
-                                    <h1 class="intro-title font-weight-bolder" contentAnim aniName="fadeInUpShorter">{{"HOME.BANNER.BEST_LIGHTING" | translate}}</h1>
+                                    <h3 class="intro-subtitle font-weight-normal" contentAnim aniName="fadeInUpShorter">Topsale Collection</h3>
+                                    <h1 class="intro-title font-weight-bolder" contentAnim aniName="fadeInUpShorter">Best Lighting<br>Collection</h1>
 
                                     <a routerLink="/shop/sidebar/3cols" class="btn btn-outline-white" contentAnim aniName="fadeInUpShorter">
-                                        <span>{{"HOME.SHOP_NOW" | translate}}</span>
+                                        <span>Shop Now</span>
                                         <i class="icon-arrow-right"></i>
                                     </a>
                                 </div>
@@ -35,12 +35,12 @@
                                 </figure>
 
                                 <div class="intro-content">
-                                    <h3 class="intro-subtitle font-weight-normal" contentAnim aniName="fadeInUpShorter">{{"HOME.BANNER.TOPSALE" | translate}}</h3>
+                                    <h3 class="intro-subtitle font-weight-normal" contentAnim aniName="fadeInUpShorter">Topsale Collection</h3>
                                     <h1 class="intro-title font-weight-bolder" contentAnim aniName="fadeInUpShorter">Wood Cabinet</h1>
                                     <h3 class="intro-price font-weight-bolder text-white" contentAnim aniName="fadeInUpShorter"><sup class="font-weight-light">from</sup>$59.99</h3>
 
                                     <a routerLink="/shop/sidebar/3cols" class="btn btn-outline-white" contentAnim aniName="fadeInUpShorter">
-                                        <span>{{"HOME.SHOP_NOW" | translate}}</span>
+                                        <span>Shop Now</span>
                                         <i class="icon-arrow-right"></i>
                                     </a>
                                 </div>
@@ -59,10 +59,10 @@
                                     </a>
 
                                     <div class="banner-content pt-0">
-                                        <h4 class="banner-subtitle font-weight-normal">{{"HOME.BANNER.CLEARENCE" | translate}}</h4>
+                                        <h4 class="banner-subtitle font-weight-normal">Clearence</h4>
                                         <h3 class="banner-title font-weight-bolder">Chairs & Chaises <br>
                                             <span class="font-weight-lighter">Up to 40% off</span></h3>
-                                        <a routerLink="/shop/sidebar/3cols" class="btn banner-link">{{"HOME.SHOP_NOW" | translate}}</a>
+                                        <a routerLink="/shop/sidebar/3cols" class="btn banner-link">Shop Now</a>
                                     </div>
                                 </div>
                             </div>
@@ -75,10 +75,10 @@
                                     </a>
 
                                     <div class="banner-content pt-0">
-                                        <h4 class="banner-subtitle font-weight-normal">{{"HOME.BANNER.SALE" | translate}}</h4>
+                                        <h4 class="banner-subtitle font-weight-normal">Sale</h4>
                                         <h3 class="banner-title font-weight-bolder">Kitchen & Dining <br>
                                             <span class="font-weight-lighter">Up to 30% off</span></h3>
-                                        <a routerLink="/shop/sidebar/3cols" class="btn banner-link">{{"HOME.SHOP_NOW" | translate}}</a>
+                                        <a routerLink="/shop/sidebar/3cols" class="btn banner-link">Shop Now</a>
                                     </div>
                                 </div>
                             </div>
@@ -86,6 +86,40 @@
                     </div>
                 </div>
             </div>
+
+            <div class="div"></div>
+
+            <owl-carousel carouselClasses="owl-simple" [options]="brandSlider">
+                <a href="javascript:;" class="brand">
+                    <img src="assets/images/home/brands/1.png" alt="Brand Name"
+                        width="100" height="23" />
+                </a>
+
+                <a href="javascript:;" class="brand">
+                    <img src="assets/images/home/brands/2.png" alt="Brand Name"
+                        width="101" height="34" />
+                </a>
+
+                <a href="javascript:;" class="brand">
+                    <img src="assets/images/home/brands/3.png" alt="Brand Name"
+                        width="100" height="30" />
+                </a>
+
+                <a href="javascript:;" class="brand">
+                    <img src="assets/images/home/brands/4.png" alt="Brand Name"
+                        width="101" height="39" />
+                </a>
+
+                <a href="javascript:;" class="brand">
+                    <img src="assets/images/home/brands/5.png" alt="Brand Name"
+                        width="100" height="48" />
+                </a>
+
+                <a href="javascript:;" class="brand">
+                    <img src="assets/images/home/brands/6.png" alt="Brand Name"
+                        width="100" height="23" />
+                </a>
+            </owl-carousel>
         </div>
     </div>
 
@@ -94,7 +128,7 @@
     <molla-top-collection [products]="products" [loaded]="loaded"></molla-top-collection>
 
     <div class="container categories position-relative">
-        <h2 class="title font-weight-bolder text-center" contentAnim aniName="blurIn">{{"HOME.CATEGORIES.SHOP_BY_CATEGORIES" | translate}}</h2>
+        <h2 class="title font-weight-bolder text-center" contentAnim aniName="blurIn">Shop by Categories</h2>
 
         <div class="row">
             <div class="col-sm-6 col-md-4">
@@ -106,11 +140,11 @@
 
                     <div class="banner-content text-center bg-white">
                         <h2 class="banner-title font-weight-bolder mb-0">Home Decor</h2>
-                        <a routerLink="/shop/sidebar/list" class="btn btn-primary btn-rounded">{{"HOME.SHOP_NOW" | translate}}<i class="icon-long-arrow-right mr-0"></i></a>
+                        <a routerLink="/shop/sidebar/list" class="btn btn-primary btn-rounded">Shop Now<i class="icon-long-arrow-right mr-0"></i></a>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 col-md-4 order-md-last">
+            <div class="col-sm-6 col-md-4 order-md-last"> 
                 <div class="banner banner-big">
                     <a routerLink="/shop/sidebar/list">
                         <molla-image src="assets/images/home/categories/4.jpg" alt="Banner"
@@ -119,7 +153,7 @@
 
                     <div class="banner-content text-center bg-white">
                         <h2 class="banner-title font-weight-bolder mb-0">Lighting</h2>
-                        <a routerLink="/shop/sidebar/list" class="btn btn-primary btn-rounded">{{"HOME.SHOP_NOW" | translate}}<i class="icon-long-arrow-right mr-0"></i></a>
+                        <a routerLink="/shop/sidebar/list" class="btn btn-primary btn-rounded">Shop Now<i class="icon-long-arrow-right mr-0"></i></a>
                     </div>
                 </div>
             </div>
@@ -134,7 +168,7 @@
 
                             <div class="banner-content text-center bg-white">
                                 <h2 class="banner-title font-weight-bolder mb-0">Living Rome</h2>
-                                <a routerLink="/shop/sidebar/list" class="btn btn-primary btn-rounded">{{"HOME.SHOP_NOW" | translate}}<i class="icon-long-arrow-right mr-0"></i></a>
+                                <a routerLink="/shop/sidebar/list" class="btn btn-primary btn-rounded">Shop Now<i class="icon-long-arrow-right mr-0"></i></a>
                             </div>
                         </div>
                     </div>
@@ -148,13 +182,13 @@
 
                             <div class="banner-content text-center bg-white">
                                 <h2 class="banner-title font-weight-bolder mb-0">Kitchen & Utensil</h2>
-                                <a routerLink="/shop/sidebar/list" class="btn btn-primary btn-rounded">{{"HOME.SHOP_NOW" | translate}}<i class="icon-long-arrow-right mr-0"></i></a>
+                                <a routerLink="/shop/sidebar/list" class="btn btn-primary btn-rounded">Shop Now<i class="icon-long-arrow-right mr-0"></i></a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
+            
         </div>
     </div>
 
@@ -171,8 +205,8 @@
                         <i class="icon-rocket"></i>
                     </span>
                     <div class="icon-box-content">
-                        <h3 class="icon-box-title">{{"HOME.UTILS.PAYMENT_DELIVERY" | translate}}</h3>
-                        <p class="font-weight-normal">{{"HOME.UTILS.FREE_SHIPPING" | translate}}</p>
+                        <h3 class="icon-box-title">Payment & Delivery</h3>
+                        <p class="font-weight-normal">Free shipping for orders over $50</p>
                     </div>
                 </div>
             </div>
@@ -183,8 +217,8 @@
                         <i class="icon-rotate-left"></i>
                     </span>
                     <div class="icon-box-content">
-                        <h3 class="icon-box-title">{{"HOME.UTILS.RETURN_REFUND" | translate}}</h3>
-                        <p class="font-weight-normal">{{"HOME.UTILS.GUARANTEE" | translate}}</p>
+                        <h3 class="icon-box-title">Return & Refund</h3>
+                        <p class="font-weight-normal">Free 100% money back guarantee</p>
                     </div>
                 </div>
             </div>
@@ -195,12 +229,32 @@
                         <i class="icon-life-ring"></i>
                     </span>
                     <div class="icon-box-content">
-                        <h3 class="icon-box-title">{{"HOME.UTILS.QUALITY_SUPPORT" | translate}}</h3>
-                        <p class="font-weight-normal">{{"HOME.UTILS.FEEDBACK" | translate}}</p>
+                        <h3 class="icon-box-title">Quality Support</h3>
+                        <p class="font-weight-normal">Alway online feedback 24/7</p>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="mb-2"></div>
+    </div>
+    <molla-blog-collection [posts]="posts" [loaded]="loaded"></molla-blog-collection>
+    <div class="cta cta-display pt-4 pb-4" style="background-image: url('assets/images/home/background/2.jpg'); background-color: #a3bec4;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-9 col-xl-8">
+                    <div class="row no-gutters flex-column flex-sm-row align-items-sm-center">
+                        <div class="col">
+                            <h3 class="cta-title text-white">Sign Up & Get 10% Off</h3>
+                            <p class="cta-desc text-white font-weight-normal">Molla presents the best in interior design</p>
+                        </div>
+
+                        <div class="col-auto">
+                            <a routerLink="/pages/login" class="btn btn-outline-white"><span>SIGN UP</span><i class="icon-long-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </main>

@@ -8,6 +8,9 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 // Header Element
 import { CartMenuComponent } from './components/headers/shared/cart-menu/cart-menu.component';
+import { CompareMenuComponent } from './components/headers/shared/compare-menu/compare-menu.component';
+import { WishlistMenuComponent } from './components/headers/shared/wishlist-menu/wishlist-menu.component';
+import { CategoryMenuComponent } from './components/headers/shared/category-menu/category-menu.component';
 import { MainMenuComponent } from './components/headers/shared/main-menu/main-menu.component';
 import { HeaderSearchComponent } from './components/headers/shared/header-search/header-search.component';
 import { MobileButtonComponent } from './components/headers/shared/mobile-button/mobile-button.component';
@@ -48,6 +51,7 @@ import { CountToComponent } from './components/count-to/count-to.component';
 import { QuickViewComponent } from './components/modals/quick-view/quick-view.component';
 import { QuickViewTwoComponent } from './components/modals/quick-view-two/quick-view-two.component';
 import { VideoModalComponent } from './components/modals/video-modal/video-modal.component';
+import { NewsletterModalComponent } from './components/modals/newsletter-modal/newsletter-modal.component';
 import { LoginModalComponent } from './components/modals/login-modal/login-modal.component';
 import { IsotopeGridComponent } from './components/isotope-grid/isotope-grid.component';
 import { ImageComponent } from './components/image/image.component';
@@ -64,12 +68,18 @@ import { AttrFilterPipe } from './pipes/attr-filter.pipe';
 import { SafeContentPipe } from './pipes/safe-content.pipe';
 
 // // Post Component
+import { PostOneComponent } from './components/blog-post/post-one/post-one.component';
+import { PostTwoComponent } from './components/blog-post/post-two/post-two.component';
+import { PostThreeComponent } from './components/blog-post/post-three/post-three.component';
+import { PostFourComponent } from './components/blog-post/post-four/post-four.component';
 
 @NgModule({
 	declarations: [
 		// header
 		CartMenuComponent,
-		// CategoryMenuComponent,
+		CompareMenuComponent,
+		WishlistMenuComponent,
+		CategoryMenuComponent,
 		MainMenuComponent,
 		HeaderSearchComponent,
 		MobileButtonComponent,
@@ -97,6 +107,7 @@ import { SafeContentPipe } from './pipes/safe-content.pipe';
 		PageHeaderComponent,
 		QuickViewComponent,
 		QuickViewTwoComponent,
+		NewsletterModalComponent,
 		LoginModalComponent,
 		VideoModalComponent,
 		QuantityInputComponent,
@@ -120,6 +131,10 @@ import { SafeContentPipe } from './pipes/safe-content.pipe';
 		CountDownComponent,
 
 		// // blog-post
+		PostOneComponent,
+		PostTwoComponent,
+		PostThreeComponent,
+		PostFourComponent,
 		CountToComponent
 	],
 
@@ -179,18 +194,20 @@ import { SafeContentPipe } from './pipes/safe-content.pipe';
 		AttrFilterPipe,
 		SafeContentPipe,
 
+		// // blog-post
+		PostOneComponent,
+		PostTwoComponent,
+		PostThreeComponent,
+		PostFourComponent,
 	],
 
 	entryComponents: [
 		VideoModalComponent,
 		QuickViewComponent,
 		QuickViewTwoComponent,
+		NewsletterModalComponent,
 		LoginModalComponent
-	],
-
-  providers: [
-
-  ]
+	]
 })
 
 export class ThemeModule { }

@@ -67,21 +67,10 @@ VALUES ('123,', 'Nguyễn Mạnh Phú 1', 'nguyenphu1147@gmail.com', '0783562372
 ('123,', 'Nguyễn Mạnh Phú', 'nguyenphu11147@gmail.com', '0783562372', 4, 2),
 ('123,', 'Nguyễn Mạnh Phú', 'nguyenphu1114237@gmail.com', '0783562372', 5, 2);
 
-CREATE TABLE address (
-	address_id integer NOT NULL primary key,
-	road_name  varchar(255) NULL,
-    wards_code varchar(20),
-    district_code varchar(20),
-    province_code varchar(20),
-    FOREIGN KEY (wards_code) REFERENCES `wards`(code),
-    FOREIGN KEY (district_code) REFERENCES `districts`(code),
-    FOREIGN KEY (province_code) REFERENCES `provinces`(code)
-	
-);
 
 
-INSERT INTO address(address_id, road_name, wards_code, district_code, province_code)
-VALUES (1, 'abc', '02', '027', '00775');
+INSERT INTO address(road_name, wards_code, district_code, province_code)
+VALUES ('abc', '00001', '001', '01');
 
 
 

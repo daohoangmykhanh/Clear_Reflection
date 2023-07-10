@@ -23,4 +23,17 @@ export class RecentCollectionComponent implements OnInit {
 	ngOnInit(): void {
 	}
 
+	loadMore(event: Event) {
+		event.preventDefault();
+		this.loadMoreLoading = true;
+
+		setTimeout(() => {
+			this.loadCount += 4;
+			this.loadMoreLoading = false;
+
+			if (this.loadCount >= 16) {
+				this.hasMore = false;
+			}
+		}, 500);
+	}
 }

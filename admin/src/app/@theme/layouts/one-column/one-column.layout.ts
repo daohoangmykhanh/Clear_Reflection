@@ -1,6 +1,7 @@
 import { UtilsService } from './../../../@core/services/utils.service';
 import { Component } from '@angular/core';
 import { NbToastrService } from '@nebular/theme';
+import { NbGlobalLogicalPosition } from '@nebular/theme';
 
 @Component({
   selector: 'ngx-one-column-layout',
@@ -36,7 +37,8 @@ export class OneColumnLayoutComponent {
           this.utilsService.capitalizeString(state.behavior) + ' ' +
           this.utilsService.capitalizeString(state.model) + ' ' +
           (state.status === 'success' ? 'Successfully' : 'Failed')
-        this.toastService.show(message, 'Notification', {status: state.status, duration: 3000});
+        this.toastService.show(message, 'Notification',
+           {status: state.status, duration: 3000, position: NbGlobalLogicalPosition.BOTTOM_END});
       }
     })
   }

@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  demo: 'customer',
+  demo: 'demo2',
   SERVER_URL: 'https://d-themes.com/angular/molla/server'
 };
