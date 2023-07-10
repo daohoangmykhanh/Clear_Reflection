@@ -148,10 +148,11 @@ CREATE TABLE cart_detail (
 	quantity INT NOT NULL,
 	price DECIMAL(18,2) NOT NULL,
 	cart_id INT NOT NULL,
+    product_variant_id int,
+    FOREIGN KEY (product_variant_id) REFERENCES `product_variant`(product_variant_id),
 	FOREIGN KEY (cart_id) REFERENCES `cart`(cart_id),
 	FOREIGN KEY (product_id) REFERENCES `product`(product_id)
 );
-
 
 
 -- ORDER RELATED -- 

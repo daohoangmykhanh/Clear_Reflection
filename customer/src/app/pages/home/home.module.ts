@@ -6,16 +6,13 @@ import { OwlModule } from 'angular-owl-carousel';
 
 import { ThemeModule } from '../../@theme/theme.module';
 
-import { TopCollectionComponent } from './top-collection/top-collection.component';
 import { IndexComponent } from './index/index.component';
-import { BlogCollectionComponent } from './blog-collection/blog-collection.component';
 import { RecentCollectionComponent } from './recent-collection/recent-collection.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
 	declarations: [
-		TopCollectionComponent,
 		IndexComponent,
-		BlogCollectionComponent,
 		RecentCollectionComponent
 	],
 
@@ -24,8 +21,11 @@ import { RecentCollectionComponent } from './recent-collection/recent-collection
 		RouterModule,
 		NgbModule,
 		OwlModule,
-		ThemeModule
+		ThemeModule,
+    TranslateModule
 	]
 })
 
-export class HomeModule { }
+export class HomeModule {
+
+ }

@@ -128,5 +128,8 @@
 
     "REGISTER": "Register",
     "SIGN_UP": "SIGN UP"
+    ,
+    "FULL_NAME": "Full Name",
+    "PHONE_NUMBER": "Phone Number"
   }
 }

@@ -15,6 +15,7 @@ export class WishlistComponent implements OnInit, OnDestroy {
 
 	wishItems = [];
 	SERVER_URL = environment.SERVER_URL;
+  notLoggedInMessage: string;
 
 	private subscr: Subscription;
 

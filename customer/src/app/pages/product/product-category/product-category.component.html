@@ -8,10 +8,10 @@
                     <a routerLink="/">{{'BREADCRUMB.HOME' | translate}}</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a routerLink="/shop/sidebar/list">{{'BREADCRUMB.PRODUCT' | translate}}</a>
+                    <a routerLink="/products/shop/list">{{'BREADCRUMB.PRODUCT' | translate}}</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a routerLink="/shop/sidebar/list">{{'BREADCRUMB.CATEGORY' | translate}}</a>
+                    <a routerLink="/products/shop/list">{{'BREADCRUMB.CATEGORY' | translate}}</a>
                 </li>
             </ol>
         </div>
@@ -23,31 +23,27 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="banner banner-cat banner-badge">
-                            <a routerLink="/shop/sidebar/list" [queryParams]="{category: 'dresses'}">
-                                <molla-image src="assets/images/category/boxed/banner-1.jpg" width="580" height="580"
+                            <a routerLink="/products/shop/list">
+                                <molla-image src="assets/images/category/wall-mirror.png" width="580" height="580"
                                     alt="Banner">
                                 </molla-image>
                             </a>
 
-                            <a class="banner-link" routerLink="/shop/sidebar/list"
-                                [queryParams]="{category: 'dresses'}">
-                                <h3 class="banner-title">Dresses</h3>
-                                <h4 class="banner-subtitle">2 Products</h4>
+                            <a class="banner-link" routerLink="/products/shop/list">
+                                <h3 class="banner-title">Wall Mirror</h3>
                                 <span class="banner-link-text">Shop Now</span>
                             </a>
                         </div>
 
                         <div class="banner banner-cat banner-badge">
-                            <a routerLink="/shop/sidebar/list" [queryParams]="{category: 'jackets'}">
-                                <molla-image src="assets/images/category/boxed/banner-2.jpg" width="580" height="280"
+                            <a routerLink="/products/shop/list">
+                                <molla-image src="assets/images/category/floor-mirror.jpg" width="580" height="280"
                                     alt="Banner">
                                 </molla-image>
                             </a>
 
-                            <a class="banner-link" routerLink="/shop/sidebar/list"
-                                [queryParams]="{category: 'jackets'}">
-                                <h3 class="banner-title">Jackets</h3>
-                                <h4 class="banner-subtitle">4 Products</h4>
+                            <a class="banner-link" routerLink="/products/shop/list">
+                                <h3 class="banner-title">Floor Mirror</h3>
                                 <span class="banner-link-text">Shop Now</span>
                             </a>
                         </div>
@@ -57,16 +53,14 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="banner banner-cat banner-badge">
-                                    <a routerLink="/shop/sidebar/list" [queryParams]="{category: 't-shirts'}">
-                                        <molla-image src="assets/images/category/boxed/banner-3.jpg" width="280"
+                                    <a routerLink="/products/shop/list">
+                                        <molla-image src="assets/images/category/decorative-mirror.jpg" width="280"
                                             height="280" alt="Banner">
                                         </molla-image>
                                     </a>
 
-                                    <a class="banner-link" routerLink="/shop/sidebar/list"
-                                        [queryParams]="{category: 't-shirts'}">
-                                        <h3 class="banner-title">T-shirts</h3>
-                                        <h4 class="banner-subtitle">2 Products</h4>
+                                    <a class="banner-link" routerLink="/products/shop/list">
+                                        <h3 class="banner-title">Decorative Mirror</h3>
                                         <span class="banner-link-text">Shop Now</span>
                                     </a>
                                 </div>
@@ -74,16 +68,14 @@
 
                             <div class="col-sm-6">
                                 <div class="banner banner-cat banner-badge">
-                                    <a routerLink="/shop/sidebar/list" [queryParams]="{category: 'jeans'}">
-                                        <molla-image src="assets/images/category/boxed/banner-4.jpg" width="280"
+                                    <a routerLink="/products/shop/list">
+                                        <molla-image src="assets/images/category/vanity-mirror.jpg" width="280"
                                             height="280" alt="Banner">
                                         </molla-image>
                                     </a>
 
-                                    <a class="banner-link" routerLink="/shop/sidebar/list"
-                                        [queryParams]="{category: 'jeans'}">
-                                        <h3 class="banner-title">Jeans</h3>
-                                        <h4 class="banner-subtitle">5 Products</h4>
+                                    <a class="banner-link" routerLink="/products/shop/list">
+                                        <h3 class="banner-title">Vanity Mirror</h3>
                                         <span class="banner-link-text">Shop Now</span>
                                     </a>
                                 </div>
@@ -91,65 +83,14 @@
                         </div>
 
                         <div class="banner banner-cat banner-badge">
-                            <a routerLink="/shop/sidebar/list" [queryParams]="{category: 'bags'}">
-                                <molla-image src="assets/images/category/boxed/banner-5.jpg" width="580" height="580"
+                            <a routerLink="/products/shop/list">
+                                <molla-image src="assets/images/category/bathroom-mirror.jpg" width="580" height="580"
                                     alt="Banner">
                                 </molla-image>
                             </a>
 
-                            <a class="banner-link" routerLink="/shop/sidebar/list" [queryParams]="{category: 'bags'}">
-                                <h3 class="banner-title">Bags</h3>
-                                <h4 class="banner-subtitle">13 Products</h4>
-                                <span class="banner-link-text">Shop Now</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6 col-md-3">
-                        <div class="banner banner-cat banner-badge">
-                            <a routerLink="/shop/sidebar/list" [queryParams]="{category: 'sportwear'}">
-                                <molla-image src="assets/images/category/boxed/banner-6.jpg" width="280" height="280"
-                                    alt="Banner">
-                                </molla-image>
-                            </a>
-
-                            <a class="banner-link" routerLink="/shop/sidebar/list"
-                                [queryParams]="{category: 'sportwear'}">
-                                <h3 class="banner-title">Sportwear</h3>
-                                <h4 class="banner-subtitle">8 Products</h4>
-                                <span class="banner-link-text">Shop Now</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6 col-md-3 order-md-last">
-                        <div class="banner banner-cat banner-badge">
-                            <a routerLink="/shop/sidebar/list" [queryParams]="{category: 'jumpers'}">
-                                <molla-image src="assets/images/category/boxed/banner-8.jpg" width="280" height="280"
-                                    alt="Banner">
-                                </molla-image>
-                            </a>
-
-                            <a class="banner-link" routerLink="/shop/sidebar/list"
-                                [queryParams]="{category: 'jumpers'}">
-                                <h3 class="banner-title">Jumpers</h3>
-                                <h4 class="banner-subtitle">9 Products</h4>
-                                <span class="banner-link-text">Shop Now</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="banner banner-cat banner-badge">
-                            <a routerLink="/shop/sidebar/list" [queryParams]="{category: 'shoes'}">
-                                <molla-image src="assets/images/category/boxed/banner-7.jpg" width="580" height="280"
-                                    alt="Banner">
-                                </molla-image>
-                            </a>
-
-                            <a class="banner-link" routerLink="/shop/sidebar/list" [queryParams]="{category: 'shoes'}">
-                                <h3 class="banner-title">Shoes</h3>
-                                <h4 class="banner-subtitle">4 Products</h4>
+                            <a class="banner-link" routerLink="/products/shop/list">
+                                <h3 class="banner-title">Bathroom Mirror</h3>
                                 <span class="banner-link-text">Shop Now</span>
                             </a>
                         </div>

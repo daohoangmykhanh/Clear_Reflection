@@ -40,7 +40,7 @@
     "PRODUCT": "Sản Phẩm",
     "CATEGORY": "Danh Mục",
     "ABOUT": "Về Chúng Tôi",
-    "Contact": "Liên Hệ",
+    "CONTACT": "Liên Hệ",
     "WISHLIST": "Yêu Thích",
     "CART": "Giỏ Hàng"
   },
@@ -127,6 +127,8 @@
     "FACEBOOK_LOGIN": "Đăng Nhập Với Facebook",
 
     "REGISTER": "Đăng Ký",
-    "SIGN_UP": "ĐĂNG KÝ"
+    "SIGN_UP": "ĐĂNG KÝ",
+    "FULL_NAME": "Họ Và Tên",
+    "PHONE_NUMBER": "Số Điện Thoại"
   }
 }

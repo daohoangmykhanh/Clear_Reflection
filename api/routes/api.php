@@ -59,7 +59,7 @@ use App\Http\Controllers\HomeController;
 Route::resource('image', CategoryController::class);
 
 //category
-Route::resource('category', CategoryController::class);
+Route::resource('category', CategoryController::class)->withoutMiddleware('auth:api');
 
 //order-address
 Route::resource('order-address', OrderAddressController::class);
@@ -74,25 +74,25 @@ Route::resource('product-variant', ProductVariantController::class);
 //cart
 Route::resource('cart', CartController::class);
 // product_reiew
-Route::resource('product-review', ProductReviewController::class);
+Route::resource('product-review', ProductReviewController::class)->withoutMiddleware('auth:api');;
 //wishlist
 Route::resource('wishlist', WishlistController::class);
 //address
-Route::resource('address', AddressController::class);
+Route::resource('address', AddressController::class)->withoutMiddleware('auth:api');;
 //provinces
-Route::resource('provinces', ProvinceController::class);
+Route::resource('provinces', ProvinceController::class)->withoutMiddleware('auth:api');;
 Route::get('provinces/{provinceCode}/districts', [DistrictController::class, 'getAllDistrictsByProvince']);
 
 
 // ward
-Route::resource('wards', WardController::class);
+Route::resource('wards', WardController::class)->withoutMiddleware('auth:api');;
 //account-ađress
 Route::resource('account-address', AddressAccountController::class);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 // product
-Route::resource('/product', ProductController::class);
+Route::resource('/product', ProductController::class)->withoutMiddleware('auth:api');;
 Route::get('/product/sort/{value}', [ProductController::class, 'sortByRating']);
 
 

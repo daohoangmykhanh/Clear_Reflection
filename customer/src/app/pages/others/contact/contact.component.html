@@ -13,13 +13,14 @@
     <div class="container">
         <div class="page-header page-header-big text-center"
             style="background-image: url('assets/images/contact-header-bg.jpg')">
-            <h1 class="page-title text-white">{{"HEADER.CONTACT"}}<span class="text-white">{{"CONTACT.KEEP_IN_TOUCH" | translate}}</span></h1>
+            <h1 class="page-title text-white">{{"HEADER.CONTACT" | translate}}<span class="text-white">{{"CONTACT.KEEP_IN_TOUCH" | translate}}</span></h1>
         </div>
     </div>
 
     <div class="page-content pb-0">
         <div class="container">
             <div class="row">
+                <div class="col-lg-3"></div>
                 <div class="col-lg-6 mb-2 mb-lg-0">
                     <h2 class="title mb-1">{{"CONTACT.CONTACT_INFORMATION" | translate}}</h2>
                     <p class="mb-3">{{"CONTACT.SHORT_DESCRIPTION" | translate}}</p>
@@ -59,45 +60,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <h2 class="title mb-1">{{"CONTACT.GOT_QUESTION" | translate}}</h2>
-                    <p class="mb-2">{{"CONTACT.USE_FORM" | translate}}</p>
+                <div class="col-lg-3"></div>
 
-                    <form action="#" class="contact-form mb-3">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <label for="cname" class="sr-only">{{"CONTACT.FORM_NAME" | translate}}</label>
-                                <input type="text" class="form-control" id="cname" placeholder="{{'CONTACT.FORM_NAME_PLACEHOLDER' | translate}}" required>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <label for="cemail" class="sr-only">Email</label>
-                                <input type="email" class="form-control" id="cemail" placeholder="Email *" required>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <label for="cphone" class="sr-only">{{"CONTACT.FORM_PHONE" | translate}}</label>
-                                <input type="tel" class="form-control" id="cphone" placeholder="{{'CONTACT.FORM_PHONE_PLACEHOLDER' | translate}}">
-                            </div>
-
-                            <div class="col-sm-6">
-                                <label for="csubject" class="sr-only">{{"CONTACT.FORM_SUBJECT" | translate}}</label>
-                                <input type="text" class="form-control" id="csubject" placeholder="{{'CONTACT.FORM_SUBJECT_PLACEHOLDER' | translate}}">
-                            </div>
-                        </div>
-
-                        <label for="cmessage" class="sr-only">{{'CONTACT.FORM_MESSAGE' | translate}}</label>
-                        <textarea class="form-control" cols="30" rows="4" id="cmessage" required
-                            placeholder="{{'CONTACT.FORM_MESSAGE_PLACEHOLDER' | translate}}"></textarea>
-
-                        <button type="submit" class="btn btn-outline-primary-2 btn-minwidth-sm">
-                            <span>{{'CONTACT.FORM_SUBMIT' | translate}}</span>
-                            <i class="icon-long-arrow-right"></i>
-                        </button>
-                    </form>
-                </div>
             </div>
         </div>
     </div>

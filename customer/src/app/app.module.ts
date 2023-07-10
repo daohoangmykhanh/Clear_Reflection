@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -15,8 +15,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { AppRoutingModule } from './app-routing.module';
 import { ThemeModule } from './@theme/theme.module';
-import { ElementsModule } from './pages/elements/elements.module';
-import { PagesModule } from './pages/others/pages.module';
+import { OthersModule } from './pages/others/others.module';
 import { HomeModule } from './pages/home/home.module';
 
 // reducers
@@ -27,6 +26,8 @@ import { cartReducer } from './@core/reducers/cart.reducer';
 
 import { AppComponent } from './app.component';
 import { LayoutComponent } from './@theme/layout/layout.component';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 @NgModule({
   declarations: [
@@ -41,14 +42,20 @@ import { LayoutComponent } from './@theme/layout/layout.component';
     NgbModule,
     HttpClientModule,
     OwlModule,
-    ElementsModule,
-    PagesModule,
+    OthersModule,
     HomeModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       timeOut: 2000,
       progressBar: false,
       enableHtml: true,
+    }),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: translateHttpLoaderFactory,
+        deps: [HttpClient]
+      }
     }),
     StoreModule.forRoot(appReducers, { metaReducers }),
     StoreModule.forFeature('cart', cartReducer),
@@ -59,8 +66,13 @@ import { LayoutComponent } from './@theme/layout/layout.component';
     StoreDevtoolsModule.instrument(),
   ],
 
-  providers: [],
+  providers: [
+  ],
   bootstrap: [AppComponent]
 })
 
 export class AppModule { }
+
+export function translateHttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
+}

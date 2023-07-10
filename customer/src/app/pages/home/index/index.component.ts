@@ -15,17 +15,13 @@ import { introSlider, brandSlider } from '../data';
 export class IndexComponent implements OnInit {
 
 	products = [];
-	posts = [];
 	loaded = false;
 	introSlider = introSlider;
 	brandSlider = brandSlider;
 
 	constructor(public apiService: ApiService, public utilsService: UtilsService, private modalService: ModalService,) {
-		this.modalService.openNewsletter();
-
 		this.apiService.fetchHomeData().subscribe(result => {
 			this.products = result.products;
-			this.posts = result.blogs;
 			this.loaded = true;
 		})
 	}

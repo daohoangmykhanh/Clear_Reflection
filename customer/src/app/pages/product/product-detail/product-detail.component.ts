@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Product } from 'src/app/@core/models/product';
 import { ApiService } from 'src/app/@core/services/api.service';
+import { ProductService } from 'src/app/@core/services/product/product.service';
 
 @Component({
 	selector: 'product-detail',
@@ -21,10 +22,10 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 	constructor(
 		public apiService: ApiService,
 		private activeRoute: ActivatedRoute,
-		public router: Router
+		public router: Router,
+    private productDetail: ProductService
 	) {
 		activeRoute.params.subscribe(params => {
-			this.loaded = false;
 			this.apiService.getSingleProduct(params['slug']).subscribe(result => {
 				if (result === null) {
 					this.router.navigate(['/pages/404']);
