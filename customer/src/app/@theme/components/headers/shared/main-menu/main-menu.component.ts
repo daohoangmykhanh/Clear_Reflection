@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
 })
 export class MainMenuComponent implements OnInit, OnDestroy {
 
-	current = '/'; // current Url
+	current = '/';
 
 	private subscr: Subscription;
 
@@ -30,4 +30,13 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 		this.subscr.unsubscribe();
 	}
 
+	viewAllDemos(event: any) {
+		event.preventDefault();
+		var list = document.querySelectorAll('.demo-list .hidden');
+		for (let i = 0; i < list.length; i++) {
+			list[i].classList.add('show');
+		}
+
+		event.target.parentElement.classList.add('d-none');
+	}
 }

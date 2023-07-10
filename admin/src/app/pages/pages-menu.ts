@@ -1,6 +1,6 @@
 import { NbMenuItem } from '@nebular/theme';
 
-export const MENU_ITEMS: NbMenuItem[] = [
+export const MENU_ITEMS_AUTHORIZED: NbMenuItem[] = [
   {
     title: 'Dashboard',
     icon: 'home-outline',
@@ -59,25 +59,20 @@ export const MENU_ITEMS: NbMenuItem[] = [
     link: '/admin/customers/list',
   },
   {
-    title: 'Auth',
-    icon: 'lock-outline',
-    children: [
-      {
-        title: 'Login',
-        link: '/auth/login',
-      },
-      {
-        title: 'Register',
-        link: '/auth/register',
-      },
-      {
-        title: 'Request Password',
-        link: '/auth/request-password',
-      },
-      {
-        title: 'Reset Password',
-        link: '/auth/reset-password',
-      },
-    ],
+    title: 'Logout',
+    icon: 'log-out-outline',
+    link: '/admin/auth/logout',
   },
 ];
+
+export const MENU_ITEMS_UNAUTHORIZED: NbMenuItem[] = [
+  {
+    title: 'Login',
+    icon: 'lock-outline',
+    link: '/admin/auth/login',
+  },
+  {
+    title: '',
+    group: true,
+  },
+]

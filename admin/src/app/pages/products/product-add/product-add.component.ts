@@ -215,6 +215,7 @@ export class ProductAddComponent implements OnInit, AfterViewInit {
       return this.colors.find(color => color.colorName == value)
     } else {
       let newColor = new ProductColor();
+      newColor.productColorId = null
       newColor.colorName = value
       return newColor;
     }

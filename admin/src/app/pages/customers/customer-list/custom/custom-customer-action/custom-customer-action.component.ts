@@ -41,7 +41,7 @@ export class CustomCustomerActionComponent implements ViewCell, OnInit{
 
     ngOnInit() {
         this.editCustomerFormGroup = this.formBuilder.group({
-            accountId: [],
+            id: [],
             email: [, [Validators.required, Validators.maxLength(100)]],
             password: [],
             fullName: [, [Validators.required, Validators.maxLength(100)]],
@@ -52,7 +52,7 @@ export class CustomCustomerActionComponent implements ViewCell, OnInit{
     }
 
     fillFormValues() {
-        this.editCustomerFormGroup.get('accountId').setValue(this.rowData.accountId)
+        this.editCustomerFormGroup.get('id').setValue(this.rowData.id)
         this.editCustomerFormGroup.get('email').setValue(this.rowData.email)
         this.editCustomerFormGroup.get('fullName').setValue(this.rowData.fullName)
         this.editCustomerFormGroup.get('phoneNumber').setValue(this.rowData.phoneNumber)
@@ -60,13 +60,13 @@ export class CustomCustomerActionComponent implements ViewCell, OnInit{
     }
 
     onGetDetail() {
-        this.router.navigate(['/admin/customers', 'detail', this.rowData.accountId])
+        this.router.navigate(['/admin/customers', 'detail', this.rowData.id])
     }
 
     onEdit() {
         this.windowRef = this.windowService.open(
             this.editCustomerWindow,
-            { title: 'Edit Customer Account Id: ' +  this.rowData.accountId},
+            { title: 'Edit Customer Account Id: ' +  this.rowData.id},
         );
     }
 
@@ -77,7 +77,7 @@ export class CustomCustomerActionComponent implements ViewCell, OnInit{
             return;
         }
         let account: any = new Account();
-        account.accountId = this.editCustomerFormGroup.get('accountId').value
+        account.id = this.editCustomerFormGroup.get('id').value
         account.email = this.editCustomerFormGroup.get('email').value
         account.password = this.editCustomerFormGroup.get('password').value
         account.fullName = this.editCustomerFormGroup.get('fullName').value

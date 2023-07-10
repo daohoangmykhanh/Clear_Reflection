@@ -1,0 +1,16 @@
+<div class="d-flex justify-content-center my-auto">
+
+    <nb-card [formGroup]="loginFormGroup">
+        <nb-card-header>Admin Login</nb-card-header>
+        <nb-card-body>
+            <input type="email" nbInput fullWidth status="basic" placeholder="Email" formControlName="email">
+            <input type="password" nbInput fullWidth status="basic" placeholder="Password" formControlName="password">
+        </nb-card-body>
+        <nb-card-footer>
+            <button nbButton status="success" >
+                LOGIN
+            </button>
+        </nb-card-footer>
+    </nb-card>
+
+</div>

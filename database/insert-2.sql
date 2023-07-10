@@ -69,6 +69,11 @@ VALUES ('123,', 'Nguyễn Mạnh Phú 1', 'nguyenphu1147@gmail.com', '0783562372
 
 
 
+INSERT INTO address(road_name, wards_code, district_code, province_code)
+VALUES ('abc', '00001', '001', '01');
+
+
+
 
 
 

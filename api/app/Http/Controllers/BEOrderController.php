@@ -26,12 +26,15 @@ class BEOrderController extends Controller
 
             $orderData[] = [
                 'orderId' => $order->order_id,
-                'orderTrackingNumber' => $order->order_tracking_number,
                 'totalPrice' => $order->total_price,
                 'totalQuantity' => $order->total_quantity,
                 'orderStatus' => [
                     'orderStatusId' => $order->status -> order_status_id,
                     'statusName' => $order->status ->status_name
+                ],
+                'account' => [
+                    'accountId' => $order-> account -> id,
+                    'accountEmail' => $order -> account -> email
                 ],
                 'paymentMethod' => [
                     'paymentMethodId' => $order->payment-> payment_method_id,
@@ -73,7 +76,6 @@ class BEOrderController extends Controller
         $shippingAddress = $road .", " . $ward .", " .  $district .", " .  $province;
         $orderData[] = [
             'orderId' => $order->order_id,
-            'orderTrackingNumber' => $order->order_tracking_number,
             'account' => [
                 'accountId' => $order-> account -> id,
                 'accountEmail' => $order -> account -> email
@@ -174,7 +176,6 @@ class BEOrderController extends Controller
             'addressId' => 'nullable',
             'totalPrice' => 'required|numeric',
             'totalQuantity' => 'required|numeric',
-
             'products' => 'required|array',
             'products.*.productId' => 'required|integer',
             'products.*.size' => 'required',
@@ -191,7 +192,6 @@ class BEOrderController extends Controller
         $order -> order_status_id = $validatedData['orderStatusId'];
         $order -> payment_method_id = $validatedData['paymentMethodId'];
         $order -> created_at = now();
-        $order -> save();
 
         if(isset($validatedData['addressId'])){
             $address = Address::find($validatedData['addressId']);
@@ -231,6 +231,8 @@ class BEOrderController extends Controller
             $detail = new OrderDetail();
             $detail -> order_id = $order -> order_id;
             $detail -> product_id = $productData['productId'];
+            $product = Product::Find($productData['productId']);
+            $detail -> product_name = $product -> product_name;
             $detail -> quantity = $productData['quantity'];
             $detail->height = $height;
             $detail->width = $width;

@@ -1,46 +1,29 @@
-import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { UtilsService } from 'src/app/@core/services/utils.service';
 import { ModalService } from 'src/app/@core/services/modal.service';
-import { WishlistService } from 'src/app/@core/services/wishlist.service';
 
 @Component({
-  selector: 'molla-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+	selector: 'molla-header',
+	templateUrl: './header.component.html',
+	styleUrls: ['./header.component.scss']
 })
 
 export class HeaderComponent implements OnInit {
 
-  @Input() containerClass = "container";
-  currentLang: string = 'ENG';
-  wishCount = 0;
+	@Input() containerClass = "container";
 
-  constructor(
-    public activeRoute: ActivatedRoute,
-    public utilsService: UtilsService,
-    public modalService: ModalService,
-    public wishlistService: WishlistService,
-    private translate: TranslateService
-  ) {
-  }
+	wishCount = 0;
 
-  ngOnInit(): void {
-  }
+	constructor(public activeRoute: ActivatedRoute, public utilsService: UtilsService, public modalService: ModalService) {
+	}
 
-  showLoginModal(event: Event): void {
-    event.preventDefault();
-    this.modalService.showLoginModal();
-  }
+	ngOnInit(): void {
+	}
 
-  changeLang(lan: string) {
-    this.translate.use(lan)
-    if(lan == 'vi') {
-      this.currentLang = 'VIE'
-    } else if(lan == 'en-US'){
-      this.currentLang = 'ENG'
-    }
-  }
+	showLoginModal(event: Event): void {
+		event.preventDefault();
+		this.modalService.showLoginModal();
+	}
 }

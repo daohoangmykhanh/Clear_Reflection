@@ -15,12 +15,17 @@ const routes: Routes = [
 				component: IndexComponent
 			},
 			{
+				path: 'elements',
+				loadChildren: () => import( './pages/elements/elements.module' ).then( m => m.ElementsModule )
+			},
+
+			{
 				path: 'pages',
-				loadChildren: () => import( './pages/others/others.module' ).then( m => m.OthersModule )
+				loadChildren: () => import( './pages/others/pages.module' ).then( m => m.PagesModule )
 			},
 			{
-				path: 'customer',
-				loadChildren: () => import( './pages/customer/customer.module' ).then( m => m.CustomerModule )
+				path: 'shop',
+				loadChildren: () => import( './pages/shop/shop.module' ).then( m => m.ShopModule )
 			},
 			{
 				path: 'product',

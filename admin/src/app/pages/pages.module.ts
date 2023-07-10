@@ -18,7 +18,7 @@ import { CustomersModule } from './customers/customers.module';
     DashboardModule,
     ProductsModule,
     OrdersModule,
-    CustomersModule
+    CustomersModule,
   ],
   declarations: [
     PagesComponent,

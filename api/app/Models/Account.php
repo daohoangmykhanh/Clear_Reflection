@@ -43,4 +43,33 @@ class Account extends Authenticatable implements JWTSubject, MustVerifyEmail
     {
         return $this->belongsTo(Image::class, 'image_id');
     }
+
+    public static function store($validatedData){
+        $password = $validatedData['password'];
+        $full_name = $validatedData['fullName'];
+        $email = $validatedData['email'];
+        $phone_number = $validatedData['phoneNumber'];
+        $role_id = $validatedData['roleId'];
+
+        $image = new Image();
+        $base64String = $validatedData['image'];
+        $base64Data = substr($base64String, strpos($base64String, ',') + 1);
+        $imageData = base64_decode($base64Data);
+        $filename = uniqid() . '.png';
+        $storagePath = public_path('images/account/');
+        file_put_contents($storagePath. $filename, $imageData);
+        $image->image_url = $filename;
+        $image->save();
+
+        return DB::table('account')->insert([
+            'password' => $password,
+            'full_name' => $full_name,
+            'email' => $email,
+            'phone_number' => $phone_number,
+            'role_id' => $role_id,
+            'image_id' => $image -> image_id,
+            'created_at' => now()
+        ]);
+    }
+
 }

@@ -19,8 +19,8 @@ class AccountCoupon extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class, 'coupon_id');
+        return $this->belongsTo(Account::class, 'account_id', 'id');
     }
 
-    
+
 }

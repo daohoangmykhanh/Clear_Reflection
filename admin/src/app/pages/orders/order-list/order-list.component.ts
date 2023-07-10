@@ -69,6 +69,10 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
               type: 'number',
               width: '3%'
             },
+            customerEmail: {
+              title: 'Customer Email',
+              type: 'string',
+            },
             totalPrice: {
               title: 'Total Price',
               type: 'string',
@@ -142,9 +146,10 @@ export class OrderListComponent  implements OnInit, AfterViewInit {
         } else {
           console.log(data);
           
-          const mappedOrders: any[] = data.map(order => {
+          const mappedOrders: any[] = data.map((order:any) => {
             return {
               orderId: order.orderId,
+              customerEmail: order.account.accountEmail,
               totalPrice: order.totalPrice,
               totalQuantity: order.totalQuantity,
               paymentMethod: order.paymentMethod.paymentMethodName,

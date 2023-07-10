@@ -31,7 +31,7 @@
                         (click)="selectCustomer(account)" style="display: block !important">
                         <div class="row">
                             <div class="col-3">
-                                <img [src]="utilsService.getImageFromBase64(account.image.imageUrl)"
+                                <img [src]="utilsService.getImageFromBase64(account.image?.imageUrl)"
                                     class="d-block w-100 " style="width: 100%; height: auto">
                             </div>
                             <div class="col-9 my-auto">

@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  demo: 'customer',
+  demo: 'demo2',
   SERVER_URL: 'http://localhost:1337'
 };
 

@@ -1,6 +1,6 @@
 <div class="container">
     <div class="heading heading-center">
-        <h2 class="title font-weight-bolder" contentAnim aniName="blurIn">{{"HOME.RECENT_COLLECTION.RECENT_ARRIVALS" | translate}}</h2>
+        <h2 class="title font-weight-bolder" contentAnim aniName="blurIn">Recent Arrivals</h2>
     </div>
 
     <ul ngbNav #nav="ngbNav" class="nav nav-pills nav-border-anim justify-content-center mb-1">
@@ -29,8 +29,8 @@
     <div [ngbNavOutlet]="nav"></div>
 
     <div class="more-container text-center" *ngIf="hasMore">
-        <a routerLink="/products/shop/list" class="btn btn-outline-darker btn-more" >
-            <span>{{"HOME.RECENT_COLLECTION.SEE_ALL_PRODUCTS" | translate}}</span>
+        <a href="javascript:;" class="btn btn-outline-darker btn-more" (click)="loadMore($event)">
+            <span>Load more products</span>
             <i class="icon-refresh" [class.load-more-rotating]="loadMoreLoading"></i>
         </a>
     </div>

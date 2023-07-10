@@ -12,7 +12,10 @@ import { environment } from 'src/environments/environment';
 
 export class BreadcrumbComponent implements OnInit {
 
+	@Input() prev: Product;
+	@Input() next: Product;
 	@Input() current: string;
+	@Input() fullWidth = false;
 
 	SERVER_URL = environment.SERVER_URL;
 

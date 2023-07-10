@@ -26,8 +26,8 @@ class WishlistController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'account_id' => 'required',
-            'product_id' => 'required',
+            'accountId' => 'required',
+            'productId' => 'required',
         ]);
 
         $wishlist = Wishlist::create($validatedData);

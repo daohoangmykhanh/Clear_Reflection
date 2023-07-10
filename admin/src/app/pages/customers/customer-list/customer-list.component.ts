@@ -31,7 +31,6 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
 
   settings = {};
 
-
   constructor(
     private accountService: AccountService,
     private router: Router,
@@ -53,7 +52,7 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
           sort: false,
           filter: false
         },
-        accountId: {
+        id: {
           title: 'ID',
           type: 'number',
           width: '3%'
@@ -109,10 +108,13 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
         if("result" in data) {
           console.error(data)
         } else {
+
+          console.log(data);
+          
           const mappedAccounts: any[] = data.map(account => {
             return {
-              accountId: account.accountId,
-              imageUrl: this.utilsService.getImageFromBase64(account.image.imageUrl),
+              id: account.id,
+              imageUrl: this.utilsService.getImageFromBase64(account.image?.imageUrl),
               fullName: account.fullName,
               email: account.email,
               phoneNumber: account.phoneNumber,

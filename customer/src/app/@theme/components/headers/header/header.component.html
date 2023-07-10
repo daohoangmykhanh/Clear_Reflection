@@ -6,18 +6,19 @@
                     <a href="javascript:;">Usd</a>
                     <div class="header-menu">
                         <ul>
+                            <li><a href="javascript:;">Eur</a></li>
                             <li><a href="javascript:;">Usd</a></li>
-                            <li><a href="javascript:;">Vnd</a></li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="header-dropdown">
-                    <a href="javascript:;">{{currentLang}}</a>
+                    <a href="javascript:;">Eng</a>
                     <div class="header-menu">
                         <ul>
-                            <li><a href="javascript:;" (click)="changeLang('en-US')">English</a></li>
-                            <li><a href="javascript:;" (click)="changeLang('vi')">Vietnamese</a></li>
+                            <li><a href="javascript:;">English</a></li>
+                            <li><a href="javascript:;">French</a></li>
+                            <li><a href="javascript:;">Spanish</a></li>
                         </ul>
                     </div>
                 </div>
@@ -26,22 +27,13 @@
             <div class="header-right">
                 <ul class="top-menu">
                     <li>
-                        <a href="javascript:;">{{ 'HEADER.LINKS' | translate }}</a>
+                        <a href="javascript:;">Links</a>
                         <ul>
-                            <li>
-                              <a href="tel:#">
-                                <i class="icon-phone"></i>
-                                <span>{{'HEADER.CALL' | translate}}:</span> +0123 456 789
-                              </a>
-                            </li>
-                            <li>
-                              <a routerLink="/customer/wishlist">
-                                <i class="icon-heart-o"></i>
-                                <span> {{ 'HEADER.MY_WISHLIST' | translate}}</span>
-                                <span>({{ wishlistService.wishlistQty | async }})</span>
-                              </a>
-                            </li>
-                            <li><a  href="javascript:;" (click)="showLoginModal($event)"><i class="icon-user"></i>{{"HEADER.SIGNIN_SIGNUP" | translate}}</a></li>
+                            <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
+                            <li><molla-wishlist-menu></molla-wishlist-menu></li>
+                            <li><a routerLink="/pages/about">About Us</a></li>
+                            <li><a routerLink="/pages/contact">Contact Us</a></li>
+                            <li><a href="javascript:;" (click)="showLoginModal($event)"><i class="icon-user"></i>Login</a></li>
                         </ul>
                     </li>
                 </ul>
