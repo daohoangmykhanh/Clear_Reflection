@@ -56,12 +56,10 @@ class Product extends Model
         return $this->hasMany(Wishlist::class, 'product_id');
     }
 
-    
+
 
     public function reviews()
     {
         return $this->hasMany(ProductReview::class, 'product_id');
     }
-
-
 }

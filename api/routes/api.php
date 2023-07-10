@@ -54,7 +54,8 @@ use App\Http\Controllers\HomeController;
 // });
 // Route::group(['prefix' => 'admin', 'middleware' => 'auth:api'], function () {}
 
-
+//image
+Route::resource('product-color', ProductColorController::class);
 //image
 Route::resource('image', CategoryController::class);
 
@@ -73,10 +74,15 @@ Route::get('districts/{districtCode}/wards', [WardController::class, 'getAllWard
 Route::resource('product-variant', ProductVariantController::class);
 //cart
 Route::resource('cart', CartController::class);
+Route::get('/cart/quantity/get', [CartController::class, 'getCartQuantity']);
+
 // product_reiew
 Route::resource('product-review', ProductReviewController::class)->withoutMiddleware('auth:api');;
 //wishlist
 Route::resource('wishlist', WishlistController::class);
+Route::delete('/wishlist/product/{product_id}', [WishlistController::class, 'removeFromWishList']);
+Route::get('/wishlist/product/{productId}/check', [WishlistController::class, 'isInWishlist']);
+Route::get('/wishlist/products/get', [WishlistController::class, 'getW']);
 //address
 Route::resource('address', AddressController::class)->withoutMiddleware('auth:api');;
 //provinces
@@ -95,6 +101,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::resource('/product', ProductController::class)->withoutMiddleware('auth:api');;
 Route::get('/product/sort/{value}', [ProductController::class, 'sortByRating']);
 
+Route::get('/products/latest', [ProductController::class, 'getLatestProducts']);
+Route::get('/product/cate/{categoryId}', [ProductController::class, 'filterByCategory']);
+
+// ----------------------------------getallproduct
+Route::get('/products/get/getall', [ProductController::class, 'getAllProducts']);
 
 // Admin Routes
 Route::prefix('/admin')->group(function () {
@@ -177,8 +188,6 @@ Route::prefix('/admin')->group(function () {
     Route::get('/findPrice/{id}/{size}/{color}/', [BEOrderController::class, 'findPrice']);
     Route::get('/isCouponExists/{couponCode}', [BECouponController::class, 'isCouponExists']);
     Route::get('/findIdByCode/{couponCode}', [BECouponController::class, 'findIdByCode']);
-
-
 });
 
 // FEAccount Controller

@@ -21,12 +21,12 @@ class LoginController extends Controller
     // }
     public function register(Request $request)
     {
-        // dd(123);
         // $request->validate([
-        //     'name' => 'required|string|max:255',
+        //     'full_name' => 'required|string|max:255',
         //     'email' => 'required|string|email|max:255|unique:account',
         //     'password' => 'required|string',
         // ]);
+        // dd(123);
 
         $user = Account::create([
             'email' => $request->email,

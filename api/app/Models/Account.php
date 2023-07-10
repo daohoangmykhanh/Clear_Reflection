@@ -44,7 +44,8 @@ class Account extends Authenticatable implements JWTSubject, MustVerifyEmail
         return $this->belongsTo(Image::class, 'image_id');
     }
 
-    public static function store($validatedData){
+    public static function store($validatedData)
+    {
         $password = $validatedData['password'];
         $full_name = $validatedData['fullName'];
         $email = $validatedData['email'];
@@ -57,7 +58,7 @@ class Account extends Authenticatable implements JWTSubject, MustVerifyEmail
         $imageData = base64_decode($base64Data);
         $filename = uniqid() . '.png';
         $storagePath = public_path('images/account/');
-        file_put_contents($storagePath. $filename, $imageData);
+        file_put_contents($storagePath . $filename, $imageData);
         $image->image_url = $filename;
         $image->save();
 
@@ -67,9 +68,16 @@ class Account extends Authenticatable implements JWTSubject, MustVerifyEmail
             'email' => $email,
             'phone_number' => $phone_number,
             'role_id' => $role_id,
-            'image_id' => $image -> image_id,
+            'image_id' => $image->image_id,
             'created_at' => now()
         ]);
     }
-
+    public function cart()
+    {
+        return $this->hasOne(Cart::class, 'account_id');
+    }
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class, 'account_id');
+    }
 }
