@@ -1,63 +1,66 @@
-import { ProductColorService } from './../../../../@core/services/product/product-color.service';
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 
 import { shopData } from '../data';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductCategory } from 'src/app/@core/models/product/product-category.model';
-import { ProductCategoryService } from 'src/app/@core/services/product/product-category.service';
-import { ProductColor } from 'src/app/@core/models/product/product-color.model';
 
 @Component({
-  selector: 'molla-shop-sidebar',
-  templateUrl: './shop-sidebar.component.html',
-  styleUrls: ['./shop-sidebar.component.scss']
+	selector: 'molla-shop-sidebar',
+	templateUrl: './shop-sidebar.component.html',
+	styleUrls: ['./shop-sidebar.component.scss']
 })
 
 export class ShopSidebarComponent implements OnInit {
 
-  @Input() toggle = false;
-  shopData = shopData;
-  params = {};
-  categories: ProductCategory[]
-  colors: ProductColor[]
+	@Input() toggle = false;
+	shopData = shopData;
+	params = {};
+	priceRange: any = [0, 100];
 
-  constructor(
-    public activeRoute: ActivatedRoute,
-    public router: Router,
-    private categoryService: ProductCategoryService,
-    private colorService: ProductColorService
-  ) {
-  }
+	@ViewChild('priceSlider') priceSlider: any;
 
-  ngOnInit(): void {
-    this.categoryService.findAll().subscribe(
-      data => {
-        this.categories = data.categories
-      },
-      error => console.log(error)
-    )
+	constructor(public activeRoute: ActivatedRoute, public router: Router) {
+		activeRoute.queryParams.subscribe(params => {
+			this.params = params;
+			if (params['minPrice'] && params['maxPrice']) {
+				this.priceRange = [
+					params['minPrice'] / 10,
+					params['maxPrice'] / 10
+				]
+			} else {
+				this.priceRange = [0, 100];
 
-    this.colorService.findAll().subscribe(
-      data => {
-          this.colors = data.colors
-      },
-      error => console.log(error)
-    )
-  }
+				if(this.priceSlider) {
+					this.priceSlider.slider.reset({min: 0, max: 100});
+				}
+			}
+		})
+	}
 
-  containsAttrInUrl(type: string, value: string) {
-    const currentQueries = this.params[type] ? this.params[type].split(',') : [];
-    return currentQueries && currentQueries.includes(value);
-  }
+	ngOnInit(): void {
+	}
+
+	containsAttrInUrl(type: string, value: string) {
+		const currentQueries = this.params[type] ? this.params[type].split(',') : [];
+		return currentQueries && currentQueries.includes(value);
+	}
 
   onAttrClick(attr: string, value: string) {
     let url = this.getUrlForAttrs(attr, value);
     this.router.navigate([], { queryParams: { [attr]: this.getUrlForAttrs(attr, value), page: 1 }, queryParamsHandling: 'merge' });
   }
 
-  getUrlForAttrs(type: string, value: string) {
-    let currentQueries = this.params[type] ? this.params[type].split(',') : [];
-    currentQueries = this.containsAttrInUrl(type, value) ? currentQueries.filter(item => item !== value) : [...currentQueries, value];
-    return currentQueries.join(',');
-  }
+	getUrlForAttrs(type: string, value: string) {
+		let currentQueries = this.params[type] ? this.params[type].split(',') : [];
+		currentQueries = this.containsAttrInUrl(type, value) ? currentQueries.filter(item => item !== value) : [...currentQueries, value];
+		return currentQueries.join(',');
+	}
+
+
+	filterPrice() {
+		this.router.navigate([], { queryParams: { minPrice: this.priceRange[0] * 10, maxPrice: this.priceRange[1] * 10, page: 1 }, queryParamsHandling: 'merge' });
+	}
+
+	changeFilterPrice(value: any) {
+		this.priceRange = [value[0], value[1]];
+	}
 }

@@ -260,6 +260,7 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
             if(!result) {
               this.addOrderFormGroup.get('coupon').setErrors({couponNotExists : true})
             }
+        
           }
         )
       }
@@ -349,4 +350,5 @@ export class OrderAddComponent implements OnInit, AfterViewInit {
     this.addOrderFormGroup.get('totalPrice').setValue(totalPrice);
     
   }
+
 }

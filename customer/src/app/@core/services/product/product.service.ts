@@ -32,25 +32,20 @@ export class ProductService {
     private httpClient: HttpClient
   ) { }
 
-  findByNameKeyword(productName: string): Observable<Product[]>  {
-    const url: string = `${this.baseUrlService.baseURL}/productByIdOrName/${productName}`
-    return this.httpClient.get<Product[]>(url);
+  findAll(): Observable<GetProductResponse> {
+    const url = `${this.baseUrlService.baseURL}/products/get/getall`
+    return this.httpClient.get<GetProductResponse>(url);
   }
 
-  findAll(): Observable<Product[] | ModelResponse> {
-    const url = `${this.baseUrlService.baseURL}/product`
-    return this.httpClient.get<Product[] | ModelResponse>(url);
-  }
-  
   findById(id: number): Observable<Product | ModelResponse>  {
     const url: string = `${this.baseUrlService.baseURL}/product/edit/${id}`
     return this.httpClient.get<Product>(url);
-  } 
+  }
 
   findDetailById(id: number): Observable<Product | ModelResponse>  {
     const url: string = `${this.baseUrlService.baseURL}/product/detail/${id}`
     return this.httpClient.get<Product>(url);
-  } 
+  }
 
   insert(product: Product): Observable<Product> {
     const url: string = `${this.baseUrlService.baseURL}/product/create`
@@ -62,18 +57,22 @@ export class ProductService {
     return this.httpClient.post<ModelResponse>(url, product);
   }
 
-  delete(productId: number): Observable<ModelResponse> {    
+  delete(productId: number): Observable<ModelResponse> {
     const url: string = `${this.baseUrlService.baseURL}/product/delete/${productId}`
-    return this.httpClient.get<ModelResponse>(url); 
+    return this.httpClient.get<ModelResponse>(url);
   }
 
   hideProduct(productId: number): Observable<ModelResponse> {
     const url: string = `${this.baseUrlService.baseURL}/product/hide/${productId}`
-    return this.httpClient.get<ModelResponse>(url); 
+    return this.httpClient.get<ModelResponse>(url);
   }
 
   getDetails(productId: number): Observable<Product | ModelResponse> {
     const url: string = `${this.baseUrlService.baseURL}/product/details1/${productId}`;
     return this.httpClient.get<ModelResponse >(url)
   }
+}
+
+export interface GetProductResponse {
+  products: Product[]
 }

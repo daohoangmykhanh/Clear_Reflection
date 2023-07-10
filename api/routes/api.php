@@ -29,6 +29,8 @@ use App\Http\Controllers\BEOrderController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductColorController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -55,7 +57,7 @@ use App\Http\Controllers\HomeController;
 // Route::group(['prefix' => 'admin', 'middleware' => 'auth:api'], function () {}
 
 //image
-Route::resource('product-color', ProductColorController::class);
+Route::resource('product-color', ProductColorController::class)->withoutMiddleware('auth:api');
 //image
 Route::resource('image', CategoryController::class);
 
@@ -105,7 +107,7 @@ Route::get('/products/latest', [ProductController::class, 'getLatestProducts']);
 Route::get('/product/cate/{categoryId}', [ProductController::class, 'filterByCategory']);
 
 // ----------------------------------getallproduct
-Route::get('/products/get/getall', [ProductController::class, 'getAllProducts']);
+Route::get('/products/get/getall', [ProductController::class, 'getAllProducts'])->withoutMiddleware('auth:api');
 
 // Admin Routes
 Route::prefix('/admin')->group(function () {

@@ -31,7 +31,7 @@ class BEAccountController extends Controller
                 ];
             }
             $role = $account->role;
-            $totalOrders = Order::where('account_id', $account -> id) -> get() -> count();
+            $totalOrders = Order::where('account_id', $account -> id) -> count();
             $role = $account->role;
             $accountData[] = [
                 'id' => $account->id,

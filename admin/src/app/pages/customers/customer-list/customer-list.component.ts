@@ -111,7 +111,7 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
 
           console.log(data);
           
-          const mappedAccounts: any[] = data.map(account => {
+          const mappedAccounts: any[] = data.map((account: any) => {
             return {
               id: account.id,
               imageUrl: this.utilsService.getImageFromBase64(account.image?.imageUrl),
@@ -119,7 +119,7 @@ export class CustomerListComponent  implements OnInit, AfterViewInit {
               email: account.email,
               phoneNumber: account.phoneNumber,
               createdAt:  new DatePipe('en-US').transform(account.createdAt, 'dd-MM-yyyy'),
-              totalOrder: account.orders != undefined ? account.orders.length : 0
+              totalOrder: account.order != undefined ? account.order : 0
             }
           })
           this.source.load(mappedAccounts)

@@ -18,22 +18,22 @@ export class ProductColorService {
   }
 
   findAll(): Observable<GetColorResponse> {
-    const url: string = `${this.baseUrlService.baseURL}/color`
+    const url: string = `${this.baseUrlService.baseURL}/product-color`
     return this.httpClient.get<GetColorResponse>(url)
   }
 
   insert(color: ProductColor): Observable<ProductColor> {
-    const url: string = `${this.baseUrlService.baseURL}/color/create`
+    const url: string = `${this.baseUrlService.baseURL}/product-color/create`
     return this.httpClient.post<ProductColor>(url, color);
   }
 
   update(color: ProductColor): Observable<boolean> {
-    const url: string = `${this.baseUrlService.baseURL}/color/update`
+    const url: string = `${this.baseUrlService.baseURL}/product-color/update`
     return this.httpClient.post<boolean>(url, color);
   }
 
   delete(colorId: number): Observable<boolean> {
-    const url: string = `${this.baseUrlService.baseURL}/color/delete/${colorId}`
+    const url: string = `${this.baseUrlService.baseURL}/product-color/delete/${colorId}`
     return this.httpClient.delete<boolean>(url);
   }
 
@@ -42,7 +42,6 @@ export class ProductColorService {
   }
 }
 
-
 export interface GetColorResponse {
-  colors: ProductColor[]
+  product_colors: ProductColor[]
 }

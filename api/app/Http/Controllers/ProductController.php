@@ -18,11 +18,19 @@ class ProductController extends Controller
 
         foreach ($products as $product) {
             $imageData = [];
-            foreach ($product->images as $image) {
-                $imageData[] = [
-                    'imageId' => $image->image_id,
-                    'imageUrl' => $image->image->image_url
-                ];
+            if ($product->images !== null) {
+                foreach ($product->images as $image) {
+                    if ($image->image_id !== null) {
+                        $storagePath = public_path('images/product/');
+                        $filename = $image -> image_url;
+                        $data = file_get_contents($storagePath. $filename);
+                        $base64Image = base64_encode($data);
+                        $imageData[] = [
+                            'imageId' => $image->image_id,
+                            'imageUrl' => $base64Image,
+                        ];
+                    }
+                }
             }
             $productData[] = [
                 'productId' => $product->product_id,
