@@ -75,4 +75,18 @@ class WishlistController extends Controller
             'message' => $deleted ? 'Wishlist deleted successfully.' : 'Failed to delete wishlist.',
         ]);
     }
+
+    public function removeFromWishList($product_id)
+    {
+        try {
+            $wishlist = Wishlist::where('product_id', $product_id)->first();
+            $deleted = $wishlist->delete();
+            return response()->json([
+                'result' => $deleted ? true : false,
+                'message' => $deleted ? 'Wishlist deleted successfully.' : 'Failed to delete wishlist.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to remove from wishlist']);
+        }
+    }
 }

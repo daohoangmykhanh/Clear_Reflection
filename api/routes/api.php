@@ -77,6 +77,8 @@ Route::resource('cart', CartController::class);
 Route::resource('product-review', ProductReviewController::class);
 //wishlist
 Route::resource('wishlist', WishlistController::class);
+Route::delete('/wishlist/product/{product_id}', [WishlistController::class, 'removeFromWishList']);
+
 //address
 Route::resource('address', AddressController::class);
 //provinces
@@ -177,8 +179,6 @@ Route::prefix('/admin')->group(function () {
     Route::get('/findPrice/{id}/{size}/{color}/', [BEOrderController::class, 'findPrice']);
     Route::get('/isCouponExists/{couponCode}', [BECouponController::class, 'isCouponExists']);
     Route::get('/findIdByCode/{couponCode}', [BECouponController::class, 'findIdByCode']);
-
-
 });
 
 
