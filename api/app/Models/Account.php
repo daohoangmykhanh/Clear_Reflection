@@ -76,4 +76,8 @@ class Account extends Authenticatable implements JWTSubject, MustVerifyEmail
     {
         return $this->hasOne(Cart::class, 'account_id');
     }
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class, 'account_id');
+    }
 }
