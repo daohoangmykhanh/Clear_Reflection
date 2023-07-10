@@ -16,10 +16,26 @@ class WishlistController extends Controller
         foreach ($wishlists as $wishlist) {
             $wishlistData[] = [
                 'wishlistId' => $wishlist->wishlist_id,
-                'accountId' => $wishlist->account,
-                'productId' => $wishlist->product,
+                'account' => [
+                    'accountId' => $wishlist->account->account_id,
+                    'fullName' => $wishlist->account->full_name,
+                    'email' => $wishlist->account->email,
+                ],
+                'product' => [
+                    'productId' => $wishlist->product_id,
+                    'productName' => $wishlist->product->product_name,
+                    'category' => $wishlist->product->category ? [
+                        'categoryId' => $wishlist->product->category->category_id,
+                        'categoryName' => $wishlist->product->category->category_name,
+                        'imageUrl' => $wishlist->product->category->image ? $wishlist->product->category->image->image_url : null,
+                    ] : null,
+                    'productShape' => $wishlist->product->product_shape->name ?? null,
+                    'productStyle' => $wishlist->product->product_style->name ?? null,
+                ],
             ];
         }
+
+
 
         return response()->json($wishlistData);
     }
