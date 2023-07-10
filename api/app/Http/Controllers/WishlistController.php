@@ -109,8 +109,8 @@ class WishlistController extends Controller
     {
         $user = Auth::user();
 
-        $wishlists = $user->wishlist()->with('account', 'product')->get();
-        $wishlistData = [];
+        $wishlists = $user->wishlists;
+        $wishlistData = []; 
 
         foreach ($wishlists as $wishlist) {
             $wishlistData[] = [
@@ -128,5 +128,6 @@ class WishlistController extends Controller
                 ],
             ];
         }
+        return response()->json($wishlistData);
     }
 }

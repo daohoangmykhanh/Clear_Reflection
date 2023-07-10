@@ -54,12 +54,13 @@ use App\Http\Controllers\HomeController;
 // });
 // Route::group(['prefix' => 'admin', 'middleware' => 'auth:api'], function () {}
 
-
+//image
+Route::resource('product-color', ProductColorController::class);
 //image
 Route::resource('image', CategoryController::class);
 
 //category
-Route::resource('category', CategoryController::class);
+Route::resource('category', CategoryController::class)->withoutMiddleware('auth:api');
 
 //order-address
 Route::resource('order-address', OrderAddressController::class);
@@ -81,7 +82,7 @@ Route::resource('product-review', ProductReviewController::class);
 Route::resource('wishlist', WishlistController::class);
 Route::delete('/wishlist/product/{product_id}', [WishlistController::class, 'removeFromWishList']);
 Route::get('/wishlist/product/{productId}/check', [WishlistController::class, 'isInWishlist']);
-
+Route::get('/wishlist/products/get', [WishlistController::class, 'getW']);
 //address
 Route::resource('address', AddressController::class);
 //provinces
@@ -102,6 +103,9 @@ Route::get('/product/sort/{value}', [ProductController::class, 'sortByRating']);
 
 Route::get('/products/latest', [ProductController::class, 'getLatestProducts']);
 Route::get('/product/cate/{categoryId}', [ProductController::class, 'filterByCategory']);
+
+// ----------------------------------getallproduct
+Route::get('/products/get/getall', [ProductController::class, 'getAllProducts']);
 
 // Admin Routes
 Route::prefix('/admin')->group(function () {

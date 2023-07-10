@@ -20,7 +20,7 @@ use App\Http\Controllers\MailController;
 |
 */
 
-Route::post('/login', [LoginController::class, 'index'])->withoutMiddleware('auth:api');;
+Route::post('/login', [LoginController::class, 'index'])->withoutMiddleware('auth:api');
 
 
 Route::post('/register', [LoginController::class, 'register'])->withoutMiddleware('auth:api');;
