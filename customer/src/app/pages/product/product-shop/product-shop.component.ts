@@ -1,7 +1,9 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Product } from 'src/app/@core/models/product/product.model';
 
 import { ApiService } from 'src/app/@core/services/api.service';
+import { ProductService } from 'src/app/@core/services/product/product.service';
 import { UtilsService } from 'src/app/@core/services/utils.service';
 
 @Component({
@@ -26,7 +28,8 @@ export class ProductShopComponent implements OnInit {
     public activeRoute: ActivatedRoute,
     public router: Router,
     public utilsService: UtilsService,
-    public apiService: ApiService
+    public apiService: ApiService,
+    public productService: ProductService
   ) {
     this.activeRoute.params.subscribe(params => {
       this.type = params['type'];
@@ -58,6 +61,64 @@ export class ProductShopComponent implements OnInit {
       }
 
       this.apiService.fetchShopData(params, this.perPage).subscribe(result => {
+        console.log(result.products);
+        let productAPI: any[];
+        // this.productService.findAll().subscribe(
+        //   data => {
+        //     productAPI = data.products.map(pro => {
+        //       return {
+        //         author: null,
+        //         brands: [{name: 'UGG', slug: 'ugg', pivot: {product_id: '10', brand_id: '1'}}],
+        //         category: {
+        //           name: pro.category.categoryName,
+        //           slug: pro.category.categoryName,
+        //           pivot: {product_id: '10', brand_id: '1'}
+        //         },
+        //         featured: null,
+        //         id: pro.productId,
+        //         name: pro.productName,
+        //         new: null,
+        //         pictures: pro.images.map(img => {
+        //           return {
+        //             width: '800',
+        //             height: '800',
+        //             url: img.imageUrl,
+        //             pivot: null
+        //           }
+        //         }),
+        //         price: pro.productVariants[0].price,
+        //         ratings: 5,
+        //         review: 2,
+        //         sale_price: null,
+        //         short_desc: pro.description,
+        //         slug: pro.productName,
+        //         sm_pictures: pro.images.map(img => {
+        //           return {
+        //             width: '300',
+        //             height: '300',
+        //             url: img.imageUrl,
+        //             pivot: null
+        //           }
+        //         }),
+        //         sold: null,
+        //         stock: 100,
+        //         top: true,
+        //         until: null,
+        //         variants: pro.productVariants.map(vari => {
+        //           return {
+        //             color: vari.color,
+        //             color_name:vari.color.colorName,
+        //             id: 1,
+        //             pivot: null,
+        //             price: vari.price
+        //           }
+        //         }),
+
+        //       }
+        //     })
+        //     console.log(productAPI)
+        //   }
+        // )
         this.products = result.products;
         this.totalCount = result.totalCount;
 

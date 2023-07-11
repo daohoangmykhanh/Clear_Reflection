@@ -9,7 +9,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $paginationLimit = 10; // Number of products per page
+        $paginationLimit = 8; // Number of products per page
 
         $products = Product::with('category', 'product_shape', 'product_style', 'images', 'variants')
             ->paginate($paginationLimit);
@@ -197,10 +197,41 @@ class ProductController extends Controller
     public function getLatestProducts()
     {
         // Lấy 8 sản phẩm mới nhất dựa trên ngày tạo (hoặc trường khác tương ứng)
-        $latestProducts = Product::latest()->take(4)->get();
+        $products = Product::latest()->take(8)->get();
 
-        // Trả về danh sách sản phẩm mới nhất dưới dạng JSON
-        return response()->json($latestProducts);
+        $productData = [];
+
+        foreach ($products as $product) {
+            $imageData = [];
+            if ($product->images !== null) {
+                foreach ($product->images as $image) {
+                    if ($image->image_id !== null) {
+                        $storagePath = public_path('images/product/');
+                        $filename = $image -> image_url;
+                        $data = file_get_contents($storagePath. $filename);
+                        $base64Image = base64_encode($data);
+                        $imageData[] = [
+                            'imageId' => $image->image_id,
+                            'imageUrl' => $base64Image,
+                        ];
+                    }
+                }
+            }
+            $productData[] = [
+                'productId' => $product->product_id,
+                'productName' => $product->product_name,
+                'description' => $product->description,
+                'isHide' => $product->is_hide,
+                'imageUrls' => $imageData,
+                'category' => $product->category->category_name ?? null,
+                'productShapeName' => $product->product_shape->shape_name ?? null,
+                'productStyleName' => $product->product_style->style_name ?? null,
+            ];
+        }
+
+        return response()->json([
+            'products' => $productData,
+        ]);
     }
     public function filterByCategory($categoryId)
     {

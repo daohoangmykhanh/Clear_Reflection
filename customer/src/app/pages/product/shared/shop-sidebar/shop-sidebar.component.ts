@@ -2,6 +2,10 @@ import { Component, OnInit, Input, ViewChild } from '@angular/core';
 
 import { shopData } from '../data';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ProductCategory } from 'src/app/@core/models/product/product-category.model';
+import { ProductCategoryService } from 'src/app/@core/services/product/product-category.service';
+import { ProductColor } from 'src/app/@core/models/product/product-color.model';
+import { ProductColorService } from 'src/app/@core/services/product/product-color.service';
 
 @Component({
 	selector: 'molla-shop-sidebar',
@@ -14,26 +18,31 @@ export class ShopSidebarComponent implements OnInit {
 	@Input() toggle = false;
 	shopData = shopData;
 	params = {};
-	priceRange: any = [0, 100];
-
+  categories: ProductCategory[]
+  colors: ProductColor[]
 	@ViewChild('priceSlider') priceSlider: any;
 
-	constructor(public activeRoute: ActivatedRoute, public router: Router) {
+	constructor(
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    private categoryService: ProductCategoryService,
+    private colorService: ProductColorService
+  ) {
 		activeRoute.queryParams.subscribe(params => {
 			this.params = params;
-			if (params['minPrice'] && params['maxPrice']) {
-				this.priceRange = [
-					params['minPrice'] / 10,
-					params['maxPrice'] / 10
-				]
-			} else {
-				this.priceRange = [0, 100];
-
-				if(this.priceSlider) {
-					this.priceSlider.slider.reset({min: 0, max: 100});
-				}
-			}
 		})
+
+    this.categoryService.findAll().subscribe(
+      data => this.categories = data.categories
+    )
+
+    this.colorService.findAll().subscribe(
+      data => {
+        this.colors = data.product_colors
+        console.log(this.colors);
+
+      }
+    )
 	}
 
 	ngOnInit(): void {
@@ -56,11 +65,4 @@ export class ShopSidebarComponent implements OnInit {
 	}
 
 
-	filterPrice() {
-		this.router.navigate([], { queryParams: { minPrice: this.priceRange[0] * 10, maxPrice: this.priceRange[1] * 10, page: 1 }, queryParamsHandling: 'merge' });
-	}
-
-	changeFilterPrice(value: any) {
-		this.priceRange = [value[0], value[1]];
-	}
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { ProductService } from 'src/app/@core/services/product/product.service';
 
 @Component({
   selector: 'molla-recent-collection',
@@ -17,7 +18,12 @@ export class RecentCollectionComponent implements OnInit {
 	loadMoreLoading: boolean = false;
 	loadCount: number = 8;
 
-	constructor() {
+	constructor(
+    private productService: ProductService
+  ) {
+    this.productService.find8Products().subscribe(data => {
+      this.products = data.products
+    })
 	}
 
 	ngOnInit(): void {

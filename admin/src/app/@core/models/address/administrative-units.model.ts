@@ -8,5 +8,4 @@ export class AdministrativeUnits {
     shortNameEn: string;
     codeName: string;
     codeNameEn: string
-    account?: Account
 }

@@ -71,6 +71,11 @@ export class ProductService {
     const url: string = `${this.baseUrlService.baseURL}/product/details1/${productId}`;
     return this.httpClient.get<ModelResponse >(url)
   }
+
+  find8Products():  Observable<GetProductResponse> {
+    const url: string = `${this.baseUrlService.baseURL}/products/lastest`;
+    return this.httpClient.get<GetProductResponse >(url)
+  }
 }
 
 export interface GetProductResponse {
